@@ -939,3 +939,23 @@ a:hover {
         opacity: 1;
     }
 }
+
+/* Fiverr Icon Mask */
+.fiverr-icon {
+    width: 24px;
+    height: 24px;
+    background-color: var(--text-muted);
+    -webkit-mask-image: url('/fiverr-logo.png');
+    mask-image: url('/fiverr-logo.png');
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    transition: background-color 0.2s;
+}
+
+.footer-icons a:hover .fiverr-icon {
+    background-color: var(--accent);
+}
