@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react'
 export default function App() {
   const [selectedCard, setSelectedCard] = useState(null)
 
-  const handleCardClick = (title, subtitle, image = null) => {
-    setSelectedCard({ title, subtitle, image })
+  const handleCardClick = (title, subtitle, description = null, image = null) => {
+    setSelectedCard({ title, subtitle, description, image })
   }
 
   useEffect(() => {
@@ -45,7 +45,30 @@ export default function App() {
         <section className="content-overview">
           <div className="content-label">STUDY</div>
           <div className="content-cards" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-            <article className="card c3" onClick={() => handleCardClick('MCA', 'Measi Institute of Information Technology • 2023 - 2025')}>
+            <article className="card c3" onClick={() => handleCardClick('MCA', 'Measi Institute of Information Technology • 2023 - 2025', `
+🎓 MCA Academic Summary — Fahath S
+(Reg. No: 812300260)
+
+I have completed my MCA with strong and consistent academic performance in all four semesters. My marks improved every semester, especially in the later stages where I scored several high totals across core subjects.
+
+I maintained a solid growth curve throughout the course and finished my degree with a First Class result.
+
+📊 Overall Performance
+Estimated CGPA: 8.4 / 10
+
+Semester-wise trend (approx.):
+• Sem 1 → 8.0
+• Sem 2 → 8.1
+• Sem 3 → 8.9
+• Sem 4 → 8.7
+
+Consistent improvement every semester — strong academic progression.
+
+🏅 Final Status
+Result: PASS in all semesters
+Class: First Class
+Degree: Master of Computer Applications
+`)}>
 
               <div className="card-thumb">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
@@ -72,7 +95,7 @@ export default function App() {
               </div>
               <div className="card-title">SEO Analyst & Performance Marketer<br /><small>Crux Creations • Sep 2025 - Present</small></div>
             </article>
-            <article className="card c2" onClick={() => handleCardClick('SEO Analyst Intern', 'Crux Creations • Jun 2025 - Aug 2025', '/assets/internship-letter.jpg')}>
+            <article className="card c2" onClick={() => handleCardClick('SEO Analyst Intern', 'Crux Creations • Jun 2025 - Aug 2025', null, '/assets/internship-letter.jpg')}>
 
               <div className="card-thumb">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
@@ -190,13 +213,17 @@ export default function App() {
         </footer>
         {selectedCard && (
           <div className="modal-overlay" onClick={() => setSelectedCard(null)}>
-            <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className={`modal-content ${selectedCard.description ? 'modal-wide' : ''}`} onClick={e => e.stopPropagation()}>
               <button className="modal-close" onClick={() => setSelectedCard(null)}>×</button>
               <h2>{selectedCard.title}</h2>
               <p>{selectedCard.subtitle}</p>
               <div className={`modal-body ${selectedCard.image ? 'has-image' : ''}`}>
                 <div className="modal-text">
-                  <p>More details about this project or skill would go here. This is a placeholder for the Batman-themed modal content.</p>
+                  {selectedCard.description ? (
+                    <div style={{ whiteSpace: 'pre-line' }}>{selectedCard.description}</div>
+                  ) : (
+                    <p>More details about this project or skill would go here. This is a placeholder for the Batman-themed modal content.</p>
+                  )}
                 </div>
                 {selectedCard.image && (
                   <div className="modal-image">

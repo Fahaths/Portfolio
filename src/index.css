@@ -744,6 +744,201 @@ a:hover {
 .footer {
     padding: 40px 0;
     text-align: center;
+    width: 100%;
+    height: 120px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    background: var(--bg-body);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-thumb svg {
+    width: 40px;
+    height: 40px;
+    fill: var(--text-muted);
+    opacity: 0.5;
+}
+
+.card-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-main);
+    z-index: 1;
+}
+
+.card small {
+    display: block;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-top: 6px;
+}
+
+/* Batman Theme Borders */
+.card.c1 {
+    border-top: 3px solid var(--accent);
+}
+
+.card.c2 {
+    border-top: 3px solid #b91c1c;
+}
+
+.card.c3 {
+    border-top: 3px solid #991b1b;
+}
+
+.card.c4 {
+    border-top: 3px solid #7f1d1d;
+}
+
+.card.c5 {
+    border-top: 3px solid var(--accent);
+}
+
+.footer {
+    padding: 40px 0;
+    text-align: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.achievements li {
+    color: var(--text-main);
+    padding-left: 24px;
+    position: relative;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.achievements li:before {
+    content: "›";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 1;
+}
+
+/* Content Overview */
+.content-overview {
+    position: relative;
+    padding: 60px 0;
+    margin-top: 80px;
+}
+
+.content-label {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 120px;
+    color: rgba(255, 255, 255, 0.03);
+    letter-spacing: 12px;
+    font-weight: 900;
+    pointer-events: auto;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 0;
+}
+
+.content-label:hover {
+    color: rgb(255, 0, 17);
+    text-shadow: 0 0 30px rgb(255, 0, 17);
+    transform: translateX(-50%) scale(1.05);
+    cursor: default;
+}
+
+.content-cards {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 18px;
+    margin-top: 40px;
+}
+
+.card {
+    background: var(--bg-surface);
+    padding: 18px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 260px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+}
+
+.card.reveal {
+    will-change: transform, opacity;
+}
+
+.card-number {
+    position: absolute;
+    right: 14px;
+    top: 10px;
+    font-size: 84px;
+    color: rgba(255, 255, 255, 0.05);
+    font-weight: 900;
+}
+
+.card-thumb {
+    width: 100%;
+    height: 120px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    background: var(--bg-body);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-thumb svg {
+    width: 40px;
+    height: 40px;
+    fill: var(--text-muted);
+    opacity: 0.5;
+}
+
+.card-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-main);
+    z-index: 1;
+}
+
+.card small {
+    display: block;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-top: 6px;
+}
+
+/* Batman Theme Borders */
+.card.c1 {
+    border-top: 3px solid var(--accent);
+}
+
+.card.c2 {
+    border-top: 3px solid #b91c1c;
+}
+
+.card.c5 {
+    border-top: 3px solid var(--accent);
+}
+
+.footer {
+    padding: 40px 0;
+    text-align: center;
     color: var(--text-muted);
     margin-top: 80px;
 }
@@ -824,7 +1019,7 @@ a:hover {
     border-radius: 12px;
     border: 1px solid var(--accent);
     box-shadow: 0 0 30px rgba(225, 29, 43, 0.2);
-    max-width: 500px;
+    max-width: 1000px;
     width: 90%;
     position: relative;
     text-align: center;
@@ -842,14 +1037,12 @@ a:hover {
 
 .modal-content:has(.has-image) {
     max-width: 1200px;
-    /* Increased width */
     width: 95%;
 }
 
 .modal-body.has-image {
     display: flex;
     align-items: flex-start;
-    /* Align to top */
     gap: 30px;
     text-align: left;
     margin-top: 20px;
@@ -862,7 +1055,6 @@ a:hover {
 
 .modal-image {
     flex: 2;
-    /* Give image more space */
     display: flex;
     justify-content: center;
 }
@@ -871,7 +1063,6 @@ a:hover {
     width: 100%;
     height: auto;
     max-height: 80vh;
-    /* Ensure it fits vertically */
     object-fit: contain;
     border-radius: 8px;
     border: 1px solid var(--border);
