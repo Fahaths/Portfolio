@@ -2,13 +2,22 @@ import React, { useEffect, useState } from 'react'
 
 export default function App() {
   const [selectedCard, setSelectedCard] = useState(null)
+  const [theme, setTheme] = useState('dark')
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme(curr => curr === 'dark' ? 'light' : 'dark')
+  }
 
   const handleCardClick = (title, subtitle, description = null, image = null) => {
     setSelectedCard({ title, subtitle, description, image })
   }
 
   useEffect(() => {
-    const selector = '.card, .intro-right, .hero-illustration'
+    const selector = '.card, .intro-right, .hero-illustration, .hero-image'
     const elems = Array.from(document.querySelectorAll(selector))
     elems.forEach(el => el.classList.add('reveal'))
 
@@ -27,142 +36,189 @@ export default function App() {
 
   return (
     <>
+      <nav className="navbar">
+        <div className="logo">Faa</div>
+        <button
+          onClick={toggleTheme}
+          className="theme-toggle"
+          aria-label="Toggle Theme"
+        >
+          {theme === 'dark' ? (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-sun">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-moon">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          )}
+        </button>
+      </nav>
+
       <header className="hero">
-        <h1 className="hero-title">
-          Hi, I'm Fahath
-        </h1>
-        <p className="hero-subtitle">
-          SEO Analyst & Performance Marketer
-        </p>
-        <p className="lead">
-          SEO and performance marketer blending organic optimisation with paid traffic strategy. Strong at breaking
-          down data, improving ranking momentum, and tightening ad performance. Solid mix of technical SEO,
-          analytics, and creative execution wrapped in a clean, results-first workflow.
-        </p>
+        <div className="hero-content">
+          <div className="hero-subtitle-top">SEO Analyst and Performance Marketer</div>
+          <h1 className="hero-title">
+            Fahath S
+          </h1>
+          <p className="hero-description">
+            SEO and performance marketer blending organic optimisation with paid traffic strategy. Strong at breaking
+            down data, improving ranking momentum, and tightening ad performance.
+          </p>
+          <div className="hero-details">
+            <div><span>Born in</span>India</div>
+            <div><span>Email</span>fahaths.official@gmail.com</div>
+          </div>
+        </div>
+        <div className="hero-image-container">
+          <img
+            src="https://placehold.co/600x800/25282e/FFF?text=Fahath"
+            alt="Fahath S"
+            className="hero-image reveal"
+          />
+        </div>
       </header>
 
       <main className="container">
-        <section className="content-overview">
-          <div className="content-label">STUDY</div>
-          <div className="content-cards" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-            <article className="card c3" onClick={() => handleCardClick('MCA', 'Measi Institute of Information Technology • 2023 - 2025', `
-🎓 MCA Academic Summary — Fahath S
-(Reg. No: 812300260)
 
-I have completed my MCA with strong and consistent academic performance in all four semesters. My marks improved every semester, especially in the later stages where I scored several high totals across core subjects.
-
-I maintained a solid growth curve throughout the course and finished my degree with a First Class result.
-
-📊 Overall Performance
-Estimated CGPA: 8.4 / 10
-
-Semester-wise trend (approx.):
-• Sem 1 → 8.0
-• Sem 2 → 8.1
-• Sem 3 → 8.9
-• Sem 4 → 8.7
-
-Consistent improvement every semester — strong academic progression.
-
-🏅 Final Status
-Result: PASS in all semesters
-Class: First Class
-Degree: Master of Computer Applications
-`)}>
-
-              <div className="card-thumb">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
-              </div>
-              <div className="card-title">MCA<br /><small>Measi Institute of Information Technology • 2023 - 2025</small></div>
-            </article>
-            <article className="card c4" onClick={() => handleCardClick('B.Com (Computer Application)', 'Shanmuga Industries • 2020 - 2023')}>
-
-              <div className="card-thumb">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-              </div>
-              <div className="card-title">B.Com (Computer Application)<br /><small>Shanmuga Industries Arts & Science College • 2020 - 2023</small></div>
-            </article>
+        {/* --- About Me Section --- */}
+        <section className="content-overview" id="about">
+          <div className="content-label">ABOUT</div>
+          <div className="about-container reveal">
+            <h3 className="section-title">About Me</h3>
+            <div className="about-text">
+              <p>
+                My name is Fahath S. I have been working in SEO and Performance Marketing since 2023. I like creating data-driven strategies that actually convert.
+              </p>
+              <p>
+                I specialize in breaking down complex data into actionable insights, improving ranking momentum on Google, and tightening ad performance on Meta. My workflow blends technical SEO precision with creative ad execution.
+              </p>
+            </div>
+            <button className="btn-primary" onClick={() => window.location.href = 'mailto:fahaths.official@gmail.com'}>
+              Contact Me
+            </button>
           </div>
         </section>
 
+        {/* --- Resume Section --- */}
         <section className="content-overview">
-          <div className="content-label">WORK</div>
-          <div className="content-cards" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-            <article className="card c1" onClick={() => handleCardClick('SEO Analyst & Performance Marketer', 'Crux Creations • Sep 2025 - Present')}>
+          <div className="content-label">RESUME</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '60px', marginTop: '60px' }}>
 
-              <div className="card-thumb">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            {/* Education Column */}
+            <div className="reveal reveal-delay-1">
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '20px', color: 'var(--accent)', fontFamily: 'var(--font-heading)' }}>Education</h3>
+              <div className="timeline">
+                <div className="timeline-item" onClick={() => handleCardClick('MCA', 'Measi Institute of Information Technology • 2023 - 2025', 'First Class with Distinction (Estimated CGPA: 8.4)')}>
+                  <div className="timeline-dot"></div>
+                  <div className="timeline-content">
+                    <span className="timeline-date">2023 - 2025</span>
+                    <h4 className="timeline-title">Master of Computer Applications</h4>
+                    <span className="timeline-subtitle">Measi Institute of Information Technology</span>
+                  </div>
+                </div>
+                <div className="timeline-item" onClick={() => handleCardClick('B.Com (CA)', 'Shanmuga Industries • 2020 - 2023')}>
+                  <div className="timeline-dot"></div>
+                  <div className="timeline-content">
+                    <span className="timeline-date">2020 - 2023</span>
+                    <h4 className="timeline-title">B.Com (Computer Application)</h4>
+                    <span className="timeline-subtitle">Shanmuga Industries Arts & Science College</span>
+                  </div>
+                </div>
               </div>
-              <div className="card-title">SEO Analyst & Performance Marketer<br /><small>Crux Creations • Sep 2025 - Present</small></div>
-            </article>
-            <article className="card c2" onClick={() => handleCardClick('SEO Analyst Intern', 'Crux Creations • Jun 2025 - Aug 2025', null, '/assets/internship-letter.jpg')}>
+            </div>
 
-              <div className="card-thumb">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            {/* Experience Column */}
+            <div className="reveal reveal-delay-2">
+              <h3 style={{ fontSize: '1.5rem', marginBottom: '20px', color: 'var(--accent)', fontFamily: 'var(--font-heading)' }}>Experience</h3>
+              <div className="timeline">
+                <div className="timeline-item" onClick={() => handleCardClick('SEO Analyst & Performance Marketer', 'Crux Creations • Sep 2025 - Present')}>
+                  <div className="timeline-dot"></div>
+                  <div className="timeline-content">
+                    <span className="timeline-date">Sep 2025 - Present</span>
+                    <h4 className="timeline-title">SEO Analyst & Performance Marketer</h4>
+                    <span className="timeline-subtitle">Crux Creations</span>
+                  </div>
+                </div>
+                <div className="timeline-item" onClick={() => handleCardClick('SEO Analyst Intern', 'Crux Creations • Jun 2025 - Aug 2025', null, '/assets/internship-letter.jpg')}>
+                  <div className="timeline-dot"></div>
+                  <div className="timeline-content">
+                    <span className="timeline-date">Jun 2025 - Aug 2025</span>
+                    <h4 className="timeline-title">SEO Analyst Intern</h4>
+                    <span className="timeline-subtitle">Crux Creations</span>
+                  </div>
+                </div>
               </div>
-              <div className="card-title">SEO Analyst Intern<br /><small>Crux Creations • Jun 2025 - Aug 2025</small></div>
-            </article>
+            </div>
           </div>
-        </section>
+        </section >
 
         <section className="content-overview">
-          <div className="content-label">SKILLS</div>
+          <div className="content-label">SERVICES</div>
           <div className="content-cards" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
-            <article className="card c1" onClick={() => handleCardClick('SEO Analyst', 'On-Page • Off-Page • Parasite SEO')}>
+            <article className="card c1 reveal reveal-delay-1" onClick={() => handleCardClick('SEO Analyst', 'On-Page • Off-Page • Parasite SEO')}>
 
               <div className="card-thumb">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
               </div>
-              <div className="card-title">SEO Analyst<br /><small>On-Page • Off-Page • Parasite SEO</small></div>
+              <div className="card-title">SEO Optimization<br /><small>Ranking & Visibility</small></div>
             </article>
-            <article className="card c2" onClick={() => handleCardClick('Ads Performance', 'Meta Ads • Google Ads')}>
+            <article className="card c2 reveal reveal-delay-2" onClick={() => handleCardClick('Ads Performance', 'Meta Ads • Google Ads')}>
 
               <div className="card-thumb">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>
               </div>
-              <div className="card-title">Ads Performance<br /><small>Meta Ads • Google Ads</small></div>
+              <div className="card-title">Ad Campaigns<br /><small>Meta & Google Ads</small></div>
             </article>
-            <article className="card c3" onClick={() => handleCardClick('Data Analytics', 'GA4 • Conversion Tracking')}>
+            <article className="card c3 reveal reveal-delay-3" onClick={() => handleCardClick('Data Analytics', 'GA4 • Conversion Tracking')}>
 
               <div className="card-thumb">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
               </div>
-              <div className="card-title">Data Analytics<br /><small>GA4 • Conversion Tracking</small></div>
+              <div className="card-title">Analytics<br /><small>Data & Insights</small></div>
             </article>
           </div>
         </section>
 
-        <section className="seo-showcase" style={{ paddingTop: '0' }}>
-          <div className="case-studies">
-            <article className="case-study">
-              <h3>SEO & Performance Strategy</h3>
-              <div className="tags">
-                <span>Technical SEO</span>
-                <span>Link Building</span>
-                <span>Ad Optimization</span>
+        <section className="content-overview">
+          <div className="content-label">PORTFOLIO</div>
+          <div className="portfolio-grid">
+            <div className="portfolio-item reveal reveal-delay-1" onClick={() => handleCardClick('SEO Strategy', 'Organic Growth', 'Detailed SEO strategy breakdown...', 'https://placehold.co/800x600/1e293b/FFF?text=SEO+Project')}>
+              <img src="https://placehold.co/600x600/1e293b/FFF?text=SEO" alt="SEO Project" />
+              <div className="portfolio-overlay">
+                <h4>SEO Strategy</h4>
+                <span>Organic Growth</span>
               </div>
-              <p>Led full SEO execution including on-page optimization and off-page link building. Managed Meta and Google Ads with structured campaigns, refined targeting, and budget allocation.</p>
-              <ul className="achievements">
-                <li>Boosted keyword visibility and organic stability</li>
-                <li>Strengthened ad efficiency using data-driven targeting</li>
-                <li>Built landing pages and ad creatives using Canva</li>
-              </ul>
-            </article>
-
-            <article className="case-study">
-              <h3>Tools & Technologies</h3>
-              <div className="tags">
-                <span>Semrush</span>
-                <span>Ahrefs</span>
-                <span>Google Search Console</span>
+            </div>
+            <div className="portfolio-item reveal reveal-delay-2" onClick={() => handleCardClick('Ad Campaign', 'Meta Ads', 'Meta Ads campaign results...', 'https://placehold.co/800x600/1e293b/FFF?text=Ad+Campaign')}>
+              <img src="https://placehold.co/600x600/1e293b/FFF?text=Ads" alt="Ad Campaign" />
+              <div className="portfolio-overlay">
+                <h4>Ad Campaign</h4>
+                <span>Meta Ads</span>
               </div>
-              <p>Proficient in a wide range of digital marketing and analytics tools to drive performance and measure success.</p>
-              <ul className="achievements">
-                <li><strong>SEO:</strong> Semrush, Ahrefs, Ubersuggest, Keyword Planner</li>
-                <li><strong>Ads:</strong> Meta Ads Manager, Google Adsense</li>
-                <li><strong>Design:</strong> Canva, Graphic Design</li>
-              </ul>
-            </article>
+            </div>
+            <div className="portfolio-item reveal reveal-delay-3" onClick={() => handleCardClick('Analytics Dashboard', 'GA4 Setup', 'GA4 Setup and tracking...', 'https://placehold.co/800x600/1e293b/FFF?text=Analytics')}>
+              <img src="https://placehold.co/600x600/1e293b/FFF?text=Analytics" alt="Analytics" />
+              <div className="portfolio-overlay">
+                <h4>Analytics</h4>
+                <span>GA4 Setup</span>
+              </div>
+            </div>
+            <div className="portfolio-item reveal reveal-delay-4" onClick={() => handleCardClick('Content Marketing', 'Blog Growth', 'Content marketing strategy...', 'https://placehold.co/800x600/1e293b/FFF?text=Content')}>
+              <img src="https://placehold.co/600x600/1e293b/FFF?text=Content" alt="Content" />
+              <div className="portfolio-overlay">
+                <h4>Content Marketing</h4>
+                <span>Blog Growth</span>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -179,7 +235,7 @@ Degree: Master of Computer Applications
                 ['DESIGN', 'Canva & Creatives']
               ]
               return (
-                <article key={n} className={`card ${classes}`} onClick={() => handleCardClick(titles[n - 1][0], titles[n - 1][1])}>
+                <article key={n} className={`card ${classes} reveal reveal-delay-${n}`} onClick={() => handleCardClick(titles[n - 1][0], titles[n - 1][1])}>
 
                   <div className="card-thumb">
                     <svg viewBox="0 0 100 100"><rect width="100" height="100" fill="transparent" rx="8" /></svg>
@@ -211,29 +267,31 @@ Degree: Master of Computer Applications
           </div>
           <p>Built with ❤️ Fahath S </p>
         </footer>
-        {selectedCard && (
-          <div className="modal-overlay" onClick={() => setSelectedCard(null)}>
-            <div className={`modal-content ${selectedCard.description ? 'modal-wide' : ''}`} onClick={e => e.stopPropagation()}>
-              <button className="modal-close" onClick={() => setSelectedCard(null)}>×</button>
-              <h2>{selectedCard.title}</h2>
-              <p>{selectedCard.subtitle}</p>
-              <div className={`modal-body ${selectedCard.image ? 'has-image' : ''}`}>
-                <div className="modal-text">
-                  {selectedCard.description ? (
-                    <div style={{ whiteSpace: 'pre-line' }}>{selectedCard.description}</div>
-                  ) : (
-                    <p>More details about this project or skill would go here. This is a placeholder for the Batman-themed modal content.</p>
+        {
+          selectedCard && (
+            <div className="modal-overlay" onClick={() => setSelectedCard(null)}>
+              <div className={`modal-content ${selectedCard.description ? 'modal-wide' : ''}`} onClick={e => e.stopPropagation()}>
+                <button className="modal-close" onClick={() => setSelectedCard(null)}>×</button>
+                <h2>{selectedCard.title}</h2>
+                <p>{selectedCard.subtitle}</p>
+                <div className={`modal-body ${selectedCard.image ? 'has-image' : ''}`}>
+                  <div className="modal-text">
+                    {selectedCard.description ? (
+                      <div style={{ whiteSpace: 'pre-line' }}>{selectedCard.description}</div>
+                    ) : (
+                      <p>More details about this project or skill would go here. This is a placeholder for the Batman-themed modal content.</p>
+                    )}
+                  </div>
+                  {selectedCard.image && (
+                    <div className="modal-image">
+                      <img src={selectedCard.image} alt={selectedCard.title} />
+                    </div>
                   )}
                 </div>
-                {selectedCard.image && (
-                  <div className="modal-image">
-                    <img src={selectedCard.image} alt={selectedCard.title} />
-                  </div>
-                )}
               </div>
             </div>
-          </div>
-        )}
+          )
+        }
       </main >
     </>
   )
