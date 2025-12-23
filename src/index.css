@@ -35,9 +35,9 @@
     --bg-surface-hover: #2e3238;
     --text-main: #ffffff;
     --text-muted: #a0a0a0;
-    --accent: #d4af37;
-    /* Ober Gold */
-    --accent-glow: rgba(212, 175, 55, 0.3);
+    --accent: #4C8055;
+    /* Custom Green */
+    --accent-glow: rgba(76, 128, 85, 0.3);
     --border: #33363d;
     --font-heading: 'Playfair Display', serif;
     --font-body: 'Rubik', sans-serif;
@@ -45,14 +45,14 @@
 
 [data-theme="light"] {
     /* Light Theme (Corporate/Clean) */
-    --bg-body: #ffffff;
+    --bg-body: #FFFFF0;
     --bg-surface: #f4f6f8;
     --bg-surface-hover: #e9ecef;
     --text-main: #2d3436;
     --text-muted: #636e72;
-    --accent: #0984e3;
-    /* Corporate Blue */
-    --accent-glow: rgba(9, 132, 227, 0.3);
+    --accent: #4C8055;
+    /* Custom Green */
+    --accent-glow: rgba(76, 128, 85, 0.3);
     --border: #dfe6e9;
 }
 
@@ -201,31 +201,7 @@ a:hover {
     font-weight: 300;
 }
 
-.hero-details {
-    margin-top: 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    border-top: 1px solid var(--border);
-    padding-top: 30px;
-    width: 100%;
-}
 
-.hero-details div {
-    display: flex;
-    align-items: center;
-    font-size: 1rem;
-    color: var(--text-main);
-    font-weight: 600;
-}
-
-.hero-details span {
-    color: var(--text-muted);
-    font-weight: 400;
-    width: 120px;
-    display: inline-block;
-    font-family: var(--font-body);
-}
 
 /* --- About Section --- */
 .section-title {
@@ -429,6 +405,11 @@ a:hover {
     color: var(--accent);
     opacity: 0.1;
     transform: translateX(-50%) scale(1.02);
+}
+
+[data-theme="light"] .content-label {
+    opacity: 0.1;
+    color: rgba(0, 0, 0, 0.8);
 }
 
 .content-cards {

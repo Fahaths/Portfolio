@@ -1,7 +1,41 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 export default function App() {
   const [selectedCard, setSelectedCard] = useState(null)
+  const form = useRef()
+
+  const sendEmail = async (e) => {
+    e.preventDefault()
+
+    const formData = new FormData(form.current)
+    const data = {
+      name: formData.get('user_name'),
+      email: formData.get('user_email'),
+      subject: formData.get('subject'),
+      message: formData.get('message')
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+
+      if (response.ok) {
+        alert('Message Sent!')
+        form.current.reset()
+      } else {
+        const result = await response.json()
+        alert('Failed: ' + (result.error || 'Unknown error'))
+      }
+    } catch (error) {
+      alert('Error: ' + error.message)
+    }
+  }
+
   const [theme, setTheme] = useState('dark')
 
   useEffect(() => {
@@ -17,7 +51,7 @@ export default function App() {
   }
 
   useEffect(() => {
-    const selector = '.card, .intro-right, .hero-illustration, .hero-image'
+    const selector = '.card, .intro-right, .hero-illustration, .hero-image, .contact-container'
     const elems = Array.from(document.querySelectorAll(selector))
     elems.forEach(el => el.classList.add('reveal'))
 
@@ -73,10 +107,7 @@ export default function App() {
             SEO and performance marketer blending organic optimisation with paid traffic strategy. Strong at breaking
             down data, improving ranking momentum, and tightening ad performance.
           </p>
-          <div className="hero-details">
-            <div><span>Born in</span>India</div>
-            <div><span>Email</span>fahaths.official@gmail.com</div>
-          </div>
+
         </div>
         <div className="hero-image-container">
           <img
@@ -96,13 +127,13 @@ export default function App() {
             <h3 className="section-title">About Me</h3>
             <div className="about-text">
               <p>
-                My name is Fahath S. I have been working in SEO and Performance Marketing since 2023. I like creating data-driven strategies that actually convert.
+                My name is Fahath S. I have been working in SEO and Performance Marketing. I like creating data-driven strategies that actually convert.
               </p>
               <p>
                 I specialize in breaking down complex data into actionable insights, improving ranking momentum on Google, and tightening ad performance on Meta. My workflow blends technical SEO precision with creative ad execution.
               </p>
             </div>
-            <button className="btn-primary" onClick={() => window.location.href = 'mailto:fahaths.official@gmail.com'}>
+            <button className="btn-primary" onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}>
               Contact Me
             </button>
           </div>
@@ -162,8 +193,8 @@ export default function App() {
         </section >
 
         <section className="content-overview">
-          <div className="content-label">SERVICES</div>
-          <div className="content-cards" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+          <div className="content-label">Works</div>
+          <div className="content-cards" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
             <article className="card c1 reveal reveal-delay-1" onClick={() => handleCardClick('SEO Analyst', 'On-Page • Off-Page • Parasite SEO')}>
 
               <div className="card-thumb">
@@ -178,72 +209,48 @@ export default function App() {
               </div>
               <div className="card-title">Ad Campaigns<br /><small>Meta & Google Ads</small></div>
             </article>
-            <article className="card c3 reveal reveal-delay-3" onClick={() => handleCardClick('Data Analytics', 'GA4 • Conversion Tracking')}>
-
-              <div className="card-thumb">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-              </div>
-              <div className="card-title">Analytics<br /><small>Data & Insights</small></div>
-            </article>
           </div>
         </section>
 
-        <section className="content-overview">
-          <div className="content-label">PORTFOLIO</div>
-          <div className="portfolio-grid">
-            <div className="portfolio-item reveal reveal-delay-1" onClick={() => handleCardClick('SEO Strategy', 'Organic Growth', 'Detailed SEO strategy breakdown...', 'https://placehold.co/800x600/1e293b/FFF?text=SEO+Project')}>
-              <img src="https://placehold.co/600x600/1e293b/FFF?text=SEO" alt="SEO Project" />
-              <div className="portfolio-overlay">
-                <h4>SEO Strategy</h4>
-                <span>Organic Growth</span>
-              </div>
-            </div>
-            <div className="portfolio-item reveal reveal-delay-2" onClick={() => handleCardClick('Ad Campaign', 'Meta Ads', 'Meta Ads campaign results...', 'https://placehold.co/800x600/1e293b/FFF?text=Ad+Campaign')}>
-              <img src="https://placehold.co/600x600/1e293b/FFF?text=Ads" alt="Ad Campaign" />
-              <div className="portfolio-overlay">
-                <h4>Ad Campaign</h4>
-                <span>Meta Ads</span>
-              </div>
-            </div>
-            <div className="portfolio-item reveal reveal-delay-3" onClick={() => handleCardClick('Analytics Dashboard', 'GA4 Setup', 'GA4 Setup and tracking...', 'https://placehold.co/800x600/1e293b/FFF?text=Analytics')}>
-              <img src="https://placehold.co/600x600/1e293b/FFF?text=Analytics" alt="Analytics" />
-              <div className="portfolio-overlay">
-                <h4>Analytics</h4>
-                <span>GA4 Setup</span>
-              </div>
-            </div>
-            <div className="portfolio-item reveal reveal-delay-4" onClick={() => handleCardClick('Content Marketing', 'Blog Growth', 'Content marketing strategy...', 'https://placehold.co/800x600/1e293b/FFF?text=Content')}>
-              <img src="https://placehold.co/600x600/1e293b/FFF?text=Content" alt="Content" />
-              <div className="portfolio-overlay">
-                <h4>Content Marketing</h4>
-                <span>Blog Growth</span>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        <section className="content-overview">
-          <div className="content-label">TOOLS</div>
-          <div className="content-cards">
-            {[1, 2, 3, 4, 5].map((n) => {
-              const classes = ['c1', 'c2', 'c3', 'c4', 'c5'][n - 1]
-              const titles = [
-                ['SEO', 'Strategy & Optimization'],
-                ['META ADS', 'Campaign Management'],
-                ['GOOGLE ADS', 'PPC & Display'],
-                ['ANALYTICS', 'GA4 & Tracking'],
-                ['DESIGN', 'Canva & Creatives']
-              ]
-              return (
-                <article key={n} className={`card ${classes} reveal reveal-delay-${n}`} onClick={() => handleCardClick(titles[n - 1][0], titles[n - 1][1])}>
 
-                  <div className="card-thumb">
-                    <svg viewBox="0 0 100 100"><rect width="100" height="100" fill="transparent" rx="8" /></svg>
-                  </div>
-                  <div className="card-title">{titles[n - 1][0]}<br /><small>{titles[n - 1][1]}</small></div>
-                </article>
-              )
-            })}
+        {/* --- Contact Section --- */}
+        <section className="content-overview" id="contact">
+          <div className="content-label">CONTACT</div>
+          <div className="contact-container reveal">
+            <div className="contact-info">
+              <h3>Get In Touch</h3>
+              <p>
+                Ready to improve your search rankings or scale your ad campaigns? Let's discuss how we can drive real growth for your business.
+              </p>
+              <div className="contact-item">
+                <span className="label">Location</span>
+                <span className="value">Chennai, India</span>
+              </div>
+              <div className="contact-item">
+                <span className="label">Email</span>
+                <a href="mailto:fahaths.official@gmail.com" className="value">fahaths.official@gmail.com</a>
+              </div>
+              <div className="contact-item">
+                <span className="label">Phone</span>
+                <a href="tel:+919840031124" className="value">+91 98400 31124</a>
+              </div>
+            </div>
+            <form className="contact-form" ref={form} onSubmit={sendEmail}>
+              <div className="form-group">
+                <input type="text" name="user_name" placeholder="Name" required />
+              </div>
+              <div className="form-group">
+                <input type="email" name="user_email" placeholder="Email" required />
+              </div>
+              <div className="form-group">
+                <input type="text" name="subject" placeholder="Subject" />
+              </div>
+              <div className="form-group">
+                <textarea name="message" rows="5" placeholder="Message" required></textarea>
+              </div>
+              <button type="submit" className="btn-primary">Send Message</button>
+            </form>
           </div>
         </section>
 
@@ -264,8 +271,11 @@ export default function App() {
             <a href="https://www.fiverr.com/users/fahath_s/seller_dashboard" target="_blank" rel="noopener noreferrer" aria-label="Fiverr">
               <div className="fiverr-icon"></div>
             </a>
+            <a href="https://fahaththewriter.blogspot.com/" target="_blank" rel="noopener noreferrer" aria-label="Blogger">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="24" height="24" fill="currentColor"><path d="M446.6 222.7c-1.8-8-6.8-15.4-12.5-18.5-1.8-1-13-2.2-25-2.7-20.1-.9-22.3-1.3-28.7-5-10.1-5.9-12.8-12.3-12.9-29.5-.1-33-13.8-63.7-40.9-91.3-19.3-19.7-40.9-33-65.5-40.5-5.9-1.8-19.1-2.4-63.3-2.9-69.4-.8-84.8.6-108.4 10C45.9 59.5 14.7 96.1 3.3 142.9 1.2 151.7.7 165.8.2 246.8c-.6 101.5.1 116.4 6.4 136.5 15.6 49.6 59.9 86.3 104.4 94.3 14.8 2.7 197.3 3.3 216 .8 32.5-4.4 58-17.5 81.9-41.9 17.3-17.7 28.1-36.8 35.2-62.1 4.9-17.6 4.5-142.8 2.5-151.7zm-322.1-63.6c7.8-7.9 10-8.2 58.8-8.2 43.9 0 45.4.1 51.8 3.4 9.3 4.7 13.4 11.3 13.4 21.9 0 9.5-3.8 16.2-12.3 21.6-4.6 2.9-7.3 3.1-50.3 3.3-26.5.2-47.7-.4-50.8-1.2-16.6-4.7-22.8-28.5-10.6-40.8zm191.8 199.8l-14.9 2.4-77.5.9c-68.1.8-87.3-.4-90.9-2-7.1-3.1-13.8-11.7-14.9-19.4-1.1-7.3 2.6-17.3 8.2-22.4 7.1-6.4 10.2-6.6 97.3-6.7 89.6-.1 89.1-.1 97.6 7.8 12.1 11.3 9.5 31.2-4.9 39.4z" /></svg>
+            </a>
           </div>
-          <p>Built with ❤️ Fahath S </p>
+          <p>Built with Fahath S </p>
         </footer>
         {
           selectedCard && (
