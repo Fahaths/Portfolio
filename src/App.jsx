@@ -1,38 +1,60 @@
 import React, { useEffect, useState, useRef } from 'react'
+import emailjs from '@emailjs/browser'
 
 export default function App() {
   const [selectedCard, setSelectedCard] = useState(null)
   const form = useRef()
 
-  const sendEmail = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
 
-    const formData = new FormData(form.current)
-    const data = {
-      name: formData.get('user_name'),
-      email: formData.get('user_email'),
-      subject: formData.get('subject'),
-      message: formData.get('message')
+    // 1. EmailJS Configuration
+    const SERVICE_ID = 'YOUR_SERVICE_ID'
+    const TEMPLATE_ID = 'YOUR_TEMPLATE_ID'
+    const PUBLIC_KEY = 'YOUR_PUBLIC_KEY'
+
+    // 2. Google Sheets Configuration
+    const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL'
+
+    // Validate configuration
+    if (SERVICE_ID === 'YOUR_SERVICE_ID' && GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL') {
+      alert('Please configure EmailJS and/or Google Sheets URL in App.jsx')
+      return
     }
 
-    try {
-      const response = await fetch('http://localhost:5000/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
+    // Prepare data
+    const formData = new FormData(form.current)
+    const data = Object.fromEntries(formData.entries())
 
-      if (response.ok) {
-        alert('Message Sent!')
+    // A. Send to Google Sheets
+    if (GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_SCRIPT_URL') {
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        mode: 'no-cors' // Important for Google Apps Script
+      }).catch(err => console.error('Sheet Error:', err))
+    }
+
+    // B. Send via EmailJS (if configured)
+    if (SERVICE_ID !== 'YOUR_SERVICE_ID') {
+      emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form.current, {
+        publicKey: PUBLIC_KEY,
+      })
+        .then(
+          () => {
+            alert('Message Sent Successfully!')
+            form.current.reset()
+          },
+          (error) => {
+            alert('Failed to send email: ' + error.text)
+          },
+        )
+    } else {
+      // If only using Sheets and valid
+      if (GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_SCRIPT_URL') {
+        alert('Message Saved to Sheets!')
         form.current.reset()
-      } else {
-        const result = await response.json()
-        alert('Failed: ' + (result.error || 'Unknown error'))
       }
-    } catch (error) {
-      alert('Error: ' + error.message)
     }
   }
 
@@ -111,7 +133,7 @@ export default function App() {
         </div>
         <div className="hero-image-container">
           <img
-            src="https://placehold.co/600x800/25282e/FFF?text=Fahath"
+            src="/hero-profile.jpg"
             alt="Fahath S"
             className="hero-image reveal"
           />
@@ -236,7 +258,7 @@ export default function App() {
                 <a href="tel:+919840031124" className="value">+91 98400 31124</a>
               </div>
             </div>
-            <form className="contact-form" ref={form} onSubmit={sendEmail}>
+            <form className="contact-form" ref={form} onSubmit={handleSubmit}>
               <div className="form-group">
                 <input type="text" name="user_name" placeholder="Name" required />
               </div>

@@ -261,27 +261,23 @@ a:hover {
 
 .hero-image-container {
     position: relative;
-    height: 100%;
+    height: 80%;
     display: flex;
     align-items: flex-end;
     /* Align image to bottom */
     justify-content: center;
-    z-index: 1;
+    z-index: 2;
 }
 
 .hero-image {
     transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
     will-change: opacity, transform;
-}
-
-.reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Staggered Delays */
-.reveal-delay-1 {
-    transition-delay: 100ms;
+    max-width: 400px;
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px #33c297fa;
+    margin-top: 100px;
 }
 
 .reveal-delay-2 {
