@@ -3,7 +3,17 @@ import emailjs from '@emailjs/browser'
 
 export default function App() {
   const [selectedCard, setSelectedCard] = useState(null)
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const form = useRef()
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -58,15 +68,9 @@ export default function App() {
     }
   }
 
-  const [theme, setTheme] = useState('dark')
 
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-  }, [theme])
 
-  const toggleTheme = () => {
-    setTheme(curr => curr === 'dark' ? 'light' : 'dark')
-  }
+
 
   const handleCardClick = (title, subtitle, description = null, image = null) => {
     setSelectedCard({ title, subtitle, description, image })
@@ -92,51 +96,71 @@ export default function App() {
 
   return (
     <>
-      <nav className="navbar">
-        <div className="logo">Faa</div>
-        <button
-          onClick={toggleTheme}
-          className="theme-toggle"
-          aria-label="Toggle Theme"
-        >
-          {theme === 'dark' ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-sun">
-              <circle cx="12" cy="12" r="5"></circle>
-              <line x1="12" y1="1" x2="12" y2="3"></line>
-              <line x1="12" y1="21" x2="12" y2="23"></line>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-              <line x1="1" y1="12" x2="3" y2="12"></line>
-              <line x1="21" y1="12" x2="23" y2="12"></line>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-moon">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-          )}
+      <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
+        <div className="logo">
+          <img src="/logo-v2.png" alt="Faa" className="logo-img" />
+        </div>
+        <div className="nav-links">
+          <a href="#about" onClick={(e) => { e.preventDefault(); document.getElementById('about').scrollIntoView({ behavior: 'smooth' }) }}>About</a>
+          <a href="#resume" onClick={(e) => { e.preventDefault(); document.querySelector('.content-overview:nth-of-type(2)').scrollIntoView({ behavior: 'smooth' }) }}>Resume</a>
+          <a href="#works" onClick={(e) => { e.preventDefault(); document.querySelector('.content-overview:nth-of-type(3)').scrollIntoView({ behavior: 'smooth' }) }}>Works</a>
+        </div>
+        <button className="nav-cta" onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}>
+          Contact Me
         </button>
+
+        {/* Hamburger Icon */}
+        <div className="nav-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </div>
+
+        {/* Mobile Menu Overlay */}
+        <div className={`mobile-menu ${mobileMenuOpen ? 'active' : ''}`}>
+          <div className="mobile-menu-logo">
+            <img src="/logo-v2.png" alt="Faa" />
+          </div>
+          <div className="mobile-menu-close" onClick={() => setMobileMenuOpen(false)}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </div>
+          <div className="mobile-menu-links">
+            <a href="#about" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); document.getElementById('about').scrollIntoView({ behavior: 'smooth' }) }}>About</a>
+            <a href="#resume" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); document.querySelector('.content-overview:nth-of-type(2)').scrollIntoView({ behavior: 'smooth' }) }}>Resume</a>
+            <a href="#works" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); document.querySelector('.content-overview:nth-of-type(3)').scrollIntoView({ behavior: 'smooth' }) }}>Works</a>
+            <button className="nav-cta mobile-cta" onClick={() => { setMobileMenuOpen(false); document.getElementById('contact').scrollIntoView({ behavior: 'smooth' }) }}>
+              Contact Me
+            </button>
+          </div>
+        </div>
       </nav>
 
       <header className="hero">
-        <div className="hero-content">
-          <div className="hero-subtitle-top">SEO Analyst and Performance Marketer</div>
-          <h1 className="hero-title">
-            Fahath S
-          </h1>
-          <p className="hero-description">
-            SEO and performance marketer blending organic optimisation with paid traffic strategy. Strong at breaking
-            down data, improving ranking momentum, and tightening ad performance.
-          </p>
-
+        <div className="hero-frame-wrapper">
+          <div className="hero-backdrop"></div>
+          <div className="hero-frame-border">
+            <img
+              src="/hero-profile-v3.png"
+              alt="Fahath S"
+              className="hero-image reveal"
+              style={{ display: 'block' }}
+            />
+          </div>
         </div>
-        <div className="hero-image-container">
-          <img
-            src="/hero-profile.jpg"
-            alt="Fahath S"
-            className="hero-image reveal"
-          />
+        <div className="hero-content">
+          <h1 className="hero-main-title">
+            Performance Marketer
+          </h1>
+          <h1 className="hero-subtitle-role">
+            & SEO
+          </h1>
+          <div className="hero-divider"></div>
+          <div className="hero-signature">Fahath S</div>
         </div>
       </header>
 
