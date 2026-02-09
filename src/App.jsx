@@ -1,80 +1,58 @@
+
 import React, { useEffect, useState, useRef } from 'react'
+import Navbar from './Navbar'
 import emailjs from '@emailjs/browser'
+
+const detailsData = {
+  'measi': {
+    title: 'Master of Computer Applications',
+    subtitle: 'Measi Institute of Information Technology',
+    link: 'https://measiit.edu.in',
+    date: '2023 - 2025',
+    description: `
+      Completed Master of Computer Applications with First Class Distinction.
+      Focused on software development, data structures, and web technologies.
+      Gained practical experience through various academic projects.
+    `
+  },
+  'shanmuga': {
+    title: 'B.Com (Computer Application)',
+    subtitle: 'Shanmuga Industries Arts & Science College',
+    link: 'http://www.shanmugacollege.edu.in',
+    date: '2020 - 2023',
+    description: `
+      Completed Bachelor of Commerce in Computer Applications.
+      Built a strong foundation in business management and computer applications.
+    `
+  },
+  'crux-marketer': {
+    title: 'SEO Analyst & Performance Marketer',
+    subtitle: 'Crux Creations',
+    link: 'https://cruxcreations.com',
+    date: 'Sep 2025 - Present',
+    description: `
+      Leading SEO strategies and performance marketing campaigns.
+      Optimizing website visibility and improved search engine rankings.
+      Managing ad campaigns on Meta and Google Ads to drive conversions.
+    `
+  },
+  'crux-intern': {
+    title: 'SEO Analyst Intern',
+    subtitle: 'Crux Creations',
+    link: 'https://cruxcreations.com',
+    date: 'Jun 2025 - Aug 2025',
+    description: `
+      Assisted in on-page and off-page SEO activities.
+      Conducted keyword research and competitor analysis.
+      Learned the fundamentals of performance marketing.
+    `
+  }
+}
 
 export default function App() {
   const [selectedCard, setSelectedCard] = useState(null)
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [visited, setVisited] = useState(false) // Restore if needed, or just selectedCard
   const form = useRef()
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-
-    // 1. EmailJS Configuration
-    const SERVICE_ID = 'YOUR_SERVICE_ID'
-    const TEMPLATE_ID = 'YOUR_TEMPLATE_ID'
-    const PUBLIC_KEY = 'YOUR_PUBLIC_KEY'
-
-    // 2. Google Sheets Configuration
-    const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL'
-
-    // Validate configuration
-    if (SERVICE_ID === 'YOUR_SERVICE_ID' && GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_URL') {
-      alert('Please configure EmailJS and/or Google Sheets URL in App.jsx')
-      return
-    }
-
-    // Prepare data
-    const formData = new FormData(form.current)
-    const data = Object.fromEntries(formData.entries())
-
-    // A. Send to Google Sheets
-    if (GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_SCRIPT_URL') {
-      fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        mode: 'no-cors' // Important for Google Apps Script
-      }).catch(err => console.error('Sheet Error:', err))
-    }
-
-    // B. Send via EmailJS (if configured)
-    if (SERVICE_ID !== 'YOUR_SERVICE_ID') {
-      emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form.current, {
-        publicKey: PUBLIC_KEY,
-      })
-        .then(
-          () => {
-            alert('Message Sent Successfully!')
-            form.current.reset()
-          },
-          (error) => {
-            alert('Failed to send email: ' + error.text)
-          },
-        )
-    } else {
-      // If only using Sheets and valid
-      if (GOOGLE_SCRIPT_URL !== 'YOUR_GOOGLE_SCRIPT_URL') {
-        alert('Message Saved to Sheets!')
-        form.current.reset()
-      }
-    }
-  }
-
-
-
-
-
-  const handleCardClick = (title, subtitle, description = null, image = null) => {
-    setSelectedCard({ title, subtitle, description, image })
-  }
 
   useEffect(() => {
     const selector = '.card, .intro-right, .hero-illustration, .hero-image, .contact-container'
@@ -94,51 +72,42 @@ export default function App() {
     return () => io.disconnect()
   }, [])
 
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    // EmailJS Configuration
+    const SERVICE_ID = 'service_yyrvdgc'
+    const TEMPLATE_ID = 'template_48iy5z5'
+    const PUBLIC_KEY = 'XSvrzesvssLKA5CWJ'
+
+    // Validate configuration
+    if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
+      alert('Please configure EmailJS credentials in App.jsx')
+      return
+    }
+
+    // Send via EmailJS
+    emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form.current, {
+      publicKey: PUBLIC_KEY,
+    })
+      .then(
+        () => {
+          alert('Message Sent Successfully!')
+          form.current.reset()
+        },
+        (error) => {
+          alert('Failed to send email: ' + error.text)
+        },
+      )
+  }
+
+  const handleCardClick = (title, subtitle, description = null, image = null, link = null) => {
+    setSelectedCard({ title, subtitle, description, image, link })
+  }
+
   return (
     <>
-      <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
-        <div className="logo">
-          <img src="/logo-v2.png" alt="Faa" className="logo-img" />
-        </div>
-        <div className="nav-links">
-          <a href="#about" onClick={(e) => { e.preventDefault(); document.getElementById('about').scrollIntoView({ behavior: 'smooth' }) }}>About</a>
-          <a href="#resume" onClick={(e) => { e.preventDefault(); document.querySelector('.content-overview:nth-of-type(2)').scrollIntoView({ behavior: 'smooth' }) }}>Resume</a>
-          <a href="#works" onClick={(e) => { e.preventDefault(); document.querySelector('.content-overview:nth-of-type(3)').scrollIntoView({ behavior: 'smooth' }) }}>Works</a>
-        </div>
-        <button className="nav-cta" onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}>
-          Contact Me
-        </button>
-
-        {/* Hamburger Icon */}
-        <div className="nav-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </div>
-
-        {/* Mobile Menu Overlay */}
-        <div className={`mobile-menu ${mobileMenuOpen ? 'active' : ''}`}>
-          <div className="mobile-menu-logo">
-            <img src="/logo-v2.png" alt="Faa" />
-          </div>
-          <div className="mobile-menu-close" onClick={() => setMobileMenuOpen(false)}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </div>
-          <div className="mobile-menu-links">
-            <a href="#about" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); document.getElementById('about').scrollIntoView({ behavior: 'smooth' }) }}>About</a>
-            <a href="#resume" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); document.querySelector('.content-overview:nth-of-type(2)').scrollIntoView({ behavior: 'smooth' }) }}>Resume</a>
-            <a href="#works" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); document.querySelector('.content-overview:nth-of-type(3)').scrollIntoView({ behavior: 'smooth' }) }}>Works</a>
-            <button className="nav-cta mobile-cta" onClick={() => { setMobileMenuOpen(false); document.getElementById('contact').scrollIntoView({ behavior: 'smooth' }) }}>
-              Contact Me
-            </button>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       <header className="hero">
         <div className="hero-frame-wrapper">
@@ -182,6 +151,9 @@ export default function App() {
             <button className="btn-primary" onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}>
               Contact Me
             </button>
+            <a href="/assets/Resume.pdf" download className="btn-filled" style={{ marginLeft: '1rem' }}>
+              Download CV
+            </a>
           </div>
         </section>
 
@@ -194,20 +166,24 @@ export default function App() {
             <div className="reveal reveal-delay-1">
               <h3 style={{ fontSize: '1.5rem', marginBottom: '20px', color: 'var(--accent)', fontFamily: 'var(--font-heading)' }}>Education</h3>
               <div className="timeline">
-                <div className="timeline-item" onClick={() => handleCardClick('MCA', 'Measi Institute of Information Technology • 2023 - 2025', 'First Class with Distinction (Estimated CGPA: 8.4)')}>
+                <div className="timeline-item">
                   <div className="timeline-dot"></div>
                   <div className="timeline-content">
                     <span className="timeline-date">2023 - 2025</span>
                     <h4 className="timeline-title">Master of Computer Applications</h4>
                     <span className="timeline-subtitle">Measi Institute of Information Technology</span>
+                    <p className="timeline-description">{detailsData.measi.description}</p>
+                    <a href={detailsData.measi.link} target="_blank" rel="noopener noreferrer" className="timeline-link">Visit Website</a>
                   </div>
                 </div>
-                <div className="timeline-item" onClick={() => handleCardClick('B.Com (CA)', 'Shanmuga Industries • 2020 - 2023')}>
+                <div className="timeline-item" onClick={() => handleCardClick(detailsData.shanmuga.title, detailsData.shanmuga.subtitle, detailsData.shanmuga.description, null, detailsData.shanmuga.link)}>
                   <div className="timeline-dot"></div>
                   <div className="timeline-content">
                     <span className="timeline-date">2020 - 2023</span>
                     <h4 className="timeline-title">B.Com (Computer Application)</h4>
                     <span className="timeline-subtitle">Shanmuga Industries Arts & Science College</span>
+                    <p className="timeline-description">{detailsData.shanmuga.description}</p>
+                    <a href={detailsData.shanmuga.link} target="_blank" rel="noopener noreferrer" className="timeline-link">Visit Website</a>
                   </div>
                 </div>
               </div>
@@ -217,20 +193,24 @@ export default function App() {
             <div className="reveal reveal-delay-2">
               <h3 style={{ fontSize: '1.5rem', marginBottom: '20px', color: 'var(--accent)', fontFamily: 'var(--font-heading)' }}>Experience</h3>
               <div className="timeline">
-                <div className="timeline-item" onClick={() => handleCardClick('SEO Analyst & Performance Marketer', 'Crux Creations • Sep 2025 - Present')}>
+                <div className="timeline-item" onClick={() => handleCardClick(detailsData['crux-marketer'].title, detailsData['crux-marketer'].subtitle, detailsData['crux-marketer'].description, null, detailsData['crux-marketer'].link)}>
                   <div className="timeline-dot"></div>
                   <div className="timeline-content">
                     <span className="timeline-date">Sep 2025 - Present</span>
                     <h4 className="timeline-title">SEO Analyst & Performance Marketer</h4>
                     <span className="timeline-subtitle">Crux Creations</span>
+                    <p className="timeline-description">{detailsData['crux-marketer'].description}</p>
+                    <a href={detailsData['crux-marketer'].link} target="_blank" rel="noopener noreferrer" className="timeline-link">Visit Website</a>
                   </div>
                 </div>
-                <div className="timeline-item" onClick={() => handleCardClick('SEO Analyst Intern', 'Crux Creations • Jun 2025 - Aug 2025', null, '/assets/internship-letter.jpg')}>
+                <div className="timeline-item" onClick={() => handleCardClick(detailsData['crux-intern'].title, detailsData['crux-intern'].subtitle, detailsData['crux-intern'].description, null, detailsData['crux-intern'].link)}>
                   <div className="timeline-dot"></div>
                   <div className="timeline-content">
                     <span className="timeline-date">Jun 2025 - Aug 2025</span>
                     <h4 className="timeline-title">SEO Analyst Intern</h4>
                     <span className="timeline-subtitle">Crux Creations</span>
+                    <p className="timeline-description">{detailsData['crux-intern'].description}</p>
+                    <a href={detailsData['crux-intern'].link} target="_blank" rel="noopener noreferrer" className="timeline-link">Visit Website</a>
                   </div>
                 </div>
               </div>
@@ -239,21 +219,19 @@ export default function App() {
         </section >
 
         <section className="content-overview">
-          <div className="content-label">Works</div>
+          <div className="content-label">WORKS</div>
           <div className="content-cards" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-            <article className="card c1 reveal reveal-delay-1" onClick={() => handleCardClick('SEO Analyst', 'On-Page • Off-Page • Parasite SEO')}>
-
+            <article className="card c1 reveal reveal-delay-1">
               <div className="card-thumb">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
               </div>
-              <div className="card-title">SEO Optimization<br /><small>Ranking & Visibility</small></div>
+              <div className="card-title">SEO Optimization<br /><small>On-Page • Off-Page • Parasite SEO</small></div>
             </article>
-            <article className="card c2 reveal reveal-delay-2" onClick={() => handleCardClick('Ads Performance', 'Meta Ads • Google Ads')}>
-
+            <article className="card c2 reveal reveal-delay-2">
               <div className="card-thumb">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>
               </div>
-              <div className="card-title">Ad Campaigns<br /><small>Meta & Google Ads</small></div>
+              <div className="card-title">Ad Campaigns<br /><small>Meta Ads • Google Ads</small></div>
             </article>
           </div>
         </section>
@@ -336,6 +314,14 @@ export default function App() {
                       <div style={{ whiteSpace: 'pre-line' }}>{selectedCard.description}</div>
                     ) : (
                       <p>More details about this project or skill would go here. This is a placeholder for the Batman-themed modal content.</p>
+                    )}
+
+                    {selectedCard.link && (
+                      <div style={{ marginTop: '20px' }}>
+                        <a href={selectedCard.link} target="_blank" rel="noopener noreferrer" className="btn-filled">
+                          Visit Official Website
+                        </a>
+                      </div>
                     )}
                   </div>
                   {selectedCard.image && (
