@@ -160,57 +160,71 @@ export default function App() {
         {/* --- Resume Section --- */}
         <section className="content-overview">
           <div className="content-label">RESUME</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '60px', marginTop: '60px' }}>
-
-            {/* Education Column */}
-            <div className="reveal reveal-delay-1">
-              <h3 style={{ fontSize: '1.5rem', marginBottom: '20px', color: 'var(--accent)', fontFamily: 'var(--font-heading)' }}>Education</h3>
-              <div className="timeline">
-                <div className="timeline-item">
-                  <div className="timeline-dot"></div>
-                  <div className="timeline-content">
-                    <span className="timeline-date">2023 - 2025</span>
-                    <h4 className="timeline-title">Master of Computer Applications</h4>
-                    <span className="timeline-subtitle">Measi Institute of Information Technology</span>
-                    <p className="timeline-description">{detailsData.measi.description}</p>
-                    <a href={detailsData.measi.link} target="_blank" rel="noopener noreferrer" className="timeline-link">Visit Website</a>
+          <div className="edu-exp-section reveal" style={{ margin: '60px auto 0', maxWidth: '1000px' }}>
+            <div className="edu-exp-cols">
+              {/* Education Column */}
+              <div>
+                <div className="col-head">
+                  <span className="col-title">Education</span>
+                  <span className="col-index">/ 01</span>
+                </div>
+                <div className="entry" onClick={() => handleCardClick(detailsData.measi.title, detailsData.measi.subtitle, detailsData.measi.description, null, detailsData.measi.link)}>
+                  <div className="entry-year">2023<br/>2025</div>
+                  <div>
+                    <p className="entry-title">{detailsData.measi.title}</p>
+                    <p className="entry-place">{detailsData.measi.subtitle}</p>
+                    <div className="entry-points">
+                      <span className="entry-point">Completed MCA with First Class Distinction.</span>
+                      <span className="entry-point">Focused on software development, data structures, and web technologies.</span>
+                      <span className="entry-point">Gained practical experience through various academic projects.</span>
+                    </div>
+                    <a href={detailsData.measi.link} target="_blank" rel="noopener noreferrer" className="entry-link" onClick={e => e.stopPropagation()}>Visit Website</a>
                   </div>
                 </div>
-                <div className="timeline-item" onClick={() => handleCardClick(detailsData.shanmuga.title, detailsData.shanmuga.subtitle, detailsData.shanmuga.description, null, detailsData.shanmuga.link)}>
-                  <div className="timeline-dot"></div>
-                  <div className="timeline-content">
-                    <span className="timeline-date">2020 - 2023</span>
-                    <h4 className="timeline-title">B.Com (Computer Application)</h4>
-                    <span className="timeline-subtitle">Shanmuga Industries Arts & Science College</span>
-                    <p className="timeline-description">{detailsData.shanmuga.description}</p>
-                    <a href={detailsData.shanmuga.link} target="_blank" rel="noopener noreferrer" className="timeline-link">Visit Website</a>
+                <div className="entry" onClick={() => handleCardClick(detailsData.shanmuga.title, detailsData.shanmuga.subtitle, detailsData.shanmuga.description, null, detailsData.shanmuga.link)}>
+                  <div className="entry-year">2020<br/>2023</div>
+                  <div>
+                    <p className="entry-title">{detailsData.shanmuga.title}</p>
+                    <p className="entry-place">{detailsData.shanmuga.subtitle}</p>
+                    <div className="entry-points">
+                      <span className="entry-point">Completed Bachelor of Commerce in Computer Applications.</span>
+                      <span className="entry-point">Built a strong foundation in business management and computer applications.</span>
+                    </div>
+                    <a href={detailsData.shanmuga.link} target="_blank" rel="noopener noreferrer" className="entry-link" onClick={e => e.stopPropagation()}>Visit Website</a>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Experience Column */}
-            <div className="reveal reveal-delay-2">
-              <h3 style={{ fontSize: '1.5rem', marginBottom: '20px', color: 'var(--accent)', fontFamily: 'var(--font-heading)' }}>Experience</h3>
-              <div className="timeline">
-                <div className="timeline-item" onClick={() => handleCardClick(detailsData['crux-marketer'].title, detailsData['crux-marketer'].subtitle, detailsData['crux-marketer'].description, null, detailsData['crux-marketer'].link)}>
-                  <div className="timeline-dot"></div>
-                  <div className="timeline-content">
-                    <span className="timeline-date">Sep 2025 - Present</span>
-                    <h4 className="timeline-title">SEO Analyst & Performance Marketer</h4>
-                    <span className="timeline-subtitle">Crux Creations</span>
-                    <p className="timeline-description">{detailsData['crux-marketer'].description}</p>
-                    <a href={detailsData['crux-marketer'].link} target="_blank" rel="noopener noreferrer" className="timeline-link">Visit Website</a>
+              {/* Experience Column */}
+              <div>
+                <div className="col-head">
+                  <span className="col-title">Experience</span>
+                  <span className="col-index">/ 02</span>
+                </div>
+                <div className="entry" onClick={() => handleCardClick(detailsData['crux-marketer'].title, detailsData['crux-marketer'].subtitle, detailsData['crux-marketer'].description, null, detailsData['crux-marketer'].link)}>
+                  <div className="entry-year">Sep 2025<br/>Present</div>
+                  <div>
+                    <p className="entry-title">{detailsData['crux-marketer'].title}</p>
+                    <p className="entry-place">{detailsData['crux-marketer'].subtitle}</p>
+                    <div className="entry-points">
+                      <span className="entry-point">Leading SEO strategies and performance marketing campaigns.</span>
+                      <span className="entry-point">Optimizing website visibility and improved search engine rankings.</span>
+                      <span className="entry-point">Managing ad campaigns on Meta and Google Ads to drive conversions.</span>
+                    </div>
+                    <a href={detailsData['crux-marketer'].link} target="_blank" rel="noopener noreferrer" className="entry-link" onClick={e => e.stopPropagation()}>Visit Website</a>
                   </div>
                 </div>
-                <div className="timeline-item" onClick={() => handleCardClick(detailsData['crux-intern'].title, detailsData['crux-intern'].subtitle, detailsData['crux-intern'].description, null, detailsData['crux-intern'].link)}>
-                  <div className="timeline-dot"></div>
-                  <div className="timeline-content">
-                    <span className="timeline-date">Jun 2025 - Aug 2025</span>
-                    <h4 className="timeline-title">SEO Analyst Intern</h4>
-                    <span className="timeline-subtitle">Crux Creations</span>
-                    <p className="timeline-description">{detailsData['crux-intern'].description}</p>
-                    <a href={detailsData['crux-intern'].link} target="_blank" rel="noopener noreferrer" className="timeline-link">Visit Website</a>
+                <div className="entry" onClick={() => handleCardClick(detailsData['crux-intern'].title, detailsData['crux-intern'].subtitle, detailsData['crux-intern'].description, null, detailsData['crux-intern'].link)}>
+                  <div className="entry-year">Jun 2025<br/>Aug 2025</div>
+                  <div>
+                    <p className="entry-title">{detailsData['crux-intern'].title}</p>
+                    <p className="entry-place">{detailsData['crux-intern'].subtitle}</p>
+                    <div className="entry-points">
+                      <span className="entry-point">Assisted in on-page and off-page SEO activities.</span>
+                      <span className="entry-point">Conducted keyword research and competitor analysis.</span>
+                      <span className="entry-point">Learned the fundamentals of performance marketing.</span>
+                    </div>
+                    <a href={detailsData['crux-intern'].link} target="_blank" rel="noopener noreferrer" className="entry-link" onClick={e => e.stopPropagation()}>Visit Website</a>
                   </div>
                 </div>
               </div>
@@ -218,21 +232,72 @@ export default function App() {
           </div>
         </section >
 
-        <section className="content-overview">
-          <div className="content-label">WORKS</div>
-          <div className="content-cards">
-            <article className="card c1 reveal reveal-delay-1">
-              <div className="card-thumb">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <section className="works-section reveal" id="works">
+          <div className="works-inner">
+            <div className="works-header">
+              <span className="works-title">Works</span>
+              <span className="works-count">/ 04 PROJECTS</span>
+            </div>
+
+            <div className="work-item" onClick={() => handleCardClick('SEO Optimization', 'End-to-end SEO strategy', 'End-to-end SEO strategy covering on-page structure, off-page authority building, and parasite SEO techniques to drive organic visibility.')}>
+              <span className="work-num">01</span>
+              <div className="work-body">
+                <p className="work-name">SEO Optimization</p>
+                <p className="work-desc">End-to-end SEO strategy covering on-page structure, off-page authority building, and parasite SEO techniques to drive organic visibility.</p>
+                <div className="work-tags">
+                  <span className="tag">On-Page</span>
+                  <span className="tag">Off-Page</span>
+                  <span className="tag">Parasite SEO</span>
+                  <span className="tag">Technical SEO</span>
+                </div>
               </div>
-              <div className="card-title">SEO Optimization<br /><small>On-Page • Off-Page • Parasite SEO</small></div>
-            </article>
-            <article className="card c2 reveal reveal-delay-2">
-              <div className="card-thumb">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>
+              <span className="work-arrow">↗</span>
+            </div>
+
+            <div className="work-item" onClick={() => handleCardClick('Ad Campaigns', 'Performance marketing campaigns', 'Performance marketing campaigns across Meta and Google Ads — from audience targeting and creative strategy to budget optimisation and ROAS tracking.')}>
+              <span className="work-num">02</span>
+              <div className="work-body">
+                <p className="work-name">Ad Campaigns</p>
+                <p className="work-desc">Performance marketing campaigns across Meta and Google Ads — from audience targeting and creative strategy to budget optimisation and ROAS tracking.</p>
+                <div className="work-tags">
+                  <span className="tag">Meta Ads</span>
+                  <span className="tag">Google Ads</span>
+                  <span className="tag">Lead Gen</span>
+                  <span className="tag">ROAS</span>
+                </div>
               </div>
-              <div className="card-title">Ad Campaigns<br /><small>Meta Ads • Google Ads</small></div>
-            </article>
+              <span className="work-arrow">↗</span>
+            </div>
+
+            <div className="work-item" onClick={() => handleCardClick('Healthcare Event Marketing', 'Full digital promotion for Pivot with Purpose™', 'Full digital promotion for Pivot with Purpose™ — LinkedIn content, Instagram creatives, and paid amplification for a Chennai healthcare summit.')}>
+              <span className="work-num">03</span>
+              <div className="work-body">
+                <p className="work-name">Healthcare Event Marketing</p>
+                <p className="work-desc">Full digital promotion for Pivot with Purpose™ — LinkedIn content, Instagram creatives, and paid amplification for a Chennai healthcare summit.</p>
+                <div className="work-tags">
+                  <span className="tag">LinkedIn</span>
+                  <span className="tag">Instagram</span>
+                  <span className="tag">Event Marketing</span>
+                </div>
+              </div>
+              <span className="work-arrow">↗</span>
+            </div>
+
+            <div className="work-item" onClick={() => handleCardClick('YouTube Lead Campaigns', 'YouTube lead form ad strategy', 'YouTube lead form ad strategy for a hospital client in Chennai — MCC account setup, conversion tracking, and a 30-day optimisation framework.')}>
+              <span className="work-num">04</span>
+              <div className="work-body">
+                <p className="work-name">YouTube Lead Campaigns</p>
+                <p className="work-desc">YouTube lead form ad strategy for a hospital client in Chennai — MCC account setup, conversion tracking, and a 30-day optimisation framework.</p>
+                <div className="work-tags">
+                  <span className="tag">YouTube Ads</span>
+                  <span className="tag">Google MCC</span>
+                  <span className="tag">Healthcare</span>
+                  <span className="tag">Conversion Tracking</span>
+                </div>
+              </div>
+              <span className="work-arrow">↗</span>
+            </div>
+
           </div>
         </section>
 
