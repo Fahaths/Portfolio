@@ -50,7 +50,6 @@ const detailsData = {
 }
 
 export default function App() {
-  const [selectedCard, setSelectedCard] = useState(null)
   const [visited, setVisited] = useState(false) // Restore if needed, or just selectedCard
   const form = useRef()
 
@@ -101,9 +100,6 @@ export default function App() {
       )
   }
 
-  const handleCardClick = (title, subtitle, description = null, image = null, link = null) => {
-    setSelectedCard({ title, subtitle, description, image, link })
-  }
 
   return (
     <>
@@ -125,9 +121,9 @@ export default function App() {
           <h1 className="hero-main-title">
             Performance Marketer
           </h1>
-          <h1 className="hero-subtitle-role">
+          <h2 className="hero-subtitle-role">
             & SEO
-          </h1>
+          </h2>
           <div className="hero-divider"></div>
           <div className="hero-signature">Fahath S</div>
         </div>
@@ -160,7 +156,7 @@ export default function App() {
         {/* --- Resume Section --- */}
         <section className="content-overview">
           <div className="content-label">RESUME</div>
-          <div className="edu-exp-section reveal" style={{ margin: '60px auto 0', maxWidth: '1000px' }}>
+          <div className="edu-exp-section reveal">
             <div className="edu-exp-cols">
               {/* Education Column */}
               <div>
@@ -168,8 +164,8 @@ export default function App() {
                   <span className="col-title">Education</span>
                   <span className="col-index">/ 01</span>
                 </div>
-                <div className="entry" onClick={() => handleCardClick(detailsData.measi.title, detailsData.measi.subtitle, detailsData.measi.description, null, detailsData.measi.link)}>
-                  <div className="entry-year">2023<br/>2025</div>
+                <div className="entry">
+                  <div className="entry-year">2023<br />2025</div>
                   <div>
                     <p className="entry-title">{detailsData.measi.title}</p>
                     <p className="entry-place">{detailsData.measi.subtitle}</p>
@@ -178,11 +174,11 @@ export default function App() {
                       <span className="entry-point">Focused on software development, data structures, and web technologies.</span>
                       <span className="entry-point">Gained practical experience through various academic projects.</span>
                     </div>
-                    <a href={detailsData.measi.link} target="_blank" rel="noopener noreferrer" className="entry-link" onClick={e => e.stopPropagation()}>Visit Website</a>
+                    <a href={detailsData.measi.link} target="_blank" rel="noopener noreferrer" className="entry-link">Visit Website</a>
                   </div>
                 </div>
-                <div className="entry" onClick={() => handleCardClick(detailsData.shanmuga.title, detailsData.shanmuga.subtitle, detailsData.shanmuga.description, null, detailsData.shanmuga.link)}>
-                  <div className="entry-year">2020<br/>2023</div>
+                <div className="entry">
+                  <div className="entry-year">2020<br />2023</div>
                   <div>
                     <p className="entry-title">{detailsData.shanmuga.title}</p>
                     <p className="entry-place">{detailsData.shanmuga.subtitle}</p>
@@ -190,7 +186,7 @@ export default function App() {
                       <span className="entry-point">Completed Bachelor of Commerce in Computer Applications.</span>
                       <span className="entry-point">Built a strong foundation in business management and computer applications.</span>
                     </div>
-                    <a href={detailsData.shanmuga.link} target="_blank" rel="noopener noreferrer" className="entry-link" onClick={e => e.stopPropagation()}>Visit Website</a>
+                    <a href={detailsData.shanmuga.link} target="_blank" rel="noopener noreferrer" className="entry-link">Visit Website</a>
                   </div>
                 </div>
               </div>
@@ -201,8 +197,8 @@ export default function App() {
                   <span className="col-title">Experience</span>
                   <span className="col-index">/ 02</span>
                 </div>
-                <div className="entry" onClick={() => handleCardClick(detailsData['crux-marketer'].title, detailsData['crux-marketer'].subtitle, detailsData['crux-marketer'].description, null, detailsData['crux-marketer'].link)}>
-                  <div className="entry-year">Sep 2025<br/>Present</div>
+                <div className="entry">
+                  <div className="entry-year">Sep 2025<br />Present</div>
                   <div>
                     <p className="entry-title">{detailsData['crux-marketer'].title}</p>
                     <p className="entry-place">{detailsData['crux-marketer'].subtitle}</p>
@@ -211,11 +207,11 @@ export default function App() {
                       <span className="entry-point">Optimizing website visibility and improved search engine rankings.</span>
                       <span className="entry-point">Managing ad campaigns on Meta and Google Ads to drive conversions.</span>
                     </div>
-                    <a href={detailsData['crux-marketer'].link} target="_blank" rel="noopener noreferrer" className="entry-link" onClick={e => e.stopPropagation()}>Visit Website</a>
+                    <a href={detailsData['crux-marketer'].link} target="_blank" rel="noopener noreferrer" className="entry-link">Visit Website</a>
                   </div>
                 </div>
-                <div className="entry" onClick={() => handleCardClick(detailsData['crux-intern'].title, detailsData['crux-intern'].subtitle, detailsData['crux-intern'].description, null, detailsData['crux-intern'].link)}>
-                  <div className="entry-year">Jun 2025<br/>Aug 2025</div>
+                <div className="entry">
+                  <div className="entry-year">Jun 2025<br />Aug 2025</div>
                   <div>
                     <p className="entry-title">{detailsData['crux-intern'].title}</p>
                     <p className="entry-place">{detailsData['crux-intern'].subtitle}</p>
@@ -224,7 +220,7 @@ export default function App() {
                       <span className="entry-point">Conducted keyword research and competitor analysis.</span>
                       <span className="entry-point">Learned the fundamentals of performance marketing.</span>
                     </div>
-                    <a href={detailsData['crux-intern'].link} target="_blank" rel="noopener noreferrer" className="entry-link" onClick={e => e.stopPropagation()}>Visit Website</a>
+                    <a href={detailsData['crux-intern'].link} target="_blank" rel="noopener noreferrer" className="entry-link">Visit Website</a>
                   </div>
                 </div>
               </div>
@@ -232,72 +228,76 @@ export default function App() {
           </div>
         </section >
 
-        <section className="works-section reveal" id="works">
-          <div className="works-inner">
-            <div className="works-header">
-              <span className="works-title">Works</span>
-              <span className="works-count">/ 04 PROJECTS</span>
-            </div>
-
-            <div className="work-item" onClick={() => handleCardClick('SEO Optimization', 'End-to-end SEO strategy', 'End-to-end SEO strategy covering on-page structure, off-page authority building, and parasite SEO techniques to drive organic visibility.')}>
-              <span className="work-num">01</span>
-              <div className="work-body">
-                <p className="work-name">SEO Optimization</p>
-                <p className="work-desc">End-to-end SEO strategy covering on-page structure, off-page authority building, and parasite SEO techniques to drive organic visibility.</p>
-                <div className="work-tags">
-                  <span className="tag">On-Page</span>
-                  <span className="tag">Off-Page</span>
-                  <span className="tag">Parasite SEO</span>
-                  <span className="tag">Technical SEO</span>
-                </div>
+        {/* --- Works Section --- */}
+        <section className="content-overview" id="works">
+          <div className="content-label">WORKS</div>
+          <div className="works-section reveal">
+            <div className="works-inner">
+              <div className="works-header">
+                <span className="works-title">Works</span>
+                <span className="works-count">/ 03 PROJECTS</span>
               </div>
-              <span className="work-arrow">↗</span>
-            </div>
 
-            <div className="work-item" onClick={() => handleCardClick('Ad Campaigns', 'Performance marketing campaigns', 'Performance marketing campaigns across Meta and Google Ads — from audience targeting and creative strategy to budget optimisation and ROAS tracking.')}>
-              <span className="work-num">02</span>
-              <div className="work-body">
-                <p className="work-name">Ad Campaigns</p>
-                <p className="work-desc">Performance marketing campaigns across Meta and Google Ads — from audience targeting and creative strategy to budget optimisation and ROAS tracking.</p>
-                <div className="work-tags">
-                  <span className="tag">Meta Ads</span>
-                  <span className="tag">Google Ads</span>
-                  <span className="tag">Lead Gen</span>
-                  <span className="tag">ROAS</span>
+              <div className="work-item">
+                <span className="work-num">01</span>
+                <div className="work-body">
+                  <p className="work-name">SEO Optimization</p>
+                  <p className="work-desc">End-to-end SEO strategy covering on-page structure, off-page authority building, and parasite SEO techniques to drive organic visibility.</p>
+                  <div className="work-tags">
+                    <span className="tag">On-Page</span>
+                    <span className="tag">Off-Page</span>
+                    <span className="tag">Parasite SEO</span>
+                    <span className="tag">Technical SEO</span>
+                  </div>
                 </div>
+                <span className="work-arrow">↗</span>
               </div>
-              <span className="work-arrow">↗</span>
-            </div>
 
-            <div className="work-item" onClick={() => handleCardClick('Healthcare Event Marketing', 'Full digital promotion for Pivot with Purpose™', 'Full digital promotion for Pivot with Purpose™ — LinkedIn content, Instagram creatives, and paid amplification for a Chennai healthcare summit.')}>
-              <span className="work-num">03</span>
-              <div className="work-body">
-                <p className="work-name">Healthcare Event Marketing</p>
-                <p className="work-desc">Full digital promotion for Pivot with Purpose™ — LinkedIn content, Instagram creatives, and paid amplification for a Chennai healthcare summit.</p>
-                <div className="work-tags">
-                  <span className="tag">LinkedIn</span>
-                  <span className="tag">Instagram</span>
-                  <span className="tag">Event Marketing</span>
+              <div className="work-item">
+                <span className="work-num">02</span>
+                <div className="work-body">
+                  <p className="work-name">Ad Campaigns</p>
+                  <p className="work-desc">Performance marketing campaigns across Meta and Google Ads — from audience targeting and creative strategy to budget optimisation and ROAS tracking.</p>
+                  <div className="work-tags">
+                    <span className="tag">Meta Ads</span>
+                    <span className="tag">Google Ads</span>
+                    <span className="tag">Lead Gen</span>
+                    <span className="tag">ROAS</span>
+                  </div>
                 </div>
+                <span className="work-arrow">↗</span>
               </div>
-              <span className="work-arrow">↗</span>
-            </div>
 
-            <div className="work-item" onClick={() => handleCardClick('YouTube Lead Campaigns', 'YouTube lead form ad strategy', 'YouTube lead form ad strategy for a hospital client in Chennai — MCC account setup, conversion tracking, and a 30-day optimisation framework.')}>
-              <span className="work-num">04</span>
-              <div className="work-body">
-                <p className="work-name">YouTube Lead Campaigns</p>
-                <p className="work-desc">YouTube lead form ad strategy for a hospital client in Chennai — MCC account setup, conversion tracking, and a 30-day optimisation framework.</p>
-                <div className="work-tags">
-                  <span className="tag">YouTube Ads</span>
-                  <span className="tag">Google MCC</span>
-                  <span className="tag">Healthcare</span>
-                  <span className="tag">Conversion Tracking</span>
+              <div className="work-item">
+                <span className="work-num">03</span>
+                <div className="work-body">
+                  <p className="work-name">Healthcare Event Marketing</p>
+                  <p className="work-desc">Full digital promotion for Pivot with Purpose™ — LinkedIn content, Instagram creatives, and paid amplification for a Chennai healthcare summit.</p>
+                  <div className="work-tags">
+                    <span className="tag">LinkedIn</span>
+                    <span className="tag">Instagram</span>
+                    <span className="tag">Event Marketing</span>
+                  </div>
                 </div>
+                <span className="work-arrow">↗</span>
               </div>
-              <span className="work-arrow">↗</span>
-            </div>
 
+              <div className="work-item">
+                <span className="work-num">04</span>
+                <div className="work-body">
+                  <p className="work-name">YouTube Lead Campaigns</p>
+                  <p className="work-desc">YouTube lead form ad strategy for a hospital client in Chennai — MCC account setup, conversion tracking, and a 30-day optimisation framework.</p>
+                  <div className="work-tags">
+                    <span className="tag">YouTube Ads</span>
+                    <span className="tag">Google MCC</span>
+                    <span className="tag">Healthcare</span>
+                    <span className="tag">Conversion Tracking</span>
+                  </div>
+                </div>
+                <span className="work-arrow">↗</span>
+              </div>
+
+            </div>
           </div>
         </section>
 
@@ -343,51 +343,18 @@ export default function App() {
           </div>
         </section>
 
-        {
-          selectedCard && (
-            <div className="modal-overlay" onClick={() => setSelectedCard(null)}>
-              <div className={`modal-content ${selectedCard.description ? 'modal-wide' : ''}`} onClick={e => e.stopPropagation()}>
-                <button className="modal-close" onClick={() => setSelectedCard(null)}>×</button>
-                <h2>{selectedCard.title}</h2>
-                <p>{selectedCard.subtitle}</p>
-                <div className={`modal-body ${selectedCard.image ? 'has-image' : ''}`}>
-                  <div className="modal-text">
-                    {selectedCard.description ? (
-                      <div style={{ whiteSpace: 'pre-line' }}>{selectedCard.description}</div>
-                    ) : (
-                      <p>More details about this project or skill would go here. This is a placeholder for the Batman-themed modal content.</p>
-                    )}
 
-                    {selectedCard.link && (
-                      <div style={{ marginTop: '20px' }}>
-                        <a href={selectedCard.link} target="_blank" rel="noopener noreferrer" className="btn-filled">
-                          Visit Official Website
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                  {selectedCard.image && (
-                    <div className="modal-image">
-                      <img src={selectedCard.image} alt={selectedCard.title} />
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )
-        }
       </main >
 
       <footer className="footer">
         <div className="footer-icons">
-          <a href="mailto:fahaths.official@gmail.com"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a>
           <a href="https://www.linkedin.com/in/fahath-s-641214219/" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>
           <a href="https://github.com/Fahaths" target="_blank" rel="noopener noreferrer"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
-          <a href="tel:+919840031124"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></a>
-          <a href="https://www.fiverr.com/fahath_s?up_rollout=true" target="_blank" rel="noopener noreferrer"><span style={{ fontWeight: 'bold', fontSize: '18px' }}>fi</span></a>
           <a href="https://fahath-s.blogspot.com/" target="_blank" rel="noopener noreferrer"><span style={{ fontWeight: 'bold', fontSize: '22px', display: 'flex', alignItems: 'center' }}><img src="https://simpleicons.org/icons/blogger.svg" alt="Blogger" width="18" height="18" /></span></a>
         </div>
-        <p>Fahath-s-dev</p>
+        <p style={{ fontWeight: 300, fontSize: '0.8rem', marginTop: '1.5rem', color: '#666', letterSpacing: '0.3px' }}>
+          Powered By Fahath and &copy; Copyright - 2026 Fahath S, Digital marketer, All rights reserved.
+        </p>
       </footer>
 
     </>

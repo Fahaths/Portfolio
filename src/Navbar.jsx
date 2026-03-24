@@ -56,7 +56,7 @@ export default function Navbar() {
 
                 {/* Desktop CTA */}
                 <button className="nav-cta desktop-only" onClick={(e) => handleNavigation(e, 'contact')}>
-                    Contact Me
+                    Let's Connect
                 </button>
 
                 {/* Mobile Hamburger */}

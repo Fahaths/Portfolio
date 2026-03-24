@@ -582,7 +582,8 @@ a:hover {
   padding: 3.5rem 2.5rem;
   font-family: 'DM Sans', sans-serif;
   border-radius: 12px;
-  margin-top: 60px;
+  margin: 60px auto 0;
+  max-width: 1000px;
 }
 
 .edu-exp-cols {
@@ -700,9 +701,9 @@ a:hover {
 
 .content-label {
     position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 0px;
+    left: -4vw;
+    text-align: left;
     font-size: 14vw;
     color: var(--text-main);
     opacity: 0.25;
@@ -721,7 +722,8 @@ a:hover {
     color: var(--accent);
     opacity: 0.4;
     /* Increased hover opacity */
-    transform: translateX(-50%) scale(1.02);
+    transform: scale(1.02);
+    transform-origin: left center;
 }
 
 [data-theme="light"] .content-label {
@@ -735,7 +737,8 @@ a:hover {
   padding: 3.5rem 2.5rem;
   font-family: 'DM Sans', sans-serif;
   border-radius: 12px;
-  margin-top: 60px;
+  margin: 60px auto 0;
+  max-width: 1000px;
 }
 
 .works-inner {
@@ -755,6 +758,7 @@ a:hover {
   font-size: 1.3rem;
   font-weight: 600;
   color: #1a1a1a;
+  display: none;
 }
 
 .works-count {
@@ -1083,43 +1087,54 @@ a:hover {
     padding: 3.5rem 2.5rem;
     font-family: 'DM Sans', sans-serif;
     border-radius: 12px;
-    margin-top: 120px;
-    position: relative;
-    border: none;
-    z-index: 1;
-    box-shadow: none;
+    margin: 60px auto 0;
+    max-width: 1000px;
 }
 
 .contact-info h3 {
     font-family: 'Playfair Display', serif;
-    font-size: 2rem;
+    font-size: 1.3rem;
+    font-weight: 600;
     color: #1a1a1a;
-    margin: 0 0 20px 0;
+    margin: 0 0 3rem 0;
 }
 
 .contact-info p {
-    color: #5a5248;
-    margin-bottom: 40px;
-    line-height: 1.7;
+    font-size: 0.78rem;
+    color: #7a7060;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    max-width: 520px;
 }
 
 .contact-item {
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 0;
+    border-top: 0.5px solid #d8d2c0;
+    margin-bottom: 0;
+}
+
+.contact-item:last-of-type {
+    border-bottom: 0.5px solid #d8d2c0;
 }
 
 .contact-item .label {
-    display: block;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     color: #c9a84c;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: 500;
+    padding-top: 3px;
 }
 
 .contact-item .value {
     font-size: 1.1rem;
     color: #1a1a1a;
     font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    display: block;
 }
 
 .contact-form .form-group {
@@ -1225,32 +1240,13 @@ a:hover {
 
 /* --- Footer --- */
 .footer {
-    padding: 60px 20px;
+    padding: 60px 20px 20px;
     text-align: center;
     background: var(--bg-surface);
     border-top: 1px solid var(--border);
     margin-top: 80px;
 }
 
-.footer-icons {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    margin-bottom: 24px;
-}
-
-.footer-icons a {
-    color: var(--text-muted);
-    transition: color 0.3s ease, transform 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.footer-icons a:hover {
-    color: var(--accent);
-    transform: translateY(-3px);
-}
 
 .footer p {
     color: var(--text-muted);
@@ -1327,9 +1323,8 @@ a:hover {
         font-size: 15vw;
         top: 20px;
         /* Reset top if needed or keep existing */
-        left: 50%;
-        transform: translateX(-50%);
+        left: 0;
         width: 100%;
-        text-align: center;
+        text-align: left;
     }
 }
