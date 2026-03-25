@@ -51,7 +51,16 @@ const detailsData = {
 
 export default function App() {
   const [visited, setVisited] = useState(false) // Restore if needed, or just selectedCard
+  const [isDownloading, setIsDownloading] = useState(false)
+  const [isBlasting, setIsBlasting] = useState(false)
+  const [btnPosition, setBtnPosition] = useState({ x: 0, y: 0 })
   const form = useRef()
+
+  const handleDownload = () => {
+    if (isDownloading) return;
+    setIsDownloading(true);
+    setTimeout(() => setIsDownloading(false), 1000);
+  }
 
   useEffect(() => {
     const selector = '.card, .intro-right, .hero-illustration, .hero-image, .contact-container'
@@ -85,19 +94,38 @@ export default function App() {
       return
     }
 
-    // Send via EmailJS
-    emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form.current, {
-      publicKey: PUBLIC_KEY,
-    })
-      .then(
-        () => {
-          alert('Message Sent Successfully!')
-          form.current.reset()
-        },
-        (error) => {
-          alert('Failed to send email: ' + error.text)
-        },
-      )
+    setIsBlasting(true)
+
+    // Wait for the blast animation to execute
+    setTimeout(() => {
+      // Send via EmailJS
+      emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form.current, {
+        publicKey: PUBLIC_KEY,
+      })
+        .then(
+          () => {
+            alert('Message Sent Successfully!')
+            form.current.reset()
+            setIsBlasting(false)
+          },
+          (error) => {
+            alert('Failed to send email: ' + error.text)
+            setIsBlasting(false)
+          },
+        )
+    }, 600)
+  }
+
+  const handleButtonClick = () => {
+    if (form.current && !form.current.checkValidity()) {
+      // Move randomly if invalid
+      const x = Math.random() * 200 - 100; // -100px to 100px
+      const y = Math.random() * 100 - 50;  // -50px to 50px
+      setBtnPosition({ x, y });
+    } else {
+      // Reset position
+      setBtnPosition({ x: 0, y: 0 });
+    }
   }
 
 
@@ -144,11 +172,13 @@ export default function App() {
                 I specialize in breaking down complex data into actionable insights, improving ranking momentum on Google, and tightening ad performance on Meta. My workflow blends technical SEO precision with creative ad execution.
               </p>
             </div>
-            <button className="btn-primary" onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}>
-              Contact Me
-            </button>
-            <a href="/assets/Resume.pdf" download className="btn-filled" style={{ marginLeft: '1rem' }}>
-              Download CV
+            <a
+              href="/assets/Resume.pdf"
+              download
+              className={`btn-filled ${isDownloading ? 'downloading' : ''}`}
+              onClick={handleDownload}
+            >
+              {isDownloading ? "Downloading..." : "Get Portfolio"}
             </a>
           </div>
         </section>
@@ -246,7 +276,6 @@ export default function App() {
                   <div className="work-tags">
                     <span className="tag">On-Page</span>
                     <span className="tag">Off-Page</span>
-                    <span className="tag">Parasite SEO</span>
                     <span className="tag">Technical SEO</span>
                   </div>
                 </div>
@@ -327,10 +356,10 @@ export default function App() {
             </div>
             <form className="contact-form" ref={form} onSubmit={handleSubmit}>
               <div className="form-group">
-                <input type="text" name="user_name" placeholder="Name" required />
+                <input type="text" name="from_name" placeholder="Name" required />
               </div>
               <div className="form-group">
-                <input type="email" name="user_email" placeholder="Email" required />
+                <input type="email" name="reply_to" placeholder="Email" required />
               </div>
               <div className="form-group">
                 <input type="text" name="subject" placeholder="Subject" />
@@ -338,7 +367,17 @@ export default function App() {
               <div className="form-group">
                 <textarea name="message" rows="5" placeholder="Message" required></textarea>
               </div>
-              <button type="submit" className="btn-primary">Send Message</button>
+              <button
+                type="submit"
+                className={`btn-filled boom-btn ${isBlasting ? "blasting" : ""}`}
+                style={{
+                  transform: `translate(${btnPosition.x}px, ${btnPosition.y}px)`,
+                  transition: 'transform 0.2s ease-in-out'
+                }}
+                onClick={handleButtonClick}
+              >
+                {isBlasting ? "Booming..." : "Boom it!"}
+              </button>
             </form>
           </div>
         </section>
@@ -353,7 +392,7 @@ export default function App() {
           <a href="https://fahath-s.blogspot.com/" target="_blank" rel="noopener noreferrer"><span style={{ fontWeight: 'bold', fontSize: '22px', display: 'flex', alignItems: 'center' }}><img src="https://simpleicons.org/icons/blogger.svg" alt="Blogger" width="18" height="18" /></span></a>
         </div>
         <p style={{ fontWeight: 300, fontSize: '0.8rem', marginTop: '1.5rem', color: '#666', letterSpacing: '0.3px' }}>
-          Powered By Fahath and &copy; Copyright - 2026 Fahath S, Digital marketer, All rights reserved.
+          Powered By and &copy; Copyright - 2026 Fahath S, Digital marketer, All rights reserved.
         </p>
       </footer>
 
