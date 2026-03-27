@@ -1159,6 +1159,7 @@ a:hover {
 
 .contact-form .form-group {
     margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 .contact-form input,
@@ -1359,51 +1360,51 @@ a:hover {
 }
 
 .iosevka-charon-light {
-  font-family: "Iosevka Charon", monospace;
-  font-weight: 300;
-  font-style: normal;
+    font-family: "Iosevka Charon", monospace;
+    font-weight: 300;
+    font-style: normal;
 }
 
 .iosevka-charon-regular {
-  font-family: "Iosevka Charon", monospace;
-  font-weight: 400;
-  font-style: normal;
+    font-family: "Iosevka Charon", monospace;
+    font-weight: 400;
+    font-style: normal;
 }
 
 .iosevka-charon-medium {
-  font-family: "Iosevka Charon", monospace;
-  font-weight: 500;
-  font-style: normal;
+    font-family: "Iosevka Charon", monospace;
+    font-weight: 500;
+    font-style: normal;
 }
 
 .iosevka-charon-bold {
-  font-family: "Iosevka Charon", monospace;
-  font-weight: 700;
-  font-style: normal;
+    font-family: "Iosevka Charon", monospace;
+    font-weight: 700;
+    font-style: normal;
 }
 
 .iosevka-charon-light-italic {
-  font-family: "Iosevka Charon", monospace;
-  font-weight: 300;
-  font-style: italic;
+    font-family: "Iosevka Charon", monospace;
+    font-weight: 300;
+    font-style: italic;
 }
 
 .iosevka-charon-regular-italic {
-  font-family: "Iosevka Charon", monospace;
-  font-weight: 400;
-  font-style: italic;
+    font-family: "Iosevka Charon", monospace;
+    font-weight: 400;
+    font-style: italic;
 }
 
 .iosevka-charon-medium-italic {
-  font-family: "Iosevka Charon", monospace;
-  font-weight: 500;
-  font-style: italic;
+    font-family: "Iosevka Charon", monospace;
+    font-weight: 500;
+    font-style: italic;
 }
 
 .iosevka-charon-bold-italic {
-  font-family: "Iosevka Charon", monospace;
-  font-weight: 700;
-  font-style: italic;
+    font-family: "Iosevka Charon", monospace;
+    font-weight: 700;
+    font-style: italic;
 }
 
 /* --- Boom Button Animation --- */
@@ -1414,7 +1415,8 @@ a:hover {
 }
 
 /* Expanding blast ring */
-.boom-btn::before, .boom-btn::after {
+.boom-btn::before,
+.boom-btn::after {
     content: '';
     position: absolute;
     top: 50%;
@@ -1442,12 +1444,124 @@ a:hover {
 }
 
 @keyframes btnBlast {
-    0% { transform: scale(1); filter: brightness(1); }
-    40% { transform: scale(1.2); filter: brightness(1.5); background: var(--accent); color: var(--bg-body); box-shadow: 0 0 30px var(--accent); }
-    100% { transform: scale(0); opacity: 0; }
+    0% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+
+    40% {
+        transform: scale(1.2);
+        filter: brightness(1.5);
+        background: var(--accent);
+        color: var(--bg-body);
+        box-shadow: 0 0 30px var(--accent);
+    }
+
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
 }
 
 @keyframes ringBlast {
-    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
-    100% { transform: translate(-50%, -50%) scale(3.5); opacity: 0; }
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(3.5);
+        opacity: 0;
+    }
 }
+/* --- Mobile Optimizations (Final Refinements) --- */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 20px;
+    }
+
+    .hero-main-title, 
+    .hero-subtitle-role {
+        font-size: clamp(2rem, 5vw, 2.5rem) !important;
+    }
+
+    .hero-signature {
+        font-size: 3rem !important;
+    }
+
+    .content-label {
+        font-size: 18vw !important;
+        letter-spacing: 4px !important;
+        opacity: 0.15 !important;
+        top: 20px !important;
+    }
+
+    .edu-exp-cols {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+    }
+
+    .edu-exp-section, 
+    .works-section, 
+    .contact-container {
+        padding: 2rem 1.5rem !important;
+        margin-top: 40px !important;
+    }
+
+    .work-item {
+        grid-template-columns: 1.5rem 1fr !important;
+        gap: 0.8rem !important;
+    }
+    
+    .work-arrow {
+        display: none !important;
+    }
+
+    .contact-container {
+        grid-template-columns: 1fr !important;
+        gap: 40px !important;
+    }
+
+    .dodge-area {
+        justify-content: center !important;
+        height: 140px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-main-title {
+        font-size: 2rem !important;
+    }
+    
+    .hero-signature {
+        font-size: 2.5rem !important;
+    }
+
+    .entry {
+        grid-template-columns: 1fr !important;
+        gap: 0.5rem !important;
+    }
+    
+    .entry-year {
+        padding-top: 0 !important;
+        margin-bottom: 0.2rem !important;
+    }
+}
+
+
+.mobile-menu-close {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    font-size: 3rem;
+    color: var(--text-main);
+    cursor: pointer;
+    line-height: 1;
+    z-index: 2000;
+    transition: color 0.2s;
+}
+
+.mobile-menu-close:hover {
+    color: var(--accent);
+}
+

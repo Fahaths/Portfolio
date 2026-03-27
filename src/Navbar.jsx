@@ -69,6 +69,9 @@ export default function Navbar() {
 
             {/* Mobile Menu Overlay */}
             <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
+                <div className="mobile-menu-close" onClick={toggleMobileMenu}>
+                    &times;
+                </div>
                 <div className="mobile-menu-content">
                     <a href="#about" onClick={(e) => handleNavigation(e, 'about')}>About</a>
                     <a href="#resume" onClick={(e) => handleNavigation(e, '', '.content-overview:nth-of-type(2)')}>Resume</a>

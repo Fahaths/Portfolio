@@ -54,7 +54,11 @@ export default function App() {
   const [isDownloading, setIsDownloading] = useState(false)
   const [isBlasting, setIsBlasting] = useState(false)
   const [btnPosition, setBtnPosition] = useState({ x: 0, y: 0 })
+  const [hasDodged, setHasDodged] = useState(false)
+  const [isTamed, setIsTamed] = useState(false)
   const form = useRef()
+  const dodgeAreaRef = useRef()
+  const btnRef = useRef()
 
   const handleDownload = () => {
     if (isDownloading) return;
@@ -107,6 +111,8 @@ export default function App() {
             alert('Message Sent Successfully!')
             form.current.reset()
             setIsBlasting(false)
+            setBtnPosition({ x: 0, y: 0 })
+            setHasDodged(false)
           },
           (error) => {
             alert('Failed to send email: ' + error.text)
@@ -116,17 +122,73 @@ export default function App() {
     }, 600)
   }
 
-  const handleButtonClick = () => {
-    if (form.current && !form.current.checkValidity()) {
-      // Move randomly if invalid
-      const x = Math.random() * 200 - 100; // -100px to 100px
-      const y = Math.random() * 100 - 50;  // -50px to 50px
-      setBtnPosition({ x, y });
-    } else {
-      // Reset position
-      setBtnPosition({ x: 0, y: 0 });
+  const checkFormValidity = () => {
+    if (form.current) {
+      const { from_name, reply_to, message } = form.current;
+      const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      const ready = from_name.value.trim().length > 0 &&
+        isValidEmail(reply_to.value.trim()) &&
+        message.value.trim().length > 0;
+      setIsTamed(ready);
+      if (ready) {
+        setBtnPosition({ x: 0, y: 0 });
+        setHasDodged(false);
+      }
     }
-  }
+  };
+
+  const handleDodge = (e) => {
+    if (isTamed || !dodgeAreaRef.current || !btnRef.current) return;
+
+    // Support both MouseEvent and TouchEvent
+    const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+    const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+    if (clientX === undefined || clientY === undefined) return;
+
+    const aRect = dodgeAreaRef.current.getBoundingClientRect();
+    const w = btnRef.current.offsetWidth;
+    const h = btnRef.current.offsetHeight;
+
+    const btnCX = btnPosition.x + w / 2;
+    const btnCY = btnPosition.y + h / 2;
+
+    const relMX = clientX - aRect.left;
+    const relMY = clientY - aRect.top;
+
+    const dx = btnCX - relMX;
+    const dy = btnCY - relMY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+
+    if (dist > 85) return;
+
+    if (!hasDodged) setHasDodged(true);
+
+    const angle = Math.atan2(dy, dx);
+    const run = 120 + Math.random() * 50;
+
+    let newX = btnCX + Math.cos(angle) * run - w / 2;
+    let newY = btnCY + Math.sin(angle) * run - h / 2;
+
+    const maxX = aRect.width - w;
+    const maxY = aRect.height - h;
+
+    if (newX < 0 || newX > maxX) newX = Math.random() * maxX;
+    if (newY < 0 || newY > maxY) newY = Math.random() * maxY;
+
+    newX = Math.max(0, Math.min(maxX, newX));
+    newY = Math.max(0, Math.min(maxY, newY));
+
+    setBtnPosition({ x: newX, y: newY });
+  };
+
+  const handleButtonClick = (e) => {
+    if (!isTamed) {
+      e.preventDefault();
+      // Force one dodge if they managed to click it
+      handleDodge(e);
+    }
+  };
 
 
   return (
@@ -352,9 +414,15 @@ export default function App() {
               <div className="contact-item">
                 <span className="label">Phone</span>
                 <a href="tel:+919840031124" className="value">+91 98400 31124</a>
-              </div>
             </div>
-            <form className="contact-form" ref={form} onSubmit={handleSubmit}>
+            </div>
+            <form
+              className="contact-form"
+              onSubmit={handleSubmit}
+              onInput={checkFormValidity}
+              ref={form}
+              style={{ position: 'relative' }}
+            >
               <div className="form-group">
                 <input type="text" name="from_name" placeholder="Name" required />
               </div>
@@ -365,19 +433,44 @@ export default function App() {
                 <input type="text" name="subject" placeholder="Subject" />
               </div>
               <div className="form-group">
+                <input type="hidden" name="to_name" value="Fahath" />
                 <textarea name="message" rows="5" placeholder="Message" required></textarea>
               </div>
-              <button
-                type="submit"
-                className={`btn-filled boom-btn ${isBlasting ? "blasting" : ""}`}
+
+              <div
+                className="dodge-area"
+                ref={dodgeAreaRef}
+                onMouseMove={handleDodge}
+                onTouchMove={handleDodge}
+                onTouchStart={handleDodge}
                 style={{
-                  transform: `translate(${btnPosition.x}px, ${btnPosition.y}px)`,
-                  transition: 'transform 0.2s ease-in-out'
+                  position: 'relative',
+                  height: '120px', // slightly taller for mobile
+                  marginTop: '20px',
+                  overflow: 'visible',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  justifyContent: 'center' // Centered for mobile thumb reach
                 }}
-                onClick={handleButtonClick}
               >
-                {isBlasting ? "Booming..." : "Boom it!"}
-              </button>
+                <button
+                  ref={btnRef}
+                  type="submit"
+                  className={`btn-filled boom-btn ${isBlasting ? "blasting" : ""} ${isTamed ? "ready" : ""}`}
+                  style={{
+                    position: hasDodged ? 'absolute' : 'relative',
+                    left: hasDodged ? `${btnPosition.x}px` : 'auto',
+                    top: hasDodged ? `${btnPosition.y}px` : 'auto',
+                    transition: 'all 0.2s ease-out',
+                    zIndex: 10,
+                    margin: hasDodged ? 0 : '0 auto',
+                    whiteSpace: 'nowrap'
+                  }}
+                  onClick={handleButtonClick}
+                >
+                  {isBlasting ? "Booming..." : "BOOM IT!"}
+                </button>
+              </div>
             </form>
           </div>
         </section>
