@@ -49,6 +49,60 @@ const detailsData = {
   }
 }
 
+const StylizedInput = ({ label, name, type = 'text', required = false, icon, isTextArea = false }) => {
+  const InputComponent = isTextArea ? 'textarea' : 'input';
+  return (
+    <div className={`[--clr:#1f1f1f] dark:[--clr:#999999] relative flex flex-row ${isTextArea ? 'items-start' : 'items-center'} w-full mt-8`}>
+      <InputComponent
+        name={name}
+        required={required}
+        placeholder=" "
+        id={name}
+        type={type}
+        className={`peer text-black dark:text-white pl-10 ${isTextArea ? 'pt-2 h-[120px]' : 'h-[40px]'} min-h-[40px] pr-[40px] leading-normal appearance-none resize-none box-border text-base w-full text-inherit block text-left border border-solid bg-white dark:bg-zinc-800 rounded-[10px] m-0 p-0 outline-0 focus-visible:outline-0 focus-visible:border-[#F5C000] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#F5C0002e]`}
+      />
+      <label
+        className={`cursor-text text-[--clr] inline-block z-0 text-sm mb-px font-normal text-start select-none absolute duration-300 transform origin-[0] translate-x-[40px] ${isTextArea ? 'top-[10px]' : ''} peer-focus-visible:text-[#F5C000] peer-focus-visible:translate-x-[8px] peer-[:not(:placeholder-shown)]:translate-x-[8px] peer-focus-visible:translate-y-[-32px] peer-[:not(:placeholder-shown)]:translate-y-[-32px]`}
+        htmlFor={name}
+      >
+        {label}
+      </label>
+      <span
+        className={`pointer-events-none absolute z-[1] left-0 ${isTextArea ? 'top-0' : 'top-0 bottom-0'} flex items-center justify-center size-[40px] text-[--clr] peer-focus-visible:hidden peer-[:not(:placeholder-shown)]:hidden`}
+      >
+        {icon}
+      </span>
+      {required && (
+        <div
+          className={`group w-[40px] ${isTextArea ? 'h-[40px]' : ''} absolute ${isTextArea ? 'top-0' : 'top-0 bottom-0'} right-0 flex items-center justify-center text-[--clr] peer-focus-visible:text-[#F5C000] z-20`}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="1rem"
+            height="1rem"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+            viewBox="0 0 24 24"
+            strokeWidth="2"
+            fill="none"
+            stroke="currentColor"
+          >
+            <path fill="none" d="M0 0h24v24H0z" stroke="none"></path>
+            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"></path>
+            <path d="M12 8v4"></path>
+            <path d="M12 16h.01"></path>
+          </svg>
+          <span
+            className="text-sm absolute cursor-default select-none rounded-[4px] px-1.5 opacity-0 right-0 z-50 transition-all duration-300 group-hover:opacity-100 group-hover:-translate-y-[calc(100%+8px)] bg-zinc-800 text-white"
+          >
+            Required!
+          </span>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function App() {
   const [visited, setVisited] = useState(false) // Restore if needed, or just selectedCard
   const [isDownloading, setIsDownloading] = useState(false)
@@ -423,19 +477,54 @@ export default function App() {
               ref={form}
               style={{ position: 'relative' }}
             >
-              <div className="form-group">
-                <input type="text" name="from_name" placeholder="Name" required />
-              </div>
-              <div className="form-group">
-                <input type="email" name="reply_to" placeholder="Email" required />
-              </div>
-              <div className="form-group">
-                <input type="text" name="subject" placeholder="Subject" />
-              </div>
+              <StylizedInput
+                label="Name"
+                name="from_name"
+                required={true}
+                icon={
+                  <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                }
+              />
+              <StylizedInput
+                label="Email"
+                name="reply_to"
+                type="email"
+                required={true}
+                icon={
+                  <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                }
+              />
+              <StylizedInput
+                label="Subject"
+                name="subject"
+                icon={
+                  <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                  </svg>
+                }
+              />
               <div className="form-group">
                 <input type="hidden" name="to_name" value="Fahath" />
-                <textarea name="message" rows="5" placeholder="Message" required></textarea>
               </div>
+              <StylizedInput
+                label="Message"
+                name="message"
+                required={true}
+                isTextArea={true}
+                icon={
+                  <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                }
+              />
 
               <div
                 className="dodge-area"
