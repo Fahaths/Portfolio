@@ -254,7 +254,7 @@ export default function App() {
           <div className="hero-backdrop"></div>
           <div className="hero-frame-border">
             <img
-              src="/hero-profile-v3.png"
+              src="/hero-profile-v3.webp"
               alt="Fahath S"
               className="hero-image reveal"
               style={{ display: 'block' }}

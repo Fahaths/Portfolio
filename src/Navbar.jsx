@@ -44,7 +44,7 @@ export default function Navbar() {
         <>
             <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
                 <div className="logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ cursor: 'pointer' }}>
-                    <img src="/logo-v2.png" alt="Faa" className="logo-img" />
+                    <img src="/logo-v2.webp" alt="Faa" className="logo-img" />
                 </div>
 
                 {/* Desktop Links */}
