@@ -721,7 +721,7 @@ a:hover {
     position: absolute;
     top: 0px;
     left: -4vw;
-    margin-left: 10px;
+    margin-left: 40px;
     text-align: left;
     font-size: 14vw;
     color: var(--text-main);
@@ -1475,13 +1475,14 @@ a:hover {
         opacity: 0;
     }
 }
+
 /* --- Mobile Optimizations (Final Refinements) --- */
 @media (max-width: 768px) {
     .container {
         padding: 0 20px;
     }
 
-    .hero-main-title, 
+    .hero-main-title,
     .hero-subtitle-role {
         font-size: clamp(2rem, 5vw, 2.5rem) !important;
     }
@@ -1502,8 +1503,8 @@ a:hover {
         gap: 2rem !important;
     }
 
-    .edu-exp-section, 
-    .works-section, 
+    .edu-exp-section,
+    .works-section,
     .contact-container {
         padding: 2rem 1.5rem !important;
         margin-top: 40px !important;
@@ -1513,7 +1514,7 @@ a:hover {
         grid-template-columns: 1.5rem 1fr !important;
         gap: 0.8rem !important;
     }
-    
+
     .work-arrow {
         display: none !important;
     }
@@ -1533,7 +1534,7 @@ a:hover {
     .hero-main-title {
         font-size: 2rem !important;
     }
-    
+
     .hero-signature {
         font-size: 2.5rem !important;
     }
@@ -1542,7 +1543,7 @@ a:hover {
         grid-template-columns: 1fr !important;
         gap: 0.5rem !important;
     }
-    
+
     .entry-year {
         padding-top: 0 !important;
         margin-bottom: 0.2rem !important;
@@ -1565,4 +1566,3 @@ a:hover {
 .mobile-menu-close:hover {
     color: var(--accent);
 }
-
