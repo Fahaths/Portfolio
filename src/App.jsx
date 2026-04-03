@@ -107,12 +107,8 @@ export default function App() {
   const [visited, setVisited] = useState(false) // Restore if needed, or just selectedCard
   const [isDownloading, setIsDownloading] = useState(false)
   const [isBlasting, setIsBlasting] = useState(false)
-  const [btnPosition, setBtnPosition] = useState({ x: 0, y: 0 })
-  const [hasDodged, setHasDodged] = useState(false)
   const [isTamed, setIsTamed] = useState(false)
   const form = useRef()
-  const dodgeAreaRef = useRef()
-  const btnRef = useRef()
 
   const handleDownload = () => {
     if (isDownloading) return;
@@ -165,8 +161,6 @@ export default function App() {
             alert('Message Sent Successfully!')
             form.current.reset()
             setIsBlasting(false)
-            setBtnPosition({ x: 0, y: 0 })
-            setHasDodged(false)
           },
           (error) => {
             alert('Failed to send email: ' + error.text)
@@ -184,65 +178,9 @@ export default function App() {
         isValidEmail(reply_to.value.trim()) &&
         message.value.trim().length > 0;
       setIsTamed(ready);
-      if (ready) {
-        setBtnPosition({ x: 0, y: 0 });
-        setHasDodged(false);
-      }
     }
   };
 
-  const handleDodge = (e) => {
-    if (isTamed || !dodgeAreaRef.current || !btnRef.current) return;
-
-    // Support both MouseEvent and TouchEvent
-    const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-    const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-
-    if (clientX === undefined || clientY === undefined) return;
-
-    const aRect = dodgeAreaRef.current.getBoundingClientRect();
-    const w = btnRef.current.offsetWidth;
-    const h = btnRef.current.offsetHeight;
-
-    const btnCX = btnPosition.x + w / 2;
-    const btnCY = btnPosition.y + h / 2;
-
-    const relMX = clientX - aRect.left;
-    const relMY = clientY - aRect.top;
-
-    const dx = btnCX - relMX;
-    const dy = btnCY - relMY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-
-    if (dist > 85) return;
-
-    if (!hasDodged) setHasDodged(true);
-
-    const angle = Math.atan2(dy, dx);
-    const run = 120 + Math.random() * 50;
-
-    let newX = btnCX + Math.cos(angle) * run - w / 2;
-    let newY = btnCY + Math.sin(angle) * run - h / 2;
-
-    const maxX = aRect.width - w;
-    const maxY = aRect.height - h;
-
-    if (newX < 0 || newX > maxX) newX = Math.random() * maxX;
-    if (newY < 0 || newY > maxY) newY = Math.random() * maxY;
-
-    newX = Math.max(0, Math.min(maxX, newX));
-    newY = Math.max(0, Math.min(maxY, newY));
-
-    setBtnPosition({ x: newX, y: newY });
-  };
-
-  const handleButtonClick = (e) => {
-    if (!isTamed) {
-      e.preventDefault();
-      // Force one dodge if they managed to click it
-      handleDodge(e);
-    }
-  };
 
 
   return (
@@ -526,36 +464,10 @@ export default function App() {
                 }
               />
 
-              <div
-                className="dodge-area"
-                ref={dodgeAreaRef}
-                onMouseMove={handleDodge}
-                onTouchMove={handleDodge}
-                onTouchStart={handleDodge}
-                style={{
-                  position: 'relative',
-                  height: '120px', // slightly taller for mobile
-                  marginTop: '20px',
-                  overflow: 'visible',
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  justifyContent: 'center' // Centered for mobile thumb reach
-                }}
-              >
+              <div className="form-submit" style={{ marginTop: '30px', textAlign: 'center' }}>
                 <button
-                  ref={btnRef}
                   type="submit"
                   className={`btn-filled boom-btn ${isBlasting ? "blasting" : ""} ${isTamed ? "ready" : ""}`}
-                  style={{
-                    position: hasDodged ? 'absolute' : 'relative',
-                    left: hasDodged ? `${btnPosition.x}px` : 'auto',
-                    top: hasDodged ? `${btnPosition.y}px` : 'auto',
-                    transition: 'all 0.2s ease-out',
-                    zIndex: 10,
-                    margin: hasDodged ? 0 : '0 auto',
-                    whiteSpace: 'nowrap'
-                  }}
-                  onClick={handleButtonClick}
                 >
                   {isBlasting ? "Booming..." : "BOOM IT!"}
                 </button>
