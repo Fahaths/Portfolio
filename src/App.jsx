@@ -215,7 +215,7 @@ export default function App() {
 
         {/* --- About Me Section --- */}
         <section className="content-overview" id="about">
-          <div className="content-label">ABOUT</div>
+
           <div className="about-container reveal">
             <h3 className="section-title">About Me</h3>
             <div className="about-text">
@@ -239,8 +239,9 @@ export default function App() {
 
         {/* --- Resume Section --- */}
         <section className="content-overview">
-          <div className="content-label">RESUME</div>
+
           <div className="edu-exp-section reveal">
+            <h3 className="section-title">Resume</h3>
             <div className="edu-exp-cols">
               {/* Education Column */}
               <div>
@@ -314,12 +315,12 @@ export default function App() {
 
         {/* --- Works Section --- */}
         <section className="content-overview" id="works">
-          <div className="content-label">WORKS</div>
+
           <div className="works-section reveal">
+            <h3 className="section-title">Works</h3>
             <div className="works-inner">
               <div className="works-header">
-                <span className="works-title">Works</span>
-                <span className="works-count">/ 03 PROJECTS</span>
+                <span className="works-count">/ 04 PROJECTS</span>
               </div>
 
               <div className="work-item">
@@ -333,52 +334,101 @@ export default function App() {
                     <span className="tag">Technical SEO</span>
                   </div>
                 </div>
-                <span className="work-arrow">↗</span>
+
               </div>
 
               <div className="work-item">
                 <span className="work-num">02</span>
                 <div className="work-body">
-                  <p className="work-name">Ad Campaigns</p>
-                  <p className="work-desc">Performance marketing campaigns across Meta and Google Ads — from audience targeting and creative strategy to budget optimisation and ROAS tracking.</p>
-                  <div className="work-tags">
-                    <span className="tag">Meta Ads</span>
-                    <span className="tag">Google Ads</span>
-                    <span className="tag">Lead Gen</span>
-                    <span className="tag">ROAS</span>
+                  <p className="work-name">Performance Marketing</p>
+                  <p className="work-desc">Data-driven campaigns built to generate leads, conversions, and measurable growth — not just impressions.</p>
+                  <span className="tag">Meta Ads</span> <br /><br />
+                  <div className="work-item">
+                    <span className="work-num"></span>
+                    <div className="work-body">
+                      <p className="work-name">Healthcare Performance Marketing</p>
+                      <p className="work-desc">High-intent patient acquisition campaigns tailored for hospitals and clinics.</p>
+                      <div className="work-tags">
+                        <span className="tag">Hospital Launch & Hiring Campaigns</span>
+                        <span className="tag">Specialty Lead Generation (Ortho, Urology, Women’s Health)</span>
+                        <span className="tag">Awareness to Conversion Funnels (Women’s Day, Free Consultation)</span>
+                        <span className="tag">Master Health Checkup Package Promotions</span>
+                        <span className="tag">Condition-Based Campaigns (Bells Palsy, Hydration, etc.)</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="work-item">
+                    <span className="work-num"></span>
+                    <div className="work-body">
+                      <p className="work-name">Workshop & Training Lead Generation</p>
+                      <p className="work-desc">Structured funnels designed to fill workshops and maximize registrations.</p>
+                      <div className="work-tags">
+                        <span className="tag">PWP Trichy & Healthcare Workshop Campaigns</span>
+                        <span className="tag">HealthTeach Program Promotions</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="work-item">
+                    <span className="work-num"></span>
+                    <div className="work-body">
+                      <p className="work-name">Creative-Led Performance Ads</p>
+                      <p className="work-desc">Conversion-focused creatives that actually drive results.</p>
+                      <div className="work-tags">
+                        <span className="tag">Video Marketing</span>
+                        <span className="tag">Poster Markeing</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="work-item">
+                    <span className="work-num"></span>
+                    <div className="work-body">
+                      <p className="work-name">Office Space Campaigns</p>
+                      <p className="work-desc">Hyperlocal targeting to generate qualified walk-ins and inquiries.</p>
+                      <div className="work-tags">
+                        <span className="tag">Offisbay (Mount Road & Perungudi) Lead Campaigns</span>
+                        <span className="tag">TheLaunchpod Promotions</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="work-item">
+                    <span className="work-num"></span>
+                    <div className="work-body">
+                      <p className="work-name">Course & Program Marketing</p>
+                      <p className="work-desc">Optimized campaigns to drive enrollments and reduce CPL.</p>
+                      <div className="work-tags">
+                        <span className="tag">Cosmetic & Medifical Course Promotions</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="work-item">
+                    <span className="work-num"></span>
+                    <div className="work-body">
+                      <p className="work-name">Event Performance Campaigns</p>
+                      <p className="work-desc">End-to-end promotion focused on registrations and attendance.</p>
+                      <div className="work-tags">
+                        <span className="tag">Franchise Events</span>
+                        <span className="tag">UG TRB Campaigns</span>
+                        <span className="tag">Startup to Scaleup Events</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="work-item">
+                    <span className="work-num"></span>
+                    <div className="work-body">
+                      <p className="work-name">Content-Driven Performance Support</p>
+                      <p className="work-desc">Because ads don’t convert without strong content.</p>
+                      <div className="work-tags">
+                        <span className="tag">Instagram Photography & Reel Shoots</span>
+                        <span className="tag">Personal Branding Campaigns</span>
+                        <span className="tag">Studio-Based Content Production</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <span className="work-arrow">↗</span>
               </div>
 
-              <div className="work-item">
-                <span className="work-num">03</span>
-                <div className="work-body">
-                  <p className="work-name">Healthcare Event Marketing</p>
-                  <p className="work-desc">Full digital promotion for Pivot with Purpose™ — LinkedIn content, Instagram creatives, and paid amplification for a Chennai healthcare summit.</p>
-                  <div className="work-tags">
-                    <span className="tag">LinkedIn</span>
-                    <span className="tag">Instagram</span>
-                    <span className="tag">Event Marketing</span>
-                  </div>
-                </div>
-                <span className="work-arrow">↗</span>
-              </div>
 
-              <div className="work-item">
-                <span className="work-num">04</span>
-                <div className="work-body">
-                  <p className="work-name">YouTube Lead Campaigns</p>
-                  <p className="work-desc">YouTube lead form ad strategy for a hospital client in Chennai — MCC account setup, conversion tracking, and a 30-day optimisation framework.</p>
-                  <div className="work-tags">
-                    <span className="tag">YouTube Ads</span>
-                    <span className="tag">Google MCC</span>
-                    <span className="tag">Healthcare</span>
-                    <span className="tag">Conversion Tracking</span>
-                  </div>
-                </div>
-                <span className="work-arrow">↗</span>
-              </div>
+
 
             </div>
           </div>
@@ -388,7 +438,7 @@ export default function App() {
 
         {/* --- Contact Section --- */}
         <section className="content-overview" id="contact">
-          <div className="content-label">CONTACT</div>
+
           <div className="contact-container reveal">
             <div className="contact-info">
               <h3>Get In Touch</h3>
@@ -406,7 +456,7 @@ export default function App() {
               <div className="contact-item">
                 <span className="label">Phone</span>
                 <a href="tel:+919840031124" className="value">+91 98400 31124</a>
-            </div>
+              </div>
             </div>
             <form
               className="contact-form"

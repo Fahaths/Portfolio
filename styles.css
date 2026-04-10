@@ -21,7 +21,7 @@
 .contact .soft-icons{margin-top:10px;color:#777}
 
 .content-overview{position:relative;padding:40px 0}
-.content-label{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:120px;color:rgba(190,173,158,0.12);letter-spacing:12px;font-weight:900}
+
 .content-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin-top:40px}
 .card{background:#fff;padding:18px;border-radius:6px;display:flex;flex-direction:column;align-items:flex-start;min-height:260px;position:relative;overflow:hidden}
 .card-number{position:absolute;right:14px;top:10px;font-size:84px;color:rgba(255,255,255,0.12);font-weight:900}
