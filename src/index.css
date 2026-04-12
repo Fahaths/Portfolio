@@ -1,4 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&family=Playfair+Display:wght@400;700&family=Rubik:wght@300;400;500;700&family=Dancing+Script:wght@400;700&family=Mrs+Saint+Delafield&family=Great+Vibes&display=swap');
+@import "tailwindcss";
+
+@font-face {
+    font-family: 'BastligaOne';
+    src: url('/assets/fonts/bastliga-one.regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
 
 :root {
     /* User Provided Variables (Bootstrap 5) */
@@ -277,11 +284,11 @@ a:hover {
         stroke-dasharray: 12 63;
     }
 
-    .hamburger input:checked + svg {
+    .hamburger input:checked+svg {
         transform: rotate(-45deg);
     }
 
-    .hamburger input:checked + svg .line-top-bottom {
+    .hamburger input:checked+svg .line-top-bottom {
         stroke-dasharray: 20 300;
         stroke-dashoffset: -32.42;
     }
@@ -369,8 +376,8 @@ a:hover {
     grid-template-columns: 1fr 1.2fr;
     /* Image Left, Content Right */
     align-items: center;
-    width: 90%;
-    min-height: 100vh;
+    width: 77%;
+    min-height: 103vh;
     /* Full viewport height */
     padding: 60px 40px 40px;
     /* Added top padding to clear navbar */
@@ -429,11 +436,11 @@ a:hover {
 }
 
 .hero-signature {
-    font-family: "Sacramento", cursive;
+    font-family: 'BastligaOne', cursive;
     font-weight: 400;
     font-style: normal;
     font-size: 4.5rem;
-    margin-top: 10px;
+    margin-top: -10px;
     transform: none;
     display: inline-block;
     color: var(--accent);
@@ -443,18 +450,20 @@ a:hover {
     position: relative;
     width: fit-content;
     margin: 0 auto;
-    padding: 20px;
+    padding: 30px;
     /* Space for the offset backdrop */
 }
 
 .hero-backdrop {
     position: absolute;
-    top: 50%;
+    top: 48%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 90%;
-    height: 88%;
+    height: 86%;
     background: var(--accent);
+    border: 2px solid var(--text-main);
+    border-radius: 5px;
     /* Using bootstrap yellow for the solid block look */
     z-index: 0;
     transition: background 0.3s ease;
@@ -466,7 +475,7 @@ a:hover {
 
 .hero-frame-border {
     position: relative;
-    border: 15px solid var(--text-main);
+    border: none;
     padding: 0;
     z-index: 1;
     display: inline-block;
@@ -591,7 +600,7 @@ a:hover {
 .hero-image {
     transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
     will-change: opacity, transform;
-    max-width: 400px;
+    max-width: 240px;
     width: 100%;
     height: auto;
     border-radius: 20px;
@@ -1312,11 +1321,20 @@ a:hover {
     }
 
     .hero-image {
-        max-width: 280px;
+        max-width: 180px;
+    }
+
+    .hero-backdrop {
+        width: 90%;
+        height: 87%;
+    }
+
+    .hero-frame-wrapper {
+        padding: 20px;
     }
 
     .hero-frame-border {
-        border-width: 8px;
+        border-width: 0;
     }
 
     .content-overview {
