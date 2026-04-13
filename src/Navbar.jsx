@@ -54,8 +54,20 @@ export default function Navbar() {
     return (
         <>
             <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
-                <div className="logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ cursor: 'pointer' }}>
-                    <img src="/logo-v2.webp" alt="Faa" className="logo-img" />
+                <div 
+                    className="logo" 
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
+                    style={{ cursor: 'pointer' }}
+                    role="button"
+                    aria-label="Go to homepage"
+                    tabIndex="0"
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                    }}
+                >
+                    <img src="/logo-v2.webp" alt="Faa" className="logo-img" width="50" height="50" />
                 </div>
 
                 {/* Desktop Links */}
@@ -71,7 +83,7 @@ export default function Navbar() {
                 </button>
 
                 {/* Mobile Hamburger */}
-                <label className="hamburger">
+                <label className="hamburger" aria-label="Toggle mobile menu">
                     <input type="checkbox" checked={isMobileMenuOpen} onChange={toggleMobileMenu} />
                     <svg viewBox="0 0 32 32">
                         <path
