@@ -1,7 +1,7 @@
 # Download Google Fonts used by the project and produce a local fonts CSS
 # Usage: from project root run: powershell -ExecutionPolicy Bypass -File public\download-fonts.ps1
 
-$fontsCssUrl = "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&family=Playfair+Display:wght@600;700&display=swap"
+$fontsCssUrl = "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&family=Iosevka+Charon:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Sacramento&display=swap"
 $headers = @{ 'User-Agent' = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' }
 
 Write-Host "Fetching fonts CSS from Google..."

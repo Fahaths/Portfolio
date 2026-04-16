@@ -2,12 +2,25 @@
 <html lang="en">
 
 <head>
-  <!-- Primary Meta Tags -->
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Preconnect to high-priority origins -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  
+  <!-- Preload Critical Assets -->
+  <link rel="preload" href="/hero-profile-v3.webp" as="image" fetchpriority="high">
   <link rel="preload" href="/assets/fonts/bastliga-one.regular.ttf" as="font" type="font/ttf" crossorigin>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Optimized CSS Loading: Inline critical or use print-to-all pattern -->
+  <link rel="stylesheet" href="/assets/fonts/fonts-local.css" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="/assets/fonts/fonts-local.css">
+  </noscript>
+
+  <!-- Primary Meta Tags -->
   <title>S. Fahath | Digital Marketer & SEO Analyst</title>
   <link rel="icon" type="image/webp" href="/logo-v2.webp" />
   <meta name="title" content="S. Fahath | Digital Marketer & SEO Analyst" />
@@ -41,14 +54,12 @@
   <!-- Theme & PWA -->
   <meta name="theme-color" content="#f0ece0" />
   <meta name="msapplication-TileColor" content="#f0ece0" />
-  <link rel="stylesheet" href="/assets/fonts/fonts-local.css" />
-
-  <!-- GTM removed for local development -->
 </head>
 
 <body>
   <div id="root"></div>
+  <!-- React App starts here -->
   <script type="module" src="/src/main.jsx"></script>
 </body>
 
-</html>
+</html>

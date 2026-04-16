@@ -67,7 +67,7 @@ export default function Navbar() {
                         }
                     }}
                 >
-                    <img src="/logo-v2.webp" alt="Faa" className="logo-img" width="50" height="50" />
+                    <img src="/logo-v2.webp" alt="Faa" className="logo-img" width="50" height="50" loading="lazy" decoding="async" />
                 </div>
 
                 {/* Desktop Links */}

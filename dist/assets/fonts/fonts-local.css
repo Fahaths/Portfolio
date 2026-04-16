@@ -1,4 +1,81 @@
 ﻿@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(/assets/fonts/rP2tp2ywxg089UriI5-g4vlH9VoD8CmcqZG40F9JadbnoEwA_JxhTg.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/assets/fonts/rP2tp2ywxg089UriI5-g4vlH9VoD8CmcqZG40F9JadbnoEwAopxhTg.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/assets/fonts/rP2tp2ywxg089UriI5-g4vlH9VoD8CmcqZG40F9JadbnoEwAkJxhTg.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Iosevka Charon';
+  font-style: italic;
+  font-weight: 300;
+  font-display: swap;
+  src: url(/assets/fonts/f0Xq0e-o8dtuW1FZBLWGprOon7cFYU0uGJw.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Iosevka Charon';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/assets/fonts/f0Xt0e-o8dtuW1FZBLWGprOon7cFWeE.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Iosevka Charon';
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/assets/fonts/f0Xq0e-o8dtuW1FZBLWGprOon7cFYRUvGJw.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Iosevka Charon';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/assets/fonts/f0Xq0e-o8dtuW1FZBLWGprOon7cFYV0pGJw.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Iosevka Charon';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(/assets/fonts/f0Xs0e-o8dtuW1FZBLWGprOon7-re8Es.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Iosevka Charon';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/assets/fonts/f0Xv0e-o8dtuW1FZBLWGprOon4cH.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Iosevka Charon';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/assets/fonts/f0Xs0e-o8dtuW1FZBLWGprOon7_zesEs.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Iosevka Charon';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/assets/fonts/f0Xs0e-o8dtuW1FZBLWGprOon7-7fMEs.ttf) format('truetype');
+}
+@font-face {
   font-family: 'Playfair Display';
   font-style: normal;
   font-weight: 600;
@@ -46,5 +123,12 @@
   font-weight: 900;
   font-display: swap;
   src: url(/assets/fonts/pxiByp8kv8JHgFVrLBT5V1s.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Sacramento';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/assets/fonts/buEzpo6gcdjy0EiZMBUG0Co.ttf) format('truetype');
 }
 

@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState, useRef } from 'react'
 import Navbar from './Navbar'
-import emailjs from '@emailjs/browser'
+// Dynamic import for emailjs to improve TBT
 
 const detailsData = {
   'measi': {
@@ -151,22 +151,23 @@ export default function App() {
     setIsBlasting(true)
 
     // Wait for the blast animation to execute
-    setTimeout(() => {
-      // Send via EmailJS
-      emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form.current, {
-        publicKey: PUBLIC_KEY,
-      })
-        .then(
-          () => {
-            alert('Message Sent Successfully!')
-            form.current.reset()
-            setIsBlasting(false)
-          },
-          (error) => {
-            alert('Failed to send email: ' + error.text)
-            setIsBlasting(false)
-          },
-        )
+    setTimeout(async () => {
+      try {
+        // Dynamically load emailjs on demand
+        const { default: emailjs } = await import('@emailjs/browser')
+        
+        // Send via EmailJS
+        await emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form.current, {
+          publicKey: PUBLIC_KEY,
+        });
+
+        alert('Message Sent Successfully!')
+        form.current.reset()
+        setIsBlasting(false)
+      } catch (error) {
+        alert('Failed to load email service or send message: ' + (error.text || error.message))
+        setIsBlasting(false)
+      }
     }, 600)
   }
 
@@ -191,16 +192,23 @@ export default function App() {
         <div className="hero-frame-wrapper">
           <div className="hero-backdrop"></div>
           <div className="hero-frame-border">
-            <img
-              src="/hero-profile-v3.webp"
-              alt="Fahath S"
-              className="hero-image reveal"
-              style={{ display: 'block' }}
-              width="240"
-              height="240"
-              fetchpriority="high"
-              loading="eager"
-            />
+            <picture>
+              <source 
+                media="(max-width: 600px)" 
+                srcSet="/hero-profile-v3.webp" 
+              />
+              <img
+                src="/hero-profile-v3.webp"
+                alt="Fahath S"
+                className="hero-image reveal"
+                style={{ display: 'block' }}
+                width="240"
+                height="240"
+                fetchpriority="high"
+                loading="eager"
+                decoding="async"
+              />
+            </picture>
           </div>
         </div>
         <div className="hero-content">
@@ -218,7 +226,7 @@ export default function App() {
       <main className="container">
 
         {/* --- About Me Section --- */}
-        <section className="content-overview" id="about">
+        <section className="content-overview" id="about" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 500px' }}>
 
           <div className="about-container reveal">
             <h3 className="section-title">About Me</h3>
@@ -318,7 +326,7 @@ export default function App() {
         </section >
 
         {/* --- Works Section --- */}
-        <section className="content-overview" id="works">
+        <section className="content-overview" id="works" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 800px' }}>
 
           <div className="works-section reveal">
             <h3 className="section-title">Works</h3>
@@ -479,7 +487,7 @@ export default function App() {
                     <circle cx="12" cy="7" r="4"></circle>
                   </svg>
                 }
-              />
+              /> <br />
               <StylizedInput
                 label="Email"
                 name="reply_to"
@@ -491,7 +499,7 @@ export default function App() {
                     <polyline points="22,6 12,13 2,6"></polyline>
                   </svg>
                 }
-              />
+              /> <br />
               <StylizedInput
                 label="Subject"
                 name="subject"
@@ -537,7 +545,7 @@ export default function App() {
         <div className="footer-icons">
           <a href="https://www.linkedin.com/in/fahath-s-digital-marketer" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>
           <a href="https://github.com/Fahaths" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
-          <a href="https://fahath-s.blogspot.com/" target="_blank" rel="noopener noreferrer" aria-label="Blogger"><span style={{ fontWeight: 'bold', fontSize: '22px', display: 'flex', alignItems: 'center' }}><img src="https://simpleicons.org/icons/blogger.svg" alt="Blogger Icon" width="18" height="18" loading="lazy" /></span></a>
+          <a href="https://fahath-s.blogspot.com/" target="_blank" rel="noopener noreferrer" aria-label="Blogger"><span style={{ fontWeight: 'bold', fontSize: '22px', display: 'flex', alignItems: 'center' }}><img src="https://simpleicons.org/icons/blogger.svg" alt="Blogger Icon" width="18" height="18" loading="lazy" decoding="async" /></span></a>
         </div>
         <p style={{ fontWeight: 300, fontSize: '0.8rem', marginTop: '1.5rem', color: '#666', letterSpacing: '0.3px' }}>
           Powered By and &copy; Copyright - 2026 Fahath S, Digital marketer, All rights reserved.
