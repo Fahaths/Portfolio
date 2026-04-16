@@ -1538,6 +1538,10 @@ a:hover {
 
 /* --- Mobile Optimizations (Final Refinements) --- */
 @media (max-width: 768px) {
+    .hero {
+        margin-top: 10% !important;
+    }
+
     .container {
         padding: 0 20px;
     }

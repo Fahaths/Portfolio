@@ -226,7 +226,7 @@ export default function App() {
       <main className="container">
 
         {/* --- About Me Section --- */}
-        <section className="content-overview" id="about" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 500px' }}>
+        <section className="content-overview" id="about">
 
           <div className="about-container reveal">
             <h3 className="section-title">About Me</h3>
@@ -326,7 +326,7 @@ export default function App() {
         </section >
 
         {/* --- Works Section --- */}
-        <section className="content-overview" id="works" style={{ contentVisibility: 'auto', containIntrinsicSize: '0 800px' }}>
+        <section className="content-overview" id="works">
 
           <div className="works-section reveal">
             <h3 className="section-title">Works</h3>
