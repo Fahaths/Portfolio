@@ -26,7 +26,7 @@ import {
 function BrandLogo() {
   return (
     <a href="#" className="flex items-center space-x-3 select-none group focus:outline-none">
-      <div className="relative flex items-center justify-center font-display font-black text-3xl tracking-tighter">
+      <div className="relative flex items-center justify-center font-display font-extrabold text-3xl tracking-tighter">
         <span className="text-[var(--text-charcoal)]">F</span>
         <span className="text-[var(--accent-gold)]">A</span>
       </div>
@@ -399,10 +399,10 @@ export default function EyeComfortVintagePortfolio() {
               }}
               className="flex flex-wrap items-center gap-4"
             >
-              <a href="#works" className="editorial-btn-primary px-8 py-3.5 rounded-full text-sm">
+              <a href="#works" className="editorial-btn-primary px-8 text-sm inline-flex items-center justify-center h-[52px] rounded-full">
                 View My Work
               </a>
-              <a href="#contact" className="editorial-btn-secondary px-8 py-3.5 rounded-full text-sm">
+              <a href="#contact" className="editorial-btn-secondary px-8 text-sm inline-flex items-center justify-center h-[52px] rounded-full">
                 Let's Talk
               </a>
             </motion.div>
@@ -426,7 +426,7 @@ export default function EyeComfortVintagePortfolio() {
                  <img
                    src="/hero-profile-v3.webp"
                    alt="Fahath Portrait"
-                   className="relative z-10 w-[90%] h-[95%] object-contain object-bottom drop-shadow-2xl"
+                   className="relative z-10 drop-shadow-2xl mt-auto w-[95%] h-[85%] object-contain object-bottom lg:w-[90%] lg:h-[95%]"
                  />
               </div>
 
@@ -436,14 +436,14 @@ export default function EyeComfortVintagePortfolio() {
               <motion.div
                 animate={{ y: [-5, 5, -5] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
-                className="floating-card absolute top-[15%] left-[80%] lg:left-[95%] bg-zinc-900 border border-[var(--accent-gold)]/50 rounded-xl p-4 shadow-[0_0_20px_rgba(0,229,160,0.15)] z-20 flex flex-col justify-center space-y-3 hidden md:flex"
+                className="floating-card absolute top-[-18px] right-[-12px] md:top-[15%] md:-right-8 lg:-right-16 bg-[#111111]/90 backdrop-blur-md border border-[var(--accent-gold)] rounded-xl p-3 shadow-[0_0_25px_rgba(0,229,160,0.15)] z-20 flex flex-col justify-center space-y-2 w-[140px] md:w-[180px]"
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-display text-[10px] lg:text-xs uppercase tracking-widest text-white font-bold">Ad Scale</span>
-                  <span className="font-mono text-[9px] lg:text-[10px] font-bold text-[var(--accent-gold)]">+42% ROAS</span>
+                  <span className="font-display text-[9px] md:text-[10px] uppercase tracking-widest text-white font-bold">Ad Scale</span>
+                  <span className="font-mono text-[9px] md:text-[10px] font-bold text-[var(--accent-gold)]">+42% ROAS</span>
                 </div>
                 {/* Minimalist continuous vector trend line */}
-                <svg viewBox="0 0 100 30" fill="none" className="w-full h-8 stroke-[var(--accent-gold)] drop-shadow-[0_0_6px_rgba(0,229,160,0.5)]" strokeWidth="3">
+                <svg viewBox="0 0 100 30" fill="none" className="w-full h-5 md:h-7 stroke-[var(--accent-gold)] drop-shadow-[0_0_6px_rgba(0,229,160,0.6)]" strokeWidth="3">
                   <path d="M 5 25 L 25 20 L 40 26 L 60 12 L 75 16 L 95 4" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </motion.div>
@@ -452,7 +452,7 @@ export default function EyeComfortVintagePortfolio() {
               <motion.div
                 animate={{ y: [5, -5, 5] }}
                 transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-                className="floating-card absolute right-[85%] lg:right-[95%] top-[40%] bg-zinc-900 border border-[var(--accent-gold)]/50 rounded-full p-2 lg:p-3 shadow-[0_0_20px_rgba(0,229,160,0.15)] text-[var(--accent-gold)] flex items-center justify-center z-20 hidden md:flex"
+                className="floating-card absolute right-[85%] lg:right-[95%] top-[40%] bg-zinc-900 border border-[var(--accent-gold)]/50 rounded-full p-2 lg:p-3 shadow-[0_0_20px_rgba(0,229,160,0.15)] text-[var(--accent-gold)] items-center justify-center z-20 hidden md:flex"
                 style={{ width: "fit-content" }}
               >
                 <Search className="w-4 h-4 lg:w-5 lg:h-5 stroke-[1.5]" />
@@ -462,31 +462,31 @@ export default function EyeComfortVintagePortfolio() {
               <motion.div
                 animate={{ y: [-4, 4, -4] }}
                 transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
-                className="floating-card absolute bottom-[8%] right-[80%] lg:right-[90%] bg-zinc-900 border border-[var(--accent-gold)]/50 rounded-xl p-4 shadow-[0_0_20px_rgba(0,229,160,0.15)] flex flex-col justify-center space-y-3 z-20 hidden md:flex"
+                className="floating-card absolute bottom-[-18px] left-[-12px] md:bottom-[12%] md:-left-8 lg:-left-16 bg-[#111111]/90 backdrop-blur-md border border-[var(--accent-gold)] rounded-xl p-2 md:p-3 shadow-[0_0_25px_rgba(0,229,160,0.15)] flex flex-col justify-center space-y-3 z-20 w-[160px] md:w-[200px]"
               >
-                <div className="flex justify-between items-center text-[10px] lg:text-xs font-display uppercase tracking-widest text-white font-bold mb-2">
+                <div className="flex justify-between items-center text-[10px] font-display uppercase tracking-widest text-white font-bold mb-1">
                   <span>Audience Core</span>
-                  <span className="text-[var(--accent-gold)]">GA4</span>
+                  <span className="text-[var(--accent-gold)] bg-[var(--accent-gold)]/10 px-1 rounded text-[8px] md:text-[9px]">GA4</span>
                 </div>
                 
                 {/* Metric bars */}
                 <div className="flex flex-col space-y-1">
-                  <div className="flex justify-between text-[9px] lg:text-[10px] text-white/80 font-mono">
-                    <span>Converting</span>
+                  <div className="flex justify-between text-[8px] md:text-[9px] text-white/80 font-mono">
+                    <span>Audience</span>
                     <span className="text-[var(--accent-gold)] font-bold">75%</span>
                   </div>
-                  <div className="h-1.5 lg:h-2 bg-zinc-800 rounded-full w-full overflow-hidden relative">
+                  <div className="h-1.5 bg-zinc-800 rounded-full w-full overflow-hidden relative">
                     <div className="absolute top-0 left-0 h-full bg-[var(--accent-gold)] rounded-full w-[75%] shadow-[0_0_8px_rgba(0,229,160,0.6)]" />
                   </div>
                 </div>
                 
                 <div className="flex flex-col space-y-1">
-                  <div className="flex justify-between text-[9px] lg:text-[10px] text-white/50 font-mono">
-                    <span>Bouncing</span>
-                    <span>25%</span>
+                  <div className="flex justify-between text-[8px] md:text-[9px] text-white/60 font-mono">
+                    <span>Bounce Rate</span>
+                    <span>50%</span>
                   </div>
-                  <div className="h-1.5 lg:h-2 bg-zinc-950 rounded-full w-full overflow-hidden relative border border-zinc-700">
-                    <div className="absolute top-0 left-0 h-full bg-zinc-500 rounded-full w-[25%]" />
+                  <div className="h-1.5 bg-zinc-950 rounded-full w-full overflow-hidden relative border border-zinc-700">
+                    <div className="absolute top-0 left-0 h-full bg-zinc-500 rounded-full w-[50%]" />
                   </div>
                 </div>
               </motion.div>

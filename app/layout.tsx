@@ -117,6 +117,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Inter:ital,wght@0,300..900;1,300..900&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap" />
         {/* Render JSON-LD Structured Data */}
         <script
           type="application/ld+json"
