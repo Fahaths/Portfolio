@@ -4,23 +4,26 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "fetch-fonts": "powershell -ExecutionPolicy Bypass -File public\\download-fonts.ps1"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^7.13.0"
+    "framer-motion": "^11.11.17",
+    "lucide-react": "^0.460.0",
+    "next": "^15.0.3",
+    "react": "^19.0.0-rc-66855b9609-20241106",
+    "react-dom": "^19.0.0-rc-66855b9609-20241106"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.2.2",
-    "@vitejs/plugin-react": "^4.0.0",
-    "autoprefixer": "^10.4.27",
-    "postcss": "^8.5.9",
-    "tailwindcss": "^4.2.2",
-    "vite": "^5.0.0"
+    "@tailwindcss/postcss": "^4.0.0-alpha.30",
+    "@types/node": "^20.17.6",
+    "@types/react": "^19.0.0-rc.1",
+    "@types/react-dom": "^19.0.0-rc.1",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^4.0.0-alpha.30",
+    "typescript": "^5.6.3"
   }
 }
