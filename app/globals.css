@@ -2,25 +2,25 @@
 
 @layer base {
   :root {
-    /* Neo-Mint Cyber Minimalist Color Palette */
-    --bg-cream: #0a0a0a;           /* Dark background (#0a0a0a) */
-    --bg-cream-rich: #111111;      /* Layers of absolute dark */
-    --text-charcoal: #E5E9F0;      /* Crisp starlight off-white / light silver reading text */
-    --text-taupe: #80928B;         /* Muted mint-gray / tech taupe */
+    /* Premium Tech-Minimalist Color Palette */
+    --bg-cream: #0B0F19;           /* Deep Obsidian Black */
+    --bg-cream-rich: #05080E;      /* Ultra-dark slate */
+    --text-charcoal: #F3F4F6;      /* Crisp Off-White */
+    --text-taupe: #9CA3AF;         /* Muted Gray */
     
     /* Surfaces & Borders */
-    --bg-surface: #1a1a1a;         /* Dark Charcoal / Off-Black card surface */
-    --border-vintage: rgba(0, 229, 160, 0.25); /* Fine border of low-opacity accent */
-    --border-active: rgba(0, 229, 160, 0.55);  /* Electric Neo-Mint highlight border */
+    --bg-surface: rgba(30, 41, 59, 0.4); /* Light dark background for cards */
+    --border-vintage: rgba(255, 255, 255, 0.06); /* Faint soft border */
+    --border-active: rgba(37, 99, 235, 0.4);  /* Cobalt Blue active border */
     
     /* Accents */
-    --accent-gold: #00e5a0;        /* Teal/green primary accent (#00e5a0) */
-    --accent-olive: #00b37d;       /* Deep Teal secondary accent */
+    --accent-gold: #2563EB;        /* Electric Cobalt Blue */
+    --accent-olive: #3B82F6;       /* Lighter Blue */
     
     /* Fonts */
     --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
     --font-sans: 'Inter', system-ui, sans-serif;
-    --font-serif: 'Amiri', Georgia, serif;
+    --font-serif: 'Plus Jakarta Sans', system-ui, sans-serif;
   }
 
   html {
@@ -43,7 +43,7 @@
   }
 }
 
-/* Premium Tech Scanline Grid Overlay */
+/* Premium Minimalist Background Grid */
 body::before {
   content: "";
   position: fixed;
@@ -51,64 +51,64 @@ body::before {
   left: 0;
   width: 100vw;
   height: 100vh;
-  opacity: 0.015;
+  opacity: 0.02;
   pointer-events: none;
   z-index: 9999;
   background-image: 
-    linear-gradient(rgba(29, 205, 159, 0.15) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(29, 205, 159, 0.15) 1px, transparent 1px);
-  background-size: 32px 32px;
+    linear-gradient(rgba(255, 255, 255, 1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 1) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
-/* Cyber Minimalist Cards */
+/* Tech Minimalist Cards */
 .editorial-card {
   background: var(--bg-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border-vintage);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .editorial-card:hover {
   transform: translateY(-4px);
-  border-color: var(--accent-gold);
+  border-color: var(--border-active);
   box-shadow: 
-    0 8px 30px rgba(0, 0, 0, 0.5),
-    0 0 20px rgba(29, 205, 159, 0.15);
+    0 12px 40px rgba(0, 0, 0, 0.3);
 }
 
-/* Cyber Buttons & Highlights */
+/* Minimalist Buttons */
 .editorial-btn-primary {
   background-color: var(--accent-gold);
-  color: #000000;
+  color: #ffffff;
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 600;
   border: 1px solid var(--accent-gold);
-  box-shadow: 0 4px 15px rgba(29, 205, 159, 0.25);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .editorial-btn-primary:hover {
   background-color: var(--accent-olive);
   border-color: var(--accent-olive);
-  color: #E5E9F0;
+  color: #ffffff;
   transform: translateY(-1.5px);
   box-shadow: 
-    0 6px 20px rgba(29, 205, 159, 0.4),
-    0 0 10px rgba(29, 205, 159, 0.2);
+    0 6px 20px rgba(37, 99, 235, 0.3);
 }
 
 .editorial-btn-secondary {
   background-color: transparent;
-  color: var(--accent-gold);
+  color: var(--text-charcoal);
   font-family: var(--font-display);
-  font-weight: 600;
+  font-weight: 500;
   border: 1px solid var(--border-vintage);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .editorial-btn-secondary:hover {
-  border-color: var(--accent-gold);
-  background-color: rgba(29, 205, 159, 0.04);
+  border-color: var(--border-active);
+  background-color: rgba(37, 99, 235, 0.05);
   transform: translateY(-1.5px);
 }
 
@@ -212,6 +212,10 @@ body::before {
 
 .floating-card {
   width: clamp(140px, 12vw, 200px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-vintage);
 }
 
 .navbar {

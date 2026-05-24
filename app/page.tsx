@@ -17,8 +17,80 @@ import {
   Award, 
   ChevronRight,
   Send,
-  Sparkles
+  Sparkles,
+  Gauge,
+  Code2,
+  Server
 } from "lucide-react";
+
+// -------------------------------------------------------------
+// Component 0: Sequential Typewriter Effect
+// -------------------------------------------------------------
+function SequentialTypewriter({ roles }: { roles: string[] }) {
+  const [step, setStep] = useState(0);
+  const [displayText, setDisplayText] = useState("");
+  const [charIndex, setCharIndex] = useState(0);
+  const [isFadingOut, setIsFadingOut] = useState(false);
+
+  useEffect(() => {
+    if (step >= roles.length) return;
+
+    let timeout: NodeJS.Timeout;
+
+    if (!isFadingOut && charIndex < roles[step].length) {
+      timeout = setTimeout(() => {
+        setDisplayText((prev) => prev + roles[step].charAt(charIndex));
+        setCharIndex((prev) => prev + 1);
+      }, 50);
+    } else if (!isFadingOut && charIndex === roles[step].length) {
+      timeout = setTimeout(() => {
+        setIsFadingOut(true);
+      }, 1500);
+    } else if (isFadingOut) {
+      timeout = setTimeout(() => {
+        setDisplayText("");
+        setCharIndex(0);
+        setIsFadingOut(false);
+        setStep((prev) => prev + 1);
+      }, 500);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [charIndex, isFadingOut, step, roles]);
+
+  if (step >= roles.length) {
+    return (
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="flex flex-wrap items-center gap-x-2 md:gap-x-3 text-[var(--accent-gold)] font-display font-semibold tracking-wide"
+      >
+        <span>{roles[0]}</span>
+        <span className="opacity-50">·</span>
+        <span>{roles[1]}</span>
+        <span className="opacity-50">·</span>
+        <span>{roles[2]}</span>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div 
+      animate={{ opacity: isFadingOut ? 0 : 1 }}
+      transition={{ duration: 0.5 }}
+      className="inline-flex items-center text-[var(--accent-gold)] font-display font-semibold tracking-wide"
+    >
+      {displayText}
+      <motion.span 
+        animate={{ opacity: [1, 0] }} 
+        transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
+        className="w-[2px] h-4 bg-[var(--accent-gold)] ml-1 inline-block"
+      />
+    </motion.div>
+  );
+}
+
 
 // -------------------------------------------------------------
 // Component 1: Custom Interlocking F-A Monogram Logo
@@ -40,22 +112,64 @@ function BrandLogo() {
 interface RevealProps {
   children: React.ReactNode;
   delay?: number;
+  className?: string;
 }
-function EditorialReveal({ children, delay = 0 }: RevealProps) {
+function EditorialReveal({ children, delay = 0, className = "" }: RevealProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay }}
+      className={className}
     >
       {children}
     </motion.div>
   );
 }
 
+function AnimatedCounter({ endValue, suffix = "", duration = 1500, className = "" }: { endValue: number, suffix?: string, duration?: number, className?: string }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  
+  useEffect(() => {
+    let startTimestamp: number | null = null;
+    let frameId: number;
+    let hasStarted = false;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !hasStarted) {
+          hasStarted = true;
+          const step = (timestamp: number) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+            setCount(Math.floor(easeProgress * endValue));
+            if (progress < 1) {
+              frameId = window.requestAnimationFrame(step);
+            }
+          };
+          frameId = window.requestAnimationFrame(step);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (ref.current) observer.observe(ref.current);
+
+    return () => {
+      if (frameId) window.cancelAnimationFrame(frameId);
+      observer.disconnect();
+    };
+  }, [endValue, duration]);
+
+  return <span ref={ref} className={className}>{count}{suffix}</span>;
+}
+
 export default function EyeComfortVintagePortfolio() {
   const [activeSection, setActiveSection] = useState("about");
+  const [activeWorkTab, setActiveWorkTab] = useState("Performance Marketing");
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isTransmitting, setIsTransmitting] = useState(false);
   const [isValid, setIsValid] = useState(false);
@@ -80,69 +194,7 @@ export default function EyeComfortVintagePortfolio() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // About Timeline Career journey
-  const careerTimeline = [
-    {
-      date: "Sep 2025 – Present",
-      role: "SEO Analyst & Performance Marketer",
-      company: "Crux Creations",
-      url: "https://cruxcreations.com",
-      desc: "Leading conversion-focused, data-backed campaigns across Google and Meta Ads. Structuring on-page audits, localized maps optimization, and parasite SEO platforms to scale brand visibility and tighten client CPL.",
-      skills: ["Google Ads Engine", "Meta Ad Buying", "Technical SEO", "Parasite SEO Frameworks"],
-    },
-    {
-      date: "Jun 2025 – Aug 2025",
-      role: "SEO Analyst Intern",
-      company: "Crux Creations",
-      url: "https://cruxcreations.com",
-      desc: "Conducted key competitor intelligence analysis, keyword research schemas, backlink reviews, and analytics collection across Google Search Console and Analytics 4.",
-      skills: ["Keyword Mapping", "On-Page SEO Auditing", "GSC Reports", "GA4 Audits"],
-    }
-  ];
 
-  // Projects / Cases
-  const works = [
-    {
-      num: "01",
-      name: "Search Dominance & Parasite SEO Overhaul",
-      type: "Technical SEO & Structure",
-      desc: "Crafted structured technical keyword mappings, structured metadata layouts, and parasite SEO setups that elevated target brand searches into top organic positions. Implemented advanced tracking parameters through Google Search Console to monitor rankings.",
-      tools: ["Technical SEO", "GA4", "Search Console", "Parasite SEO", "Ahrefs"],
-      metric: "Rankings Improved by 180%",
-    },
-    {
-      num: "02",
-      name: "Healthcare Specialty Ad Funnel Funnels",
-      type: "Performance Marketing",
-      desc: "Engineered scalable, high-intent patient acquisition ad flows on Google & Meta Ads. Tailored Specialty Lead Generation for women's health, urology, and orthopedics. Supported by master checkup packages and bells palsy awareness ads.",
-      tools: ["Google Ads", "Meta Ads", "Radiused Targeting", "Patient Funnels"],
-      metric: "CPL Reduced by 34%",
-    },
-    {
-      num: "03",
-      name: "Workshop & Seminar Registration Scaling",
-      type: "Event Performance Marketing",
-      desc: "Architected customized conversion registration funnels designed specifically to capture high-value sign-ups for the Healthcare Workshop Campaigns in Trichy and the advanced HealthTeach Program.",
-      tools: ["Meta Ads", "Retargeting", "Custom Audits", "Figma Ad Creative"],
-      metric: "1,200+ Registrations Secured",
-    },
-    {
-      num: "04",
-      name: "Coworking & Hyperlocal B2B Radius Leads",
-      type: "Hyperlocal B2B Leads",
-      desc: "Designed hyperlocal targeting schemas focused on physical inquiries and verified corporate walk-ins for Offisbay (Mount Road & Perungudi) and TheLaunchpod. Blended radius display ads with high-performance copy.",
-      tools: ["Google Display", "Meta Radius Ads", "Local SEO Maps", "Lead Nurturing"],
-      metric: "2.4x Qualified Inquiries",
-    },
-    {
-      num: "05",
-      name: "Conversion-Focused Creative Concepts & Shoots",
-      type: "Creative-Led Performance support",
-      desc: "Developed high-CTR (Click-Through-Rate) creative assets. Formulated Instagram Reels scripts, photography templates, and personal branding strategies inside studio environments to reduce algorithm fatigue.",
-      tools: ["Creative Direction", "Reel Shoots", "CTR Analytics", "Personal Branding"],
-      metric: "Average CTR Lift of 45%",
-    }
-  ];
 
   // Education Records
   const academics = [
@@ -364,21 +416,15 @@ export default function EyeComfortVintagePortfolio() {
                 hidden: { opacity: 0, y: 30 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
               }}
-              className="hero-role mt-2"
+              className="hero-role mt-2 font-display text-[var(--text-charcoal)]"
             >
-              <span>I build websites that</span>
-              <span className="accent">rank &amp; convert.</span>
+              <span>I build systems that</span>
+              <span className="accent text-[var(--accent-gold)] drop-shadow-sm">execute &amp; scale.</span>
             </motion.div>
             
-            <motion.div 
-               variants={{
-                hidden: { opacity: 0, y: 30 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut", delay: 0.1 } }
-              }}
-              className="font-display font-semibold text-[var(--accent-gold)] tracking-wide uppercase text-xs md:text-sm mb-6"
-            >
-              Performance Marketing · SEO · Web Development
-            </motion.div>
+            <div className="font-display tracking-widest uppercase text-xs md:text-sm mb-6 h-6 flex items-center">
+              <SequentialTypewriter roles={["Performance Marketer", "SEO Analyst", "Web Developer"]} />
+            </div>
 
             {/* Description */}
             <motion.p
@@ -432,63 +478,105 @@ export default function EyeComfortVintagePortfolio() {
 
               {/* FLOATING ELEMENTS */}
               
-              {/* Element 1: Upward trending growth line chart (Ad Scale) - Top Right */}
-              <motion.div
-                animate={{ y: [-5, 5, -5] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
-                className="floating-card absolute top-[-18px] right-[-12px] md:top-[15%] md:-right-8 lg:-right-16 bg-[#111111]/90 backdrop-blur-md border border-[var(--accent-gold)] rounded-xl p-3 shadow-[0_0_25px_rgba(0,229,160,0.15)] z-20 flex flex-col justify-center space-y-2 w-[140px] md:w-[180px]"
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-display text-[9px] md:text-[10px] uppercase tracking-widest text-white font-bold">Ad Scale</span>
-                  <span className="font-mono text-[9px] md:text-[10px] font-bold text-[var(--accent-gold)]">+42% ROAS</span>
-                </div>
-                {/* Minimalist continuous vector trend line */}
-                <svg viewBox="0 0 100 30" fill="none" className="w-full h-5 md:h-7 stroke-[var(--accent-gold)] drop-shadow-[0_0_6px_rgba(0,229,160,0.6)]" strokeWidth="3">
-                  <path d="M 5 25 L 25 20 L 40 26 L 60 12 L 75 16 L 95 4" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </motion.div>
-
-              {/* Element 2: Line-art search box representation - Center-left intersection */}
-              <motion.div
-                animate={{ y: [5, -5, 5] }}
-                transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-                className="floating-card absolute right-[85%] lg:right-[95%] top-[40%] bg-zinc-900 border border-[var(--accent-gold)]/50 rounded-full p-2 lg:p-3 shadow-[0_0_20px_rgba(0,229,160,0.15)] text-[var(--accent-gold)] items-center justify-center z-20 hidden md:flex"
-                style={{ width: "fit-content" }}
-              >
-                <Search className="w-4 h-4 lg:w-5 lg:h-5 stroke-[1.5]" />
-              </motion.div>
-
-              {/* Element 3: GA4 Audience Metrics - Bottom Left */}
+              {/* Widget 1: Code Repository (Bottom Left) */}
               <motion.div
                 animate={{ y: [-4, 4, -4] }}
-                transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
-                className="floating-card absolute bottom-[-18px] left-[-12px] md:bottom-[12%] md:-left-8 lg:-left-16 bg-[#111111]/90 backdrop-blur-md border border-[var(--accent-gold)] rounded-xl p-2 md:p-3 shadow-[0_0_25px_rgba(0,229,160,0.15)] flex flex-col justify-center space-y-3 z-20 w-[160px] md:w-[200px]"
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                className="floating-card absolute bottom-[-2%] md:bottom-[-5%] left-[5px] md:-left-12 p-3 z-20 flex flex-col w-[160px] md:w-[190px] rounded-xl shadow-lg"
               >
-                <div className="flex justify-between items-center text-[10px] font-display uppercase tracking-widest text-white font-bold mb-1">
-                  <span>Audience Core</span>
-                  <span className="text-[var(--accent-gold)] bg-[var(--accent-gold)]/10 px-1 rounded text-[8px] md:text-[9px]">GA4</span>
+                <div className="flex items-center space-x-2 mb-2 border-b border-[var(--border-vintage)] pb-2">
+                  <div className="w-2 h-2 rounded-full bg-red-500/80" />
+                  <div className="w-2 h-2 rounded-full bg-yellow-500/80" />
+                  <div className="w-2 h-2 rounded-full bg-green-500/80" />
+                  <span className="font-display text-[8px] md:text-[9px] text-[var(--text-taupe)] uppercase tracking-wider ml-2">style.css</span>
+                </div>
+                <div className="font-mono text-[9px] md:text-[10px] leading-relaxed">
+                  <div className="text-[var(--text-charcoal)]">.project-card {'{'}</div>
+                  <div className="pl-3 text-[var(--accent-gold)]">display: grid;</div>
+                  <div className="pl-3 text-[var(--text-charcoal)]">border-radius: 8px;</div>
+                  <div className="text-[var(--text-charcoal)]">{'}'}</div>
+                </div>
+              </motion.div>
+
+              {/* Widget 2: Deployment Status (Top Right) */}
+              <motion.div
+                animate={{ y: [-3, 3, -3] }}
+                transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut", delay: 1.2 }}
+                className="floating-card absolute top-[-10px] md:top-[12%] right-[-10px] md:-right-12 p-3 z-20 flex flex-col w-[150px] md:w-[170px] rounded-xl shadow-lg"
+              >
+                <div className="flex items-center space-x-2 mb-1.5">
+                  <motion.div 
+                    animate={{ opacity: [1, 0.4, 1] }} 
+                    transition={{ duration: 2, repeat: Infinity }} 
+                    className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" 
+                  />
+                  <span className="font-display text-[9px] md:text-[10px] uppercase tracking-widest text-[var(--text-charcoal)] font-semibold">Deployment</span>
+                </div>
+                <div className="font-display text-[8px] md:text-[9px] text-[var(--text-taupe)] uppercase tracking-wider">
+                  Status: <span className="text-[var(--text-charcoal)] font-semibold">Active [git]</span>
+                </div>
+              </motion.div>
+
+              {/* Widget 3: UX/UI Performance (Center Left) */}
+              <motion.div
+                animate={{ y: [4, -4, 4] }}
+                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
+                className="floating-card absolute top-[35%] md:top-[38%] left-[-5px] md:-left-28 p-3 z-20 flex items-center space-x-3 w-[150px] md:w-[180px] rounded-xl shadow-lg"
+              >
+                <div className="p-2 rounded-lg bg-[var(--bg-cream-rich)] border border-[var(--border-vintage)] text-[var(--text-charcoal)]">
+                  <Gauge className="w-4 h-4 md:w-5 md:h-5 stroke-[1.5]" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-display text-[8px] md:text-[9px] uppercase tracking-widest text-[var(--text-taupe)] font-semibold">UX/UI Perf.</span>
+                  <span className="font-display text-[9px] md:text-[10px] text-[var(--text-charcoal)] font-bold">Load: 1.2s</span>
+                </div>
+              </motion.div>
+
+              {/* Widget 4: GA4 Audience Metrics (Top Left) */}
+              <motion.div
+                animate={{ y: [3, -3, 3] }}
+                transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+                className="floating-card absolute top-[2%] md:top-[8%] left-[-10px] md:-left-16 p-3 z-20 flex flex-col space-y-3 w-[150px] md:w-[180px] rounded-xl shadow-lg"
+              >
+                <div className="flex justify-between items-center text-[9px] font-display uppercase tracking-widest text-[var(--text-charcoal)] font-semibold mb-1">
+                  <span>Audience</span>
+                  <span className="text-[var(--accent-gold)] bg-[var(--accent-gold)]/10 px-1.5 py-0.5 rounded text-[8px] border border-[var(--accent-gold)]/20">GA4</span>
                 </div>
                 
-                {/* Metric bars */}
                 <div className="flex flex-col space-y-1">
-                  <div className="flex justify-between text-[8px] md:text-[9px] text-white/80 font-mono">
-                    <span>Audience</span>
-                    <span className="text-[var(--accent-gold)] font-bold">75%</span>
+                  <div className="flex justify-between text-[8px] md:text-[9px] text-[var(--text-taupe)] font-display uppercase tracking-wider">
+                    <span>Core</span>
+                    <span className="text-[var(--text-charcoal)] font-bold">75%</span>
                   </div>
-                  <div className="h-1.5 bg-zinc-800 rounded-full w-full overflow-hidden relative">
-                    <div className="absolute top-0 left-0 h-full bg-[var(--accent-gold)] rounded-full w-[75%] shadow-[0_0_8px_rgba(0,229,160,0.6)]" />
+                  <div className="h-1 bg-[var(--bg-cream-rich)] rounded-full w-full overflow-hidden relative border border-[var(--border-vintage)]">
+                    <div className="absolute top-0 left-0 h-full bg-[var(--text-charcoal)] rounded-full w-[75%]" />
                   </div>
                 </div>
                 
                 <div className="flex flex-col space-y-1">
-                  <div className="flex justify-between text-[8px] md:text-[9px] text-white/60 font-mono">
-                    <span>Bounce Rate</span>
+                  <div className="flex justify-between text-[8px] md:text-[9px] text-[var(--text-taupe)] font-display uppercase tracking-wider">
+                    <span>Bounce</span>
                     <span>50%</span>
                   </div>
-                  <div className="h-1.5 bg-zinc-950 rounded-full w-full overflow-hidden relative border border-zinc-700">
-                    <div className="absolute top-0 left-0 h-full bg-zinc-500 rounded-full w-[50%]" />
+                  <div className="h-1 bg-[var(--bg-cream-rich)] rounded-full w-full overflow-hidden relative border border-[var(--border-vintage)]">
+                    <div className="absolute top-0 left-0 h-full bg-[var(--text-taupe)] rounded-full w-[50%]" />
                   </div>
                 </div>
+              </motion.div>
+
+              {/* Widget 5: Ad Scale Trend (Middle Right) */}
+              <motion.div
+                animate={{ y: [-4, 4, -4] }}
+                transition={{ duration: 5.2, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+                className="floating-card absolute top-[45%] md:top-[50%] right-[-15px] md:-right-20 p-3 z-20 flex flex-col space-y-2 w-[140px] md:w-[170px] rounded-xl shadow-lg"
+              >
+                <div className="flex items-center justify-between mb-1">
+                  <span className="font-display text-[8px] md:text-[9px] uppercase tracking-widest text-[var(--text-taupe)] font-semibold">Ad Scale</span>
+                  <span className="font-display text-[9px] md:text-[10px] font-bold text-[var(--accent-gold)]">+42% ROAS</span>
+                </div>
+                <svg viewBox="0 0 100 30" fill="none" className="w-full h-5 md:h-7 stroke-[var(--text-charcoal)]" strokeWidth="2.5">
+                  <path d="M 5 25 L 25 20 L 40 26 L 60 12 L 75 16 L 95 4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </motion.div>
 
             </motion.div>
@@ -498,142 +586,309 @@ export default function EyeComfortVintagePortfolio() {
       </section>
 
       {/* -------------------------------------------------------------
-          MODULE 3: ABOUT MODULE (Timeline Career Track)
+          MODULE 3: ABOUT MODULE (Asymmetric Structural Split)
           ------------------------------------------------------------- */}
-      <section id="about" className="py-28 relative border-t border-[var(--border-vintage)] bg-[var(--bg-cream-rich)]/25 px-6 md:px-12">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="flex flex-col space-y-2 mb-16">
-            <span className="font-display text-xs uppercase tracking-[0.2em] text-[var(--accent-gold)] font-bold">/ 01 CHRONICLE</span>
-            <h3 className="font-display text-4xl md:text-5xl font-black text-[var(--text-charcoal)]">The Journey</h3>
-            <p className="font-sans text-base text-[var(--text-charcoal)]/85 max-w-xl pt-2">
-              Trace my professional growth chronologically from a starting intern up to full-time specialist placements.
-            </p>
+      <section id="about" className="py-24 px-6 lg:px-16 relative border-t border-[var(--border-vintage)] bg-[#0B0F19] overflow-hidden">
+        <div className="w-full max-w-7xl mx-auto relative z-10">
+          
+          {/* Module Header */}
+          <div className="mb-20">
+            <span className="font-display text-xs uppercase tracking-[0.2em] text-[#9CA3AF] font-semibold mb-6 block">
+              01. THE JOURNEY
+            </span>
+            <h3 className="font-display text-4xl lg:text-5xl font-black text-[#F3F4F6] tracking-tight leading-[1.15]">
+              From Execution to Strategy.
+            </h3>
           </div>
 
-          {/* Timeline Track */}
-          <div className="relative border-l border-[var(--border-vintage)] ml-2 md:ml-6 space-y-12 pb-4">
-            {careerTimeline.map((item, index) => (
-              <EditorialReveal key={index} delay={index * 0.1}>
-                <div className="relative pl-6 md:pl-10 group">
-                  {/* Circle node marker on line */}
-                  <div className="absolute -left-[9.5px] top-1.5 w-4.5 h-4.5 rounded-full border-[3px] border-[var(--bg-cream)] bg-[var(--accent-olive)] group-hover:bg-[var(--accent-gold)] transition-colors duration-300" />
-                  
-                  {/* Timeline content details */}
-                  <div className="space-y-3">
-                    <span className="font-mono text-xs uppercase tracking-wider text-[var(--accent-gold)] font-bold">
-                      {item.date}
-                    </span>
+          <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-start">
+            
+            {/* Left Column (The Impact Statement & Metrics Matrix) - 40% */}
+            <div className="w-full lg:w-[40%] flex flex-col">
+              <EditorialReveal delay={0.1}>
+                <p className="font-display text-2xl lg:text-3xl font-bold text-[#F3F4F6] leading-tight">
+                  From executing basics to driving the full digital stack. Fast.
+                </p>
+              </EditorialReveal>
 
-                    <div className="space-y-1">
-                      <h4 className="font-display text-xl md:text-2xl font-bold text-[var(--text-charcoal)]">
-                        {item.role}
-                      </h4>
-                      <a 
-                        href={item.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="font-display text-sm text-[var(--accent-gold)] hover:underline inline-flex items-center space-x-1"
-                      >
-                        <span>{item.company}</span>
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </a>
+              <div className="mt-12 lg:mt-16 w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Metric 1 */}
+                <div className="bg-transparent backdrop-blur-md border border-[#F3F4F6]/5 p-6 rounded-xl transition-all duration-300 hover:border-[#2563EB]/30 hover:shadow-[inset_0_0_20px_rgba(37,99,235,0.05)]">
+                  <AnimatedCounter endValue={42} suffix="+" className="text-3xl font-bold font-display text-[#F3F4F6]" duration={1500} />
+                  <p className="text-xs uppercase tracking-wider text-[#9CA3AF] mt-2">Total Projects Delivered</p>
+                </div>
+                {/* Metric 2 */}
+                <div className="bg-transparent backdrop-blur-md border border-[#F3F4F6]/5 p-6 rounded-xl transition-all duration-300 hover:border-[#2563EB]/30 hover:shadow-[inset_0_0_20px_rgba(37,99,235,0.05)]">
+                  <AnimatedCounter endValue={15} suffix="+" className="text-3xl font-bold font-display text-[#2563EB]" duration={1500} />
+                  <p className="text-xs uppercase tracking-wider text-[#9CA3AF] mt-2">Ad Campaigns Scaled</p>
+                </div>
+                {/* Metric 3 */}
+                <div className="bg-transparent backdrop-blur-md border border-[#F3F4F6]/5 p-6 rounded-xl transition-all duration-300 hover:border-[#2563EB]/30 hover:shadow-[inset_0_0_20px_rgba(37,99,235,0.05)]">
+                  <AnimatedCounter endValue={20} suffix="+" className="text-3xl font-bold font-display text-[#F3F4F6]" duration={1500} />
+                  <p className="text-xs uppercase tracking-wider text-[#9CA3AF] mt-2">SEO Optimization Audits</p>
+                </div>
+                {/* Metric 4 */}
+                <div className="bg-transparent backdrop-blur-md border border-[#F3F4F6]/5 p-6 rounded-xl transition-all duration-300 hover:border-[#2563EB]/30 hover:shadow-[inset_0_0_20px_rgba(37,99,235,0.05)]">
+                  <AnimatedCounter endValue={12} suffix="+" className="text-3xl font-bold font-display text-[#2563EB]" duration={1500} />
+                  <p className="text-xs uppercase tracking-wider text-[#9CA3AF] mt-2">Web Architectures Built</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column (The Story Summary) - 60% */}
+            <div className="w-full lg:w-[60%] flex flex-col gap-8">
+              
+              {/* Milestone 1 */}
+              <EditorialReveal delay={0.2} className="flex flex-col gap-2">
+                <div className="flex flex-wrap items-baseline gap-x-4">
+                  <h4 className="font-display text-xl font-bold text-[#F3F4F6]">The Sandbox / Intern</h4>
+                  <span className="text-sm font-mono text-[#9CA3AF]">Crux Creations • Pre-September 2025</span>
+                </div>
+                <p className="font-sans text-[#9CA3AF] leading-relaxed">
+                  My journey started in the sandbox of digital marketing, mastering the core mechanics of technical SEO, high-authority link building, and user intent parameters.
+                </p>
+              </EditorialReveal>
+
+              {/* Milestone 2 */}
+              <EditorialReveal delay={0.3} className="flex flex-col gap-2">
+                <div className="flex flex-wrap items-baseline gap-x-4">
+                  <h4 className="font-display text-xl font-bold text-[#F3F4F6]">The Shift / SEO Analyst</h4>
+                  <span className="text-sm font-mono text-[#2563EB]">Crux Creations (Full-Time) • September 1, 2025 - Present</span>
+                </div>
+                <p className="font-sans text-[#F3F4F6] leading-relaxed">
+                  That foundation quickly accelerated into a full-time role as an SEO Analyst, where I expanded my scope to bridge the gap between frontend development and advanced search visibility frameworks.
+                </p>
+              </EditorialReveal>
+
+              {/* Engineered Skillsets Matrix Deck */}
+              <EditorialReveal delay={0.5} className="pt-6 border-t border-[var(--border-vintage)]/30">
+                <h5 className="font-display text-sm uppercase tracking-widest text-[#9CA3AF] font-bold mb-6">Engineered Skillsets</h5>
+                <div className="flex flex-wrap gap-4">
+                  {[
+                    "Google Ads (Smart Bidding & PMax)",
+                    "Meta Ads Manager",
+                    "Google Analytics 4 (GA4)",
+                    "Technical SEO & Indexing Strategy",
+                    "Workflow Automation (n8n & JSON Payloads)"
+                  ].map((skill, i) => (
+                    <div 
+                      key={i}
+                      className="px-4 py-2 bg-transparent backdrop-blur-md border border-[#2563EB]/20 rounded-md transition-all duration-250 hover:border-[#2563EB] text-[#F3F4F6] text-sm font-medium shadow-[inset_0_0_10px_rgba(37,99,235,0.05)] cursor-default"
+                    >
+                      {skill}
                     </div>
-
-                    <p className="font-sans text-base text-[var(--text-charcoal)]/80 leading-relaxed max-w-2xl">
-                      {item.desc}
-                    </p>
-
-                    {/* Skill tags */}
-                    <div className="flex flex-wrap gap-2 pt-1">
-                      {item.skills.map((skill) => (
-                        <span 
-                          key={skill} 
-                          className="font-display text-[9px] uppercase tracking-wider bg-[var(--bg-cream)] border border-[var(--border-vintage)] text-[var(--text-charcoal)] px-2.5 py-0.5 rounded-sm font-medium"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </EditorialReveal>
-            ))}
+
+            </div>
           </div>
         </div>
       </section>
 
       {/* -------------------------------------------------------------
-          MODULE 4: WORKS MODULE (Flat Responsive Grid with high spacing)
+          MODULE 4: WORKS MODULE (Interactive Bento Dashboard)
           ------------------------------------------------------------- */}
-      <section id="works" className="py-28 relative border-t border-[var(--border-vintage)] px-6 md:px-12">
-        <div className="max-w-6xl mx-auto">
+      <section id="works" className="py-24 px-6 lg:px-16 relative border-t border-[var(--border-vintage)] bg-[#0B0F19]">
+        <div className="w-full max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
-            <div className="flex flex-col space-y-2">
-              <span className="font-display text-xs uppercase tracking-[0.2em] text-[var(--accent-gold)] font-bold">/ 02 WORKS PORTFOLIO</span>
-              <h3 className="font-display text-4xl md:text-5xl font-black text-[var(--text-charcoal)]">Campaign Catalog</h3>
-            </div>
-            <span className="font-mono text-xs uppercase tracking-widest text-[var(--text-charcoal)]/80 mt-2 md:mt-0 font-bold">
-              [ Grid Index / 05 Items ]
-            </span>
+          <div className="mb-20">
+            <span className="font-display text-xs uppercase tracking-[0.2em] text-[#9CA3AF] font-semibold mb-6 block">02. PROVEN RESULTS</span>
+            <h3 className="font-display text-4xl lg:text-5xl font-black text-[#F3F4F6] tracking-tight">Architecting Growth Through Code and Campaigns.</h3>
           </div>
 
-          {/* Grid system with high spacing */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {works.map((work, idx) => (
-              <motion.div
-                key={work.num}
-                initial={{ opacity: 0, y: 25 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.6, delay: idx * 0.08 }}
-                className="editorial-card p-8 rounded-lg flex flex-col justify-between space-y-6"
+          {/* Interactive Tab Switcher */}
+          <div className="flex flex-wrap items-center gap-4 md:gap-8 mb-12 border-b border-[var(--border-vintage)]/50 pb-4">
+            {[
+              { id: "Performance Marketing", label: "Performance Marketing" },
+              { id: "Technical SEO", label: "Technical SEO" },
+              { id: "Web Development", label: "Web Development" }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveWorkTab(tab.id)}
+                className={`relative px-2 py-2 font-display text-sm md:text-base uppercase tracking-widest transition-all duration-300 ${
+                  activeWorkTab === tab.id
+                    ? "text-[#F3F4F6] font-medium"
+                    : "text-[#9CA3AF] hover:text-[#F3F4F6]"
+                }`}
               >
-                <div className="space-y-4">
-                  {/* Top Category tag & index */}
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-[9px] uppercase tracking-widest text-[var(--accent-gold)] font-bold bg-[var(--bg-cream)] px-2 py-0.5 border border-[var(--border-vintage)] rounded-sm">
-                      {work.type}
-                    </span>
-                    <span className="font-serif italic text-lg text-[var(--accent-gold)] opacity-70">
-                      {work.num}
-                    </span>
-                  </div>
-
-                  <h4 className="font-display text-xl font-bold text-[var(--text-charcoal)] leading-snug">
-                    {work.name}
-                  </h4>
-                  <p className="font-sans text-xs text-[var(--text-charcoal)]/80 leading-relaxed">
-                    {work.desc}
-                  </p>
-                </div>
-
-                <div className="space-y-4 pt-4 border-t border-[var(--border-vintage)]">
-                  {/* Tools tag pill list */}
-                  <div className="flex flex-wrap gap-1.5">
-                    {work.tools.map((t) => (
-                      <span 
-                        key={t}
-                        className="font-display text-[8.5px] uppercase tracking-wider text-[var(--text-charcoal)]/70 bg-[var(--bg-cream-rich)] px-1.5 py-0.5 border border-transparent rounded-sm"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Highlights Metric */}
-                  <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider">
-                    <span className="text-[var(--text-charcoal)]/80">Outcome:</span>
-                    <span className="text-[var(--accent-gold)] font-bold">{work.metric}</span>
-                  </div>
-                </div>
-              </motion.div>
+                {tab.label}
+                {activeWorkTab === tab.id && (
+                  <motion.div
+                    layoutId="worksTabUnderline"
+                    className="absolute left-0 bottom-[-17px] w-full h-[2px] bg-[#2563EB]"
+                    initial={false}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
+              </button>
             ))}
+          </div>
+
+          {/* Dynamic Tab Content */}
+          <div className="min-h-[400px]">
+            {activeWorkTab === "Performance Marketing" && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="flex flex-col gap-8 w-full"
+              >
+                <EditorialReveal delay={0.1} className="w-full">
+                  <div className="grid grid-cols-1 md:grid-cols-[35%_65%] gap-6 w-full">
+                    {/* Box 1: Headline */}
+                    <div className="bg-transparent backdrop-blur-md border border-[#F3F4F6]/5 rounded-xl p-8 flex flex-col justify-between transition-all duration-250 hover:border-[#2563EB]/30 group">
+                      <div className="flex items-start">
+                        <span className="font-mono text-[10px] uppercase tracking-widest text-[#9CA3AF] font-bold whitespace-nowrap">
+                          [ Performance Marketing ]
+                        </span>
+                      </div>
+                      <div className="my-8">
+                        <h4 className="font-display text-2xl font-bold text-[#F3F4F6] leading-snug">
+                          Meta &amp; Instagram Ads
+                        </h4>
+                      </div>
+                      <div>
+                        <span className="font-display text-3xl font-bold text-[#2563EB] tracking-tight whitespace-nowrap">
+                          1,200+ Leads
+                        </span>
+                      </div>
+                    </div>
+                    {/* Box 2: Strategy */}
+                    <div className="bg-transparent backdrop-blur-md border border-[#F3F4F6]/5 rounded-xl p-8 flex flex-col justify-between transition-all duration-250 hover:border-[#2563EB]/30 group">
+                      <div className="flex items-start">
+                        <span className="font-mono text-xs uppercase tracking-widest text-[#9CA3AF] font-bold whitespace-nowrap">
+                          01 / CORE STRATEGY
+                        </span>
+                      </div>
+                      <div className="my-6">
+                        <p className="font-sans text-base text-[#9CA3AF] leading-[1.6] text-left">
+                          Structured targeted ad accounts and custom radius audiences to capture verified high-intent users, maximizing lead volume while lowering acquisition costs.
+                        </p>
+                      </div>
+                      <div className="flex flex-row flex-wrap gap-2">
+                        {["Meta Ads Manager", "Google Ads", "PMax", "GA4 Data Streams"].map(tag => (
+                          <span key={tag} className="font-display text-[10px] uppercase tracking-wider text-[#2563EB] bg-[#2563EB]/5 border border-[#2563EB]/15 px-2 py-1 rounded whitespace-nowrap">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </EditorialReveal>
+              </motion.div>
+            )}
+
+            {activeWorkTab === "Technical SEO" && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="flex flex-col gap-8 w-full"
+              >
+                <EditorialReveal delay={0.1} className="w-full">
+                  <div className="grid grid-cols-1 md:grid-cols-[35%_65%] gap-6 w-full">
+                    {/* Box 1: Headline */}
+                    <div className="bg-transparent backdrop-blur-md border border-[#F3F4F6]/5 rounded-xl p-8 flex flex-col justify-between transition-all duration-250 hover:border-[#2563EB]/30 group">
+                      <div className="flex items-start">
+                        <span className="font-mono text-[10px] uppercase tracking-widest text-[#9CA3AF] font-bold whitespace-nowrap">
+                          [ Technical SEO & Indexing ]
+                        </span>
+                      </div>
+                      <div className="my-8">
+                        <h4 className="font-display text-2xl font-bold text-[#F3F4F6] leading-snug">
+                          Search Visibility Framework
+                        </h4>
+                      </div>
+                      <div>
+                        <span className="font-display text-3xl font-bold text-[#F3F4F6] tracking-tight whitespace-nowrap">
+                          Organic Surge
+                        </span>
+                      </div>
+                    </div>
+                    {/* Box 2: Strategy */}
+                    <div className="bg-transparent backdrop-blur-md border border-[#F3F4F6]/5 rounded-xl p-8 flex flex-col justify-between transition-all duration-250 hover:border-[#2563EB]/30 group">
+                      <div className="flex items-start">
+                        <span className="font-mono text-xs uppercase tracking-widest text-[#9CA3AF] font-bold whitespace-nowrap">
+                          02 / INDEXING ARCHITECTURE
+                        </span>
+                      </div>
+                      <div className="my-6">
+                        <p className="font-sans text-base text-[#9CA3AF] leading-[1.6] text-left">
+                          Executed structured site audits, deployed advanced backlink building frameworks, and re-engineered indexing setups to bypass crawling blocks and dominate organic keyword rankings.
+                        </p>
+                      </div>
+                      <div className="flex flex-row flex-wrap gap-2">
+                        {["Search Console", "Screaming Frog", "Schema Markup", "Keyword Matrix"].map(tag => (
+                          <span key={tag} className="font-display text-[10px] uppercase tracking-wider text-[#F3F4F6] bg-[#F3F4F6]/5 border border-[#F3F4F6]/10 px-2 py-1 rounded whitespace-nowrap">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </EditorialReveal>
+              </motion.div>
+            )}
+
+            {activeWorkTab === "Web Development" && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="flex flex-col gap-8 w-full"
+              >
+                <EditorialReveal delay={0.1} className="w-full">
+                  <div className="grid grid-cols-1 md:grid-cols-[35%_65%] gap-6 w-full">
+                    {/* Box 1: Headline */}
+                    <div className="bg-transparent backdrop-blur-md border border-[#F3F4F6]/5 rounded-xl p-8 flex flex-col justify-between transition-all duration-250 hover:border-[#2563EB]/30 group">
+                      <div className="flex items-start">
+                        <span className="font-mono text-[10px] uppercase tracking-widest text-[#9CA3AF] font-bold whitespace-nowrap">
+                          [ Next.js Frontend Development ]
+                        </span>
+                      </div>
+                      <div className="my-8">
+                        <h4 className="font-display text-2xl font-bold text-[#F3F4F6] leading-snug">
+                          High-Performance Applications
+                        </h4>
+                      </div>
+                      <div>
+                        <span className="font-display text-3xl font-bold text-[#2563EB] tracking-tight whitespace-nowrap">
+                          Sub-1s Load
+                        </span>
+                      </div>
+                    </div>
+                    {/* Box 2: Strategy */}
+                    <div className="bg-transparent backdrop-blur-md border border-[#F3F4F6]/5 rounded-xl p-8 flex flex-col justify-between transition-all duration-250 hover:border-[#2563EB]/30 group">
+                      <div className="flex items-start">
+                        <span className="font-mono text-xs uppercase tracking-widest text-[#9CA3AF] font-bold whitespace-nowrap">
+                          03 / CODE ENGINEERING
+                        </span>
+                      </div>
+                      <div className="my-6">
+                        <p className="font-sans text-base text-[#9CA3AF] leading-[1.6] text-left">
+                          Engineered blindingly fast, responsive, single-page marketing applications with clean, production-ready codebases strictly optimized for performance and core web vitals.
+                        </p>
+                      </div>
+                      <div className="flex flex-row flex-wrap gap-2">
+                        {["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"].map(tag => (
+                          <span key={tag} className="font-display text-[10px] uppercase tracking-wider text-[#2563EB] bg-[#2563EB]/5 border border-[#2563EB]/15 px-2 py-1 rounded whitespace-nowrap">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </EditorialReveal>
+              </motion.div>
+            )}
           </div>
         </div>
       </section>
-
       {/* -------------------------------------------------------------
           MODULE 5: EDUCATION MODULE (Balanced Matrix Grid)
           ------------------------------------------------------------- */}
