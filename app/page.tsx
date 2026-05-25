@@ -167,9 +167,140 @@ function AnimatedCounter({ endValue, suffix = "", duration = 1500, className = "
   return <span ref={ref} className={className}>{count}{suffix}</span>;
 }
 
+const BloggerInsightsStream = () => {
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await fetch("/api/blogger");
+        const data = await res.json();
+        const rawPosts = data.feed.entry || [];
+        
+        const formattedPosts = rawPosts.slice(0, 3).map((entry: any) => {
+          const title = entry.title.$t;
+          const publishedDate = new Date(entry.published.$t);
+          const date = publishedDate.toLocaleDateString("en-US", { month: "short", year: "numeric" }).toUpperCase();
+          
+          let contentSnippet = entry.content ? entry.content.$t : (entry.summary ? entry.summary.$t : "");
+          // Strip HTML cleanly
+          const tmp = document.createElement("DIV");
+          tmp.innerHTML = contentSnippet;
+          contentSnippet = tmp.textContent || tmp.innerText || "";
+          
+          let link = "https://marketingonmyway.blogspot.com/";
+          const alternateLink = entry.link?.find((l: any) => l.rel === "alternate");
+          if (alternateLink) link = alternateLink.href;
+
+          const tags = entry.category 
+            ? entry.category.map((c: any) => c.term).slice(0, 3) 
+            : ["SEO", "Marketing", "Tech Stacks"];
+
+          return {
+            title,
+            date,
+            summary: contentSnippet,
+            link,
+            tags
+          };
+        });
+
+        setPosts(formattedPosts);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching Blogger feed:", err);
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  return (
+    <section id="blogger" className="py-24 px-6 lg:px-16 relative bg-[#0B0F19] border-t border-[rgba(243,244,246,0.05)]">
+      <div className="w-full max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-20">
+          <span className="font-display text-xs uppercase tracking-[0.2em] text-[#9CA3AF] font-semibold mb-6 block">04. INSIGHTS STREAM</span>
+          <h3 className="font-display text-4xl lg:text-5xl font-black text-[#F3F4F6] tracking-tight block mb-2">Blogger Insights.</h3>
+          <span className="font-sans text-lg text-[#9CA3AF] leading-relaxed block max-w-2xl">Real-time updates on search architecture, marketing frameworks, and AI content optimization streaming directly from marketingonmyway.blogspot.com.</span>
+        </div>
+
+        <div className="flex flex-col gap-0 border-t border-[rgba(243,244,246,0.05)] min-h-[400px]">
+          <AnimatePresence mode="wait">
+            {loading ? (
+              <motion.div
+                key="loader"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, transition: { duration: 0.15 } }}
+                className="flex flex-col gap-0 w-full"
+              >
+                {[1, 2, 3].map((skeleton) => (
+                  <div key={skeleton} className="p-8 border-b border-[rgba(243,244,246,0.05)] grid grid-cols-1 md:grid-cols-12 gap-6 items-center w-full">
+                    <div className="md:col-span-2 h-4 bg-[rgba(243,244,246,0.05)] rounded animate-pulse"></div>
+                    <div className="md:col-span-7 flex flex-col gap-3">
+                      <div className="h-6 w-3/4 bg-[rgba(243,244,246,0.05)] rounded animate-pulse"></div>
+                      <div className="h-4 w-full bg-[rgba(243,244,246,0.02)] rounded animate-pulse"></div>
+                    </div>
+                    <div className="md:col-span-3 flex justify-end gap-2">
+                      <div className="h-6 w-16 bg-[rgba(243,244,246,0.05)] rounded-full animate-pulse"></div>
+                      <div className="h-6 w-16 bg-[rgba(243,244,246,0.05)] rounded-full animate-pulse"></div>
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+            ) : (
+              posts.map((post, idx) => (
+                <motion.a
+                  key={idx}
+                  href={post.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.4, delay: idx * 0.1, ease: "easeOut" }}
+                  className="group relative bg-transparent border-b border-[rgba(243,244,246,0.05)] hover:border-[#2563EB]/40 p-8 transition-all duration-300 grid grid-cols-1 md:grid-cols-12 gap-6 items-center cursor-pointer transform-gpu will-change-transform overflow-hidden block"
+                >
+                  {/* Hover Background Tint Animation */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[rgba(37,99,235,0.01)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+
+                  <div className="md:col-span-2 text-xs font-mono tracking-widest text-[#2563EB] transform-gpu group-hover:translate-x-2 transition-transform duration-200 ease-out z-10 relative">
+                    {post.date}
+                  </div>
+                  
+                  <div className="md:col-span-7 transform-gpu group-hover:translate-x-2 transition-transform duration-200 ease-out z-10 relative">
+                    <h4 className="text-xl md:text-2xl font-bold text-[#F3F4F6] group-hover:text-[#2563EB] transition-colors duration-200 mb-2 font-display">
+                      {post.title}
+                    </h4>
+                    <p className="text-sm text-[#9CA3AF] leading-relaxed line-clamp-2">
+                      {post.summary}
+                    </p>
+                  </div>
+                  
+                  <div className="md:col-span-3 flex flex-wrap gap-2 md:justify-end transform-gpu group-hover:translate-x-2 transition-transform duration-200 ease-out z-10 relative">
+                    {post.tags.map((tag: string, i: number) => (
+                      <span key={i} className="text-xs px-3 py-1 bg-transparent text-[#2563EB] rounded-full border border-[rgba(37,99,235,0.15)] whitespace-nowrap">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </motion.a>
+              ))
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 export default function EyeComfortVintagePortfolio() {
   const [activeSection, setActiveSection] = useState("about");
   const [activeWorkTab, setActiveWorkTab] = useState("Performance Marketing");
+  const [activeSector, setActiveSector] = useState<"seo" | "paid_ads" | "development">("seo");
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isTransmitting, setIsTransmitting] = useState(false);
   const [isValid, setIsValid] = useState(false);
@@ -687,348 +818,430 @@ export default function EyeComfortVintagePortfolio() {
       </section>
 
       {/* -------------------------------------------------------------
-          MODULE 4: WORKS MODULE (Interactive Bento Dashboard)
+          MODULE 4: WORKS MODULE (Interactive Graph Dashboard)
           ------------------------------------------------------------- */}
       <section id="works" className="py-24 px-6 lg:px-16 relative border-t border-[var(--border-vintage)] bg-[#0B0F19]">
         <div className="w-full max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-20">
             <span className="font-display text-xs uppercase tracking-[0.2em] text-[#9CA3AF] font-semibold mb-6 block">02. PROVEN RESULTS</span>
-            <h3 className="font-display text-4xl lg:text-5xl font-black text-[#F3F4F6] tracking-tight">Architecting Growth Through Code and Campaigns.</h3>
-          </div>
-
-          {/* Interactive Tab Switcher */}
-          <div className="flex flex-wrap items-center gap-4 md:gap-8 mb-12 border-b border-[var(--border-vintage)]/50 pb-4">
-            {[
-              { id: "Performance Marketing", label: "Performance Marketing" },
-              { id: "Technical SEO", label: "Technical SEO" },
-              { id: "Web Development", label: "Web Development" }
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveWorkTab(tab.id)}
-                className={`relative px-2 py-2 font-display text-sm md:text-base uppercase tracking-widest transition-all duration-300 ${
-                  activeWorkTab === tab.id
-                    ? "text-[#F3F4F6] font-medium"
-                    : "text-[#9CA3AF] hover:text-[#F3F4F6]"
-                }`}
-              >
-                {tab.label}
-                {activeWorkTab === tab.id && (
-                  <motion.div
-                    layoutId="worksTabUnderline"
-                    className="absolute left-0 bottom-[-17px] w-full h-[2px] bg-[#2563EB]"
-                    initial={false}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* Dynamic Tab Content */}
-          <div className="min-h-[400px]">
-            {activeWorkTab === "Performance Marketing" && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="flex flex-col gap-8 w-full"
-              >
-                <EditorialReveal delay={0.1} className="w-full">
-                  <div className="grid grid-cols-1 md:grid-cols-[35%_65%] gap-6 w-full">
-                    {/* Box 1: Headline */}
-                    <div className="bg-transparent backdrop-blur-md border border-[#F3F4F6]/5 rounded-xl p-8 flex flex-col justify-between transition-all duration-250 hover:border-[#2563EB]/30 group">
-                      <div className="flex items-start">
-                        <span className="font-mono text-[10px] uppercase tracking-widest text-[#9CA3AF] font-bold whitespace-nowrap">
-                          [ Performance Marketing ]
-                        </span>
-                      </div>
-                      <div className="my-8">
-                        <h4 className="font-display text-2xl font-bold text-[#F3F4F6] leading-snug">
-                          Meta &amp; Instagram Ads
-                        </h4>
-                      </div>
-                      <div>
-                        <span className="font-display text-3xl font-bold text-[#2563EB] tracking-tight whitespace-nowrap">
-                          1,200+ Leads
-                        </span>
-                      </div>
-                    </div>
-                    {/* Box 2: Strategy */}
-                    <div className="bg-transparent backdrop-blur-md border border-[#F3F4F6]/5 rounded-xl p-8 flex flex-col justify-between transition-all duration-250 hover:border-[#2563EB]/30 group">
-                      <div className="flex items-start">
-                        <span className="font-mono text-xs uppercase tracking-widest text-[#9CA3AF] font-bold whitespace-nowrap">
-                          01 / CORE STRATEGY
-                        </span>
-                      </div>
-                      <div className="my-6">
-                        <p className="font-sans text-base text-[#9CA3AF] leading-[1.6] text-left">
-                          Structured targeted ad accounts and custom radius audiences to capture verified high-intent users, maximizing lead volume while lowering acquisition costs.
-                        </p>
-                      </div>
-                      <div className="flex flex-row flex-wrap gap-2">
-                        {["Meta Ads Manager", "Google Ads", "PMax", "GA4 Data Streams"].map(tag => (
-                          <span key={tag} className="font-display text-[10px] uppercase tracking-wider text-[#2563EB] bg-[#2563EB]/5 border border-[#2563EB]/15 px-2 py-1 rounded whitespace-nowrap">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </EditorialReveal>
-              </motion.div>
-            )}
-
-            {activeWorkTab === "Technical SEO" && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="flex flex-col gap-8 w-full"
-              >
-                <EditorialReveal delay={0.1} className="w-full">
-                  <div className="grid grid-cols-1 md:grid-cols-[35%_65%] gap-6 w-full">
-                    {/* Box 1: Headline */}
-                    <div className="bg-transparent backdrop-blur-md border border-[#F3F4F6]/5 rounded-xl p-8 flex flex-col justify-between transition-all duration-250 hover:border-[#2563EB]/30 group">
-                      <div className="flex items-start">
-                        <span className="font-mono text-[10px] uppercase tracking-widest text-[#9CA3AF] font-bold whitespace-nowrap">
-                          [ Technical SEO & Indexing ]
-                        </span>
-                      </div>
-                      <div className="my-8">
-                        <h4 className="font-display text-2xl font-bold text-[#F3F4F6] leading-snug">
-                          Search Visibility Framework
-                        </h4>
-                      </div>
-                      <div>
-                        <span className="font-display text-3xl font-bold text-[#F3F4F6] tracking-tight whitespace-nowrap">
-                          Organic Surge
-                        </span>
-                      </div>
-                    </div>
-                    {/* Box 2: Strategy */}
-                    <div className="bg-transparent backdrop-blur-md border border-[#F3F4F6]/5 rounded-xl p-8 flex flex-col justify-between transition-all duration-250 hover:border-[#2563EB]/30 group">
-                      <div className="flex items-start">
-                        <span className="font-mono text-xs uppercase tracking-widest text-[#9CA3AF] font-bold whitespace-nowrap">
-                          02 / INDEXING ARCHITECTURE
-                        </span>
-                      </div>
-                      <div className="my-6">
-                        <p className="font-sans text-base text-[#9CA3AF] leading-[1.6] text-left">
-                          Executed structured site audits, deployed advanced backlink building frameworks, and re-engineered indexing setups to bypass crawling blocks and dominate organic keyword rankings.
-                        </p>
-                      </div>
-                      <div className="flex flex-row flex-wrap gap-2">
-                        {["Search Console", "Screaming Frog", "Schema Markup", "Keyword Matrix"].map(tag => (
-                          <span key={tag} className="font-display text-[10px] uppercase tracking-wider text-[#F3F4F6] bg-[#F3F4F6]/5 border border-[#F3F4F6]/10 px-2 py-1 rounded whitespace-nowrap">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </EditorialReveal>
-              </motion.div>
-            )}
-
-            {activeWorkTab === "Web Development" && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="flex flex-col gap-8 w-full"
-              >
-                <EditorialReveal delay={0.1} className="w-full">
-                  <div className="grid grid-cols-1 md:grid-cols-[35%_65%] gap-6 w-full">
-                    {/* Box 1: Headline */}
-                    <div className="bg-transparent backdrop-blur-md border border-[#F3F4F6]/5 rounded-xl p-8 flex flex-col justify-between transition-all duration-250 hover:border-[#2563EB]/30 group">
-                      <div className="flex items-start">
-                        <span className="font-mono text-[10px] uppercase tracking-widest text-[#9CA3AF] font-bold whitespace-nowrap">
-                          [ Next.js Frontend Development ]
-                        </span>
-                      </div>
-                      <div className="my-8">
-                        <h4 className="font-display text-2xl font-bold text-[#F3F4F6] leading-snug">
-                          High-Performance Applications
-                        </h4>
-                      </div>
-                      <div>
-                        <span className="font-display text-3xl font-bold text-[#2563EB] tracking-tight whitespace-nowrap">
-                          Sub-1s Load
-                        </span>
-                      </div>
-                    </div>
-                    {/* Box 2: Strategy */}
-                    <div className="bg-transparent backdrop-blur-md border border-[#F3F4F6]/5 rounded-xl p-8 flex flex-col justify-between transition-all duration-250 hover:border-[#2563EB]/30 group">
-                      <div className="flex items-start">
-                        <span className="font-mono text-xs uppercase tracking-widest text-[#9CA3AF] font-bold whitespace-nowrap">
-                          03 / CODE ENGINEERING
-                        </span>
-                      </div>
-                      <div className="my-6">
-                        <p className="font-sans text-base text-[#9CA3AF] leading-[1.6] text-left">
-                          Engineered blindingly fast, responsive, single-page marketing applications with clean, production-ready codebases strictly optimized for performance and core web vitals.
-                        </p>
-                      </div>
-                      <div className="flex flex-row flex-wrap gap-2">
-                        {["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"].map(tag => (
-                          <span key={tag} className="font-display text-[10px] uppercase tracking-wider text-[#2563EB] bg-[#2563EB]/5 border border-[#2563EB]/15 px-2 py-1 rounded whitespace-nowrap">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </EditorialReveal>
-              </motion.div>
-            )}
-          </div>
-        </div>
-      </section>
-      {/* -------------------------------------------------------------
-          MODULE 5: EDUCATION MODULE (Balanced Matrix Grid)
-          ------------------------------------------------------------- */}
-      <section id="education" className="py-28 relative border-t border-[var(--border-vintage)] bg-[var(--bg-cream-rich)]/25 px-6 md:px-12">
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="flex flex-col space-y-2 mb-16">
-            <span className="font-display text-xs uppercase tracking-[0.2em] text-[var(--accent-gold)] font-bold">/ 03 BALANCED GRID</span>
-            <h3 className="font-display text-4xl md:text-5xl font-black text-[var(--text-charcoal)]">Education & Credentials</h3>
+            <h3 className="font-display text-4xl lg:text-5xl font-black text-[#F3F4F6] tracking-tight block mb-2">Selected Impact.</h3>
+            <span className="font-sans text-lg text-[#9CA3AF]">Click a project sector to see performance metrics map in real-time.</span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            {/* Left Column: Academics (Formal) */}
-            <div className="lg:col-span-7 space-y-8">
-              <h4 className="font-display text-xs uppercase tracking-widest text-[var(--text-charcoal)] font-bold pb-2 border-b border-[var(--border-vintage)]">
-                Formal Degrees
-              </h4>
-
-              <div className="space-y-8">
-                {academics.map((acad, idx) => (
-                  <EditorialReveal key={idx} delay={idx * 0.1}>
-                    <div className="space-y-2">
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="font-mono text-xs text-[var(--accent-gold)] font-bold">
-                          {acad.year}
-                        </span>
-                        <a 
-                          href={acad.url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="font-display text-[10px] uppercase tracking-wider text-[var(--accent-gold)] hover:underline inline-flex items-center space-x-1 font-bold"
-                        >
-                          <span>Institute Web</span>
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
+            
+            {/* Left Interactive Selector */}
+            <div className="lg:col-span-5 flex flex-col gap-6">
+              {[
+                {
+                  id: "seo",
+                  project_name: "Organic Search Expansion",
+                  category: "Technical SEO & Indexing",
+                  summary: "Deep site restructures, high-authority backlink maps, and rapid indexing strategies.",
+                  tech_tags: ["Search Console", "Indexing Engine", "Screaming Frog"]
+                },
+                {
+                  id: "paid_ads",
+                  project_name: "Performance Ad Systems",
+                  category: "Meta & Google Ads",
+                  summary: "High-ROI direct response campaigns utilizing Smart Bidding protocols and scale mechanics.",
+                  tech_tags: ["Meta Manager", "PMax", "Smart Bidding"]
+                },
+                {
+                  id: "development",
+                  project_name: "Engineered Web Platforms",
+                  category: "Next.js / Frontend",
+                  summary: "Blindingly fast single-page apps optimized for absolute pixel-perfection and high conversion hooks.",
+                  tech_tags: ["Next.js", "TypeScript", "Tailwind CSS"]
+                }
+              ].map((card) => {
+                const isActive = activeSector === card.id;
+                return (
+                  <div
+                    key={card.id}
+                    onClick={() => setActiveSector(card.id as any)}
+                    className={`relative p-6 rounded-xl cursor-pointer will-change-transform will-change-opacity transition-all duration-300 transform-gpu ${
+                      isActive ? "bg-transparent border border-[rgba(37,99,235,0.3)] shadow-[0_0_30px_-10px_rgba(37,99,235,0.15)] backdrop-blur-md" : "bg-transparent border border-[rgba(243,244,246,0.05)] backdrop-blur-md hover:border-[rgba(243,244,246,0.1)]"
+                    }`}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeSectorIndicator"
+                        layout="position"
+                        className="absolute left-0 top-0 bottom-0 w-1 bg-[#2563EB] rounded-l-xl shadow-[0_0_8px_#2563EB]"
+                        transition={{ type: "spring", stiffness: 120, damping: 20, mass: 0.8 }}
+                      />
+                    )}
+                    <div className="flex flex-col gap-2">
+                      <span className="font-mono text-xs uppercase tracking-widest text-[#2563EB] font-bold">
+                        {card.category}
+                      </span>
+                      <h4 className={`font-display text-xl font-bold transition-colors ${isActive ? "text-[#F3F4F6]" : "text-[#9CA3AF]"}`}>
+                        {card.project_name}
+                      </h4>
+                      <p className="font-sans text-sm text-[#9CA3AF] leading-relaxed mt-2">
+                        {card.summary}
+                      </p>
+                      <div className="flex flex-row flex-wrap gap-2 mt-4">
+                        {card.tech_tags.map((tag) => (
+                          <span key={tag} className="font-mono text-[10px] uppercase tracking-wider text-[#9CA3AF] bg-[rgba(243,244,246,0.05)] px-2 py-1 rounded">
+                            {tag}
+                          </span>
+                        ))}
                       </div>
-
-                      <h5 className="font-display text-lg md:text-xl font-bold text-[var(--text-charcoal)] leading-snug">
-                        {acad.title}
-                      </h5>
-                      <p className="font-serif italic text-xs text-[var(--text-charcoal)]/80">
-                        {acad.institution}
-                      </p>
-                      <p className="font-sans text-sm text-[var(--text-charcoal)]/85 leading-relaxed">
-                        {acad.desc}
-                      </p>
                     </div>
-                  </EditorialReveal>
-                ))}
-              </div>
+                  </div>
+                );
+              })}
             </div>
 
-            {/* Right Column: Practical Industry Credentials */}
-            <div className="lg:col-span-5 space-y-8">
-              <h4 className="font-display text-xs uppercase tracking-widest text-[var(--text-charcoal)] font-bold pb-2 border-b border-[var(--border-vintage)]">
-                Professional Certifications
-              </h4>
+            {/* Right Data Visualization */}
+            <div className="lg:col-span-7 lg:sticky lg:top-32">
+              <div className="bg-transparent border border-[rgba(243,244,246,0.05)] backdrop-blur-md rounded-2xl p-8 relative overflow-hidden h-[480px] flex flex-col justify-between will-change-transform transform-gpu shadow-2xl">
+                
+                {/* Header */}
+                <div className="flex justify-between items-center mb-6 relative z-10">
+                  <h5 className="font-display text-[#F3F4F6] text-sm font-medium tracking-wider uppercase">Active Impact Analytics Stream</h5>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono text-[#2563EB]">LIVE</span>
+                    <div className="w-2 h-2 rounded-full bg-[#2563EB] animate-pulse shadow-[0_0_8px_#2563EB]"></div>
+                  </div>
+                </div>
 
-              <div className="grid grid-cols-1 gap-4">
-                {certifications.map((cert, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: idx * 0.08 }}
-                    className="p-4 bg-[var(--bg-surface)] border border-[var(--border-vintage)] rounded flex items-center space-x-4 shadow-sm"
-                  >
-                    <div className="p-2.5 bg-[var(--bg-cream-rich)] border border-[var(--border-vintage)] rounded text-[var(--accent-gold)]">
-                      <Award className="w-5 h-5 stroke-[1.5]" />
-                    </div>
-                    <div className="flex-grow">
-                      <h6 className="font-display text-sm font-bold text-[var(--text-charcoal)] leading-snug">
-                        {cert.title}
-                      </h6>
-                      <span className="font-mono text-[9px] uppercase tracking-wider text-[var(--text-charcoal)]/70">
-                        Authority: {cert.issuer}
-                      </span>
-                    </div>
-                  </motion.div>
-                ))}
+                {/* Graph Canvas */}
+                <div className="absolute inset-0 top-20 bottom-32 px-8 w-full h-[240px] mt-2">
+                  {/* Grid Lines */}
+                  <div className="absolute inset-0 flex flex-col justify-between py-4 pointer-events-none z-0">
+                    {[1, 2, 3, 4, 5].map((line) => (
+                      <div key={line} className="w-full h-[1px] border-b border-dashed border-[rgba(243,244,246,0.02)]"></div>
+                    ))}
+                  </div>
+
+                  {/* SVG Graph */}
+                  <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full relative z-10 overflow-visible">
+                    <defs>
+                      <linearGradient id="graphGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={activeSector === "seo" ? "#F3F4F6" : "#2563EB"} stopOpacity={activeSector === "seo" ? "0.03" : "0.06"} />
+                        <stop offset="100%" stopColor={activeSector === "seo" ? "#F3F4F6" : "#2563EB"} stopOpacity="0" />
+                      </linearGradient>
+                    </defs>
+                    <motion.path
+                      d={
+                        activeSector === "seo" 
+                          ? "M0 100 L0 90 L20 75 L40 55 L60 60 L80 30 L100 5 L100 100 Z" 
+                          : activeSector === "paid_ads"
+                          ? "M0 100 L0 80 L20 85 L40 40 L60 45 L80 20 L100 -10 L100 100 Z"
+                          : "M0 100 L0 10 L20 8 L40 5 L60 1 L80 2 L100 0 L100 100 Z"
+                      }
+                      fill="url(#graphGradient)"
+                      animate={{ d: activeSector === "seo" 
+                        ? "M0 100 L0 90 L20 75 L40 55 L60 60 L80 30 L100 5 L100 100 Z" 
+                        : activeSector === "paid_ads"
+                        ? "M0 100 L0 80 L20 85 L40 40 L60 45 L80 20 L100 -10 L100 100 Z"
+                        : "M0 100 L0 10 L20 8 L40 5 L60 1 L80 2 L100 0 L100 100 Z"
+                      }}
+                      transition={{ type: "spring", stiffness: 150, damping: 22 }}
+                    />
+                    <motion.path
+                      d={
+                        activeSector === "seo" 
+                          ? "M0 90 L20 75 L40 55 L60 60 L80 30 L100 5" 
+                          : activeSector === "paid_ads"
+                          ? "M0 80 L20 85 L40 40 L60 45 L80 20 L100 -10"
+                          : "M0 10 L20 8 L40 5 L60 1 L80 2 L100 0"
+                      }
+                      fill="none"
+                      stroke={activeSector === "seo" ? "#F3F4F6" : "#2563EB"}
+                      strokeWidth="1.5"
+                      vectorEffect="non-scaling-stroke"
+                      animate={{ 
+                        d: activeSector === "seo" 
+                        ? "M0 90 L20 75 L40 55 L60 60 L80 30 L100 5" 
+                        : activeSector === "paid_ads"
+                        ? "M0 80 L20 85 L40 40 L60 45 L80 20 L100 -10"
+                        : "M0 10 L20 8 L40 5 L60 1 L80 2 L100 0",
+                        stroke: activeSector === "seo" ? "#F3F4F6" : "#2563EB"
+                      }}
+                      transition={{ type: "spring", stiffness: 150, damping: 22 }}
+                    />
+                    
+                    {/* Data Points */}
+                    {[0, 20, 40, 60, 80, 100].map((cx, i) => {
+                      const cyValues = {
+                        seo: [90, 75, 55, 60, 30, 5],
+                        paid_ads: [80, 85, 40, 45, 20, -10],
+                        development: [10, 8, 5, 1, 2, 0]
+                      };
+                      return (
+                        <motion.circle
+                          key={i}
+                          cx={cx}
+                          cy={cyValues[activeSector][i]}
+                          r="0.5"
+                          fill="#0B0F19"
+                          stroke={activeSector === "seo" ? "#F3F4F6" : "#2563EB"}
+                          strokeWidth="1.5"
+                          vectorEffect="non-scaling-stroke"
+                          className="cursor-pointer origin-center transition-all duration-200 hover:scale-[2.5]"
+                          animate={{ 
+                            cy: cyValues[activeSector][i],
+                            stroke: activeSector === "seo" ? "#F3F4F6" : "#2563EB"
+                          }}
+                          whileHover={{ scale: 1.7 }}
+                          transition={{ type: "spring", stiffness: 150, damping: 22 }}
+                        />
+                      );
+                    })}
+                  </svg>
+                  
+                  {/* Graph Label Overlay */}
+                  <div className="absolute top-8 left-12 text-[#F3F4F6] font-mono text-xs uppercase tracking-wider bg-[rgba(243,244,246,0.05)] backdrop-blur-md border border-[rgba(243,244,246,0.1)] px-2 py-1 rounded">
+                    <motion.span
+                      key={activeSector}
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {activeSector === "seo" ? "Organic Traffic Velocity" : activeSector === "paid_ads" ? "Conversion Multiplier" : "Core Web Vital Efficiency"}
+                    </motion.span>
+                  </div>
+                </div>
+
+                {/* Metric Footer */}
+                <div className="relative z-10 grid grid-cols-3 gap-4 pt-6 mt-4 border-t border-[rgba(243,244,246,0.05)] bg-transparent">
+                  <div>
+                    <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">
+                      {activeSector === "seo" ? "CTR Jump" : activeSector === "paid_ads" ? "Avg ROAS" : "Perf Score"}
+                    </span>
+                    <motion.span 
+                      key={activeSector + "1"}
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                      className="text-2xl font-bold text-[#F3F4F6] tracking-tight font-display block will-change-transform"
+                    >
+                      {activeSector === "seo" ? "+142%" : activeSector === "paid_ads" ? "4.8x" : "99/100"}
+                    </motion.span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">
+                      {activeSector === "seo" ? "Clicks / Mo" : activeSector === "paid_ads" ? "Ad Spend" : "FCP Time"}
+                    </span>
+                    <motion.span 
+                      key={activeSector + "2"}
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.05 }}
+                      className="text-2xl font-bold text-[#F3F4F6] tracking-tight font-display block will-change-transform"
+                    >
+                      {activeSector === "seo" ? "24.5K" : activeSector === "paid_ads" ? "Scale" : "0.4s"}
+                    </motion.span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">
+                      {activeSector === "seo" ? "Keywords" : activeSector === "paid_ads" ? "CPA Drop" : "TTI Rate"}
+                    </span>
+                    <motion.span 
+                      key={activeSector + "3"}
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.1 }}
+                      className="text-2xl font-bold text-[#F3F4F6] tracking-tight font-display block will-change-transform"
+                    >
+                      {activeSector === "seo" ? "Top 3" : activeSector === "paid_ads" ? "-32%" : "-58%"}
+                    </motion.span>
+                  </div>
+                </div>
               </div>
+
+              {/* WorksModule_GraphSummaryCard */}
+              <div className="w-full mt-6 bg-transparent border border-[rgba(243,244,246,0.05)] backdrop-blur-md rounded-xl p-6 flex flex-col gap-3 relative overflow-hidden min-h-[220px]">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeSector}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="flex flex-col gap-3 absolute inset-6"
+                  >
+                    <span className="text-[10px] font-mono tracking-widest text-[#2563EB] uppercase">
+                      {activeSector === "seo" ? "DATA INFERENCE // ORGANIC VELOCITY" : activeSector === "paid_ads" ? "DATA INFERENCE // ACQUISITION EFFICIENCY" : "DATA INFERENCE // ARCHITECTURE CORE"}
+                    </span>
+                    <h4 className="text-lg font-bold text-[#F3F4F6] font-display">
+                      {activeSector === "seo" ? "Bypassing Crawl Blocks for Compounded Growth" : activeSector === "paid_ads" ? "Maximizing Yield with Automated Bid Protocols" : "Eliminating Core Web Vital Friction Points"}
+                    </h4>
+                    <p className="text-sm text-[#9CA3AF] leading-relaxed">
+                      {activeSector === "seo" 
+                        ? "This stream charts the deliberate lift in organic discovery after isolating and repairing critical indexing drop-offs. By structural alignment of site mapping and reinforcing high-authority backlink distribution, search crawling became predictive, locking in steady velocity spikes across high-intent keywords without recurring ad spend." 
+                        : activeSector === "paid_ads"
+                        ? "This data pipeline maps the direct traction of multi-platform scaling strategies. By deploying precise custom radius audiences on Meta networks and training Google Ads Smart Bidding parameters, conversion spikes were forced while systematically suppressing cost-per-acquisition (CPA) parameters."
+                        : "This performance horizontal benchmarks the optimization curve of the frontend stack. Engineering single-page applications with clean, decoupled logic structures drove layout shifts to zero and clipped interaction delays, proving that sub-second rendering directly preserves traffic volumes and conversion funnels."}
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      {/* -------------------------------------------------------------
+          MODULE 4: ROADMAP INDEX (Zigzag Pipeline)
+          ------------------------------------------------------------- */}
+      <section id="education" className="py-24 px-6 lg:px-16 relative bg-[#0B0F19] overflow-hidden">
+        <div className="w-full max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-24">
+            <span className="font-display text-xs uppercase tracking-[0.2em] text-[#9CA3AF] font-semibold mb-6 block">04. ROADMAP INDEX</span>
+            <h3 className="font-display text-4xl lg:text-5xl font-black text-[#F3F4F6] tracking-tight block mb-2">Educational Roadmap.</h3>
+            <span className="font-sans text-lg text-[#9CA3AF] leading-relaxed block max-w-2xl">Milestones of my structural academic foundation.</span>
+          </div>
+
+          <div className="relative max-w-4xl mx-auto py-12">
+            {/* SVG Serpentine Spline Pipeline */}
+            <div className="absolute left-8 lg:left-1/2 top-0 bottom-0 w-24 -translate-x-1/2 overflow-visible pointer-events-none z-0 hidden lg:block">
+              <svg className="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 100">
+                <motion.path 
+                  d="M50 0 C 120 20, 120 30, 50 50 C -20 70, -20 80, 50 100"
+                  fill="none"
+                  stroke="rgba(243, 244, 246, 0.03)"
+                  strokeWidth="2"
+                  vectorEffect="non-scaling-stroke"
+                />
+                <motion.path 
+                  d="M50 0 C 120 20, 120 30, 50 50 C -20 70, -20 80, 50 100"
+                  fill="none"
+                  stroke="#2563EB"
+                  strokeWidth="2"
+                  vectorEffect="non-scaling-stroke"
+                  className="drop-shadow-[0_0_8px_rgba(37,99,235,0.5)]"
+                  initial={{ pathLength: 0 }}
+                  whileInView={{ pathLength: 1 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ ease: "easeInOut", stiffness: 80, damping: 15, duration: 1.5 }}
+                />
+              </svg>
+            </div>
+
+            {/* Mobile straight line fallback */}
+            <div className="absolute left-8 top-0 bottom-0 w-[2px] bg-[rgba(243,244,246,0.03)] -translate-x-1/2 lg:hidden"></div>
+            <motion.div 
+              className="absolute left-8 top-0 w-[2px] bg-[#2563EB] -translate-x-1/2 origin-top lg:hidden"
+              initial={{ scaleY: 0 }}
+              whileInView={{ scaleY: 1 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
+            ></motion.div>
+
+            <div className="flex flex-col gap-12 relative z-10">
+              
+              {/* Step 1 */}
+              <div className="relative flex flex-col lg:flex-row items-start lg:items-center w-full group">
+                <div className="hidden lg:block lg:w-1/2 pr-12 text-right">
+                  <motion.div
+                    initial={{ opacity: 0, x: -20, scale: 0.95 }}
+                    whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.4 }}
+                    className="inline-block p-6 rounded-xl bg-transparent border border-[rgba(243,244,246,0.05)] backdrop-blur-md text-left w-full max-w-md ml-auto"
+                  >
+                    <span className="text-[10px] font-mono tracking-widest text-[#2563EB] uppercase mb-2 block">12th Standard</span>
+                    <h5 className="font-display text-lg font-bold text-[#F3F4F6]">Higher Secondary Schooling</h5>
+                    <p className="font-sans text-sm text-[#9CA3AF] mt-2">Core Academic Foundations</p>
+                  </motion.div>
+                </div>
+                <div className="absolute left-8 lg:left-1/2 w-4 h-4 rounded-full bg-[#0B0F19] border-2 border-[rgba(243,244,246,0.2)] transform-gpu transition-all duration-300 hover:scale-125 hover:bg-[#2563EB] hover:border-4 hover:border-[#0B0F19] hover:shadow-[0_0_20px_#2563EB] hover:ring-4 hover:ring-[rgba(37,99,235,0.15)] cursor-pointer -translate-x-1/2 mt-6 lg:mt-0 z-20"></div>
+                <div className="pl-16 lg:hidden w-full">
+                  <motion.div
+                    initial={{ opacity: 0, x: 20, scale: 0.95 }}
+                    whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.4 }}
+                    className="p-6 rounded-xl bg-transparent border border-[rgba(243,244,246,0.05)] backdrop-blur-md w-full"
+                  >
+                    <span className="text-[10px] font-mono tracking-widest text-[#2563EB] uppercase mb-2 block">12th Standard</span>
+                    <h5 className="font-display text-lg font-bold text-[#F3F4F6]">Higher Secondary Schooling</h5>
+                    <p className="font-sans text-sm text-[#9CA3AF] mt-2">Core Academic Foundations</p>
+                  </motion.div>
+                </div>
+                <div className="hidden lg:block lg:w-1/2 pl-12"></div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="relative flex flex-col lg:flex-row items-start lg:items-center w-full group">
+                <div className="hidden lg:block lg:w-1/2 pr-12"></div>
+                <div className="absolute left-8 lg:left-1/2 w-4 h-4 rounded-full bg-[#0B0F19] border-2 border-[rgba(243,244,246,0.2)] transform-gpu transition-all duration-300 hover:scale-125 hover:bg-[#2563EB] hover:border-4 hover:border-[#0B0F19] hover:shadow-[0_0_20px_#2563EB] hover:ring-4 hover:ring-[rgba(37,99,235,0.15)] cursor-pointer -translate-x-1/2 mt-6 lg:mt-0 z-20"></div>
+                <div className="pl-16 lg:pl-12 w-full lg:w-1/2">
+                  <motion.div
+                    initial={{ opacity: 0, x: 20, scale: 0.95 }}
+                    whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.4 }}
+                    className="p-6 rounded-xl bg-transparent border border-[rgba(243,244,246,0.05)] backdrop-blur-md w-full max-w-md"
+                  >
+                    <span className="text-[10px] font-mono tracking-widest text-[#2563EB] uppercase mb-2 block">Undergraduate (UG)</span>
+                    <h5 className="font-display text-lg font-bold text-[#F3F4F6]">University Degree Foundation</h5>
+                    <p className="font-sans text-sm text-[#9CA3AF] mt-2">Computer Applications & Core Computing Principles</p>
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Step 3 (Active) */}
+              <div className="relative flex flex-col lg:flex-row items-start lg:items-center w-full group">
+                <div className="hidden lg:block lg:w-1/2 pr-12 text-right">
+                  <motion.div
+                    initial={{ opacity: 0, x: -20, scale: 0.95 }}
+                    whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.4 }}
+                    className="inline-block p-6 rounded-xl bg-transparent border border-[rgba(37,99,235,0.2)] backdrop-blur-md text-left w-full max-w-md ml-auto relative overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-[#2563EB] opacity-[0.03]"></div>
+                    <span className="text-[10px] font-mono tracking-widest text-[#2563EB] uppercase mb-2 block">Postgraduate (PG) - Current Active</span>
+                    <h5 className="font-display text-lg font-bold text-[#F3F4F6] mb-1">Master of Computer Applications (MCA)</h5>
+                    <span className="font-sans text-sm text-[#F3F4F6] block mb-2">MEASI Institute of Information Technology</span>
+                    <p className="font-sans text-sm text-[#9CA3AF]">Advanced Software Systems Architecture & Placement Network Track</p>
+                  </motion.div>
+                </div>
+                <motion.div 
+                  className="absolute left-8 lg:left-1/2 w-5 h-5 rounded-full bg-[#2563EB] border-4 border-[#0B0F19] shadow-[0_0_15px_#2563EB] transform-gpu transition-all duration-300 hover:scale-125 hover:ring-4 hover:ring-[rgba(37,99,235,0.15)] cursor-pointer -translate-x-1/2 mt-6 lg:mt-0 z-20"
+                  animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                ></motion.div>
+                <div className="pl-16 lg:hidden w-full">
+                  <motion.div
+                    initial={{ opacity: 0, x: 20, scale: 0.95 }}
+                    whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.4 }}
+                    className="p-6 rounded-xl bg-transparent border border-[rgba(37,99,235,0.2)] backdrop-blur-md w-full relative overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-[#2563EB] opacity-[0.03]"></div>
+                    <span className="text-[10px] font-mono tracking-widest text-[#2563EB] uppercase mb-2 block">Postgraduate (PG) - Current Active</span>
+                    <h5 className="font-display text-lg font-bold text-[#F3F4F6] mb-1">Master of Computer Applications (MCA)</h5>
+                    <span className="font-sans text-sm text-[#F3F4F6] block mb-2">MEASI Institute of Information Technology</span>
+                    <p className="font-sans text-sm text-[#9CA3AF]">Advanced Software Systems Architecture & Placement Network Track</p>
+                  </motion.div>
+                </div>
+                <div className="hidden lg:block lg:w-1/2 pl-12"></div>
+              </div>
+
             </div>
           </div>
         </div>
       </section>
 
       {/* -------------------------------------------------------------
-          MODULE 6: BLOGGER MODULE (Magazine Editorial Slider)
+          MODULE 5: BLOGGER INSIGHTS (Magazine Editorial Layout)
           ------------------------------------------------------------- */}
-      <section id="blogger" className="py-28 relative border-t border-[var(--border-vintage)] px-6 md:px-12 bg-[var(--bg-cream)]">
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="flex flex-col space-y-2 mb-16">
-            <span className="font-display text-xs uppercase tracking-[0.2em] text-[var(--accent-gold)] font-bold">/ 04 INTELLECT</span>
-            <h3 className="font-display text-4xl md:text-5xl font-black text-[var(--text-charcoal)]">The Blogger Hub</h3>
-            <p className="font-sans text-base text-[var(--text-charcoal)]/80 max-w-xl pt-2">
-              Review published articles, marketing formulas, and analytical models cataloged on SEO frameworks and digital ad models.
-            </p>
-          </div>
-
-          {/* Magazine-style row layout */}
-          <div className="space-y-6">
-            {insights.map((item, idx) => (
-              <motion.article
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: idx * 0.08 }}
-                className="editorial-card p-6 rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-[var(--accent-gold)] group"
-              >
-                <div className="space-y-2 max-w-3xl">
-                  <span className="font-mono text-[9px] uppercase tracking-wider text-[var(--accent-gold)] font-bold bg-[var(--bg-cream)] px-2 py-0.5 border border-[var(--border-vintage)] rounded-sm">
-                    {item.category}
-                  </span>
-                  <h4 className="font-display text-lg md:text-xl font-bold text-[var(--text-charcoal)] group-hover:text-[var(--accent-gold)] transition-colors duration-300 leading-snug">
-                    {item.title}
-                  </h4>
-                  <p className="font-sans text-xs text-[var(--text-charcoal)]/70 leading-relaxed">
-                    {item.summary}
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-end min-w-[140px] pt-4 md:pt-0 border-t border-[var(--border-vintage)] md:border-t-0">
-                  <a
-                    href={item.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-display text-xs uppercase font-bold tracking-widest text-[var(--accent-gold)] group-hover:text-[var(--text-charcoal)] transition-colors duration-300 flex items-center space-x-1.5"
-                  >
-                    <span>Read Article</span>
-                    <ArrowUpRight className="w-4 h-4" />
-                  </a>
-                </div>
-              </motion.article>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* -------------------------------------------------------------
+          MODULE 5: BLOGGER INSIGHTS (Magazine Editorial Layout - Dynamic)
+          ------------------------------------------------------------- */}
+      <BloggerInsightsStream />
 
       {/* -------------------------------------------------------------
           MODULE 7: CONTACT MODULE (Prominent Center Block)
