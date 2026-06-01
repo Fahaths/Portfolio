@@ -67,6 +67,9 @@ export const metadata: Metadata = {
       { url: '/logo-v2.webp', type: 'image/webp' },
     ],
   },
+  verification: {
+    google: 'bsLH8HhtqZcn4ITFXtQ2dE-mIgSiCgLVM8iWB7HT3-4',
+  },
 };
 
 export default function RootLayout({

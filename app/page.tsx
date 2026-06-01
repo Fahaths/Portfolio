@@ -824,15 +824,15 @@ export default function EyeComfortVintagePortfolio() {
         <div className="w-full max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-20">
-            <span className="font-display text-xs uppercase tracking-[0.2em] text-[#9CA3AF] font-semibold mb-6 block">02. PROVEN RESULTS</span>
-            <h3 className="font-display text-4xl lg:text-5xl font-black text-[#F3F4F6] tracking-tight block mb-2">Selected Impact.</h3>
-            <span className="font-sans text-lg text-[#9CA3AF]">Click a project sector to see performance metrics map in real-time.</span>
+            <span className="font-mono text-xs uppercase tracking-[0.2em] text-[#9CA3AF] font-semibold mb-6 block">Portfolio impact</span>
+            <h3 className="font-display text-4xl lg:text-5xl font-black text-[#F3F4F6] tracking-tight block mb-2">Explore by sector.</h3>
+            <span className="font-sans text-lg text-[#9CA3AF]">Select a sector to view its live performance metrics.</span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             
             {/* Left Interactive Selector */}
-            <div className="lg:col-span-5 flex flex-col gap-6">
+            <div className="lg:col-span-5 flex flex-col gap-4">
               {[
                 {
                   id: "seo",
@@ -861,29 +861,30 @@ export default function EyeComfortVintagePortfolio() {
                   <div
                     key={card.id}
                     onClick={() => setActiveSector(card.id as any)}
-                    className={`relative p-6 rounded-xl cursor-pointer will-change-transform will-change-opacity transition-all duration-300 transform-gpu ${
-                      isActive ? "bg-transparent border border-[rgba(37,99,235,0.3)] shadow-[0_0_30px_-10px_rgba(37,99,235,0.15)] backdrop-blur-md" : "bg-transparent border border-[rgba(243,244,246,0.05)] backdrop-blur-md hover:border-[rgba(243,244,246,0.1)]"
+                    className={`relative p-6 rounded-xl cursor-pointer will-change-transform will-change-opacity transition-all duration-[180ms] ease-out transform-gpu overflow-hidden ${
+                      isActive 
+                        ? "bg-[#378ADD]/10 opacity-100 border border-[#378ADD]/30" 
+                        : "bg-transparent opacity-40 border border-transparent hover:opacity-70"
                     }`}
                   >
                     {isActive && (
                       <motion.div
-                        layoutId="activeSectorIndicator"
-                        layout="position"
-                        className="absolute left-0 top-0 bottom-0 w-1 bg-[#2563EB] rounded-l-xl shadow-[0_0_8px_#2563EB]"
-                        transition={{ type: "spring", stiffness: 120, damping: 20, mass: 0.8 }}
+                        layoutId="activeSectorBorder"
+                        className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#378ADD] shadow-[0_0_8px_#378ADD]"
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
                       />
                     )}
-                    <div className="flex flex-col gap-2">
-                      <span className="font-mono text-xs uppercase tracking-widest text-[#2563EB] font-bold">
+                    <div className="flex flex-col gap-2 relative z-10 pl-2">
+                      <span className="font-mono text-xs uppercase tracking-widest text-[#378ADD] font-bold">
                         {card.category}
                       </span>
-                      <h4 className={`font-display text-xl font-bold transition-colors ${isActive ? "text-[#F3F4F6]" : "text-[#9CA3AF]"}`}>
+                      <h4 className={`font-display text-xl font-bold transition-colors duration-[180ms] ${isActive ? "text-[#F3F4F6]" : "text-[#9CA3AF]"}`}>
                         {card.project_name}
                       </h4>
-                      <p className="font-sans text-sm text-[#9CA3AF] leading-relaxed mt-2">
+                      <p className="font-sans text-sm text-[#9CA3AF] leading-relaxed mt-1">
                         {card.summary}
                       </p>
-                      <div className="flex flex-row flex-wrap gap-2 mt-4">
+                      <div className="flex flex-row flex-wrap gap-2 mt-3">
                         {card.tech_tags.map((tag) => (
                           <span key={tag} className="font-mono text-[10px] uppercase tracking-wider text-[#9CA3AF] bg-[rgba(243,244,246,0.05)] px-2 py-1 rounded">
                             {tag}
@@ -898,189 +899,189 @@ export default function EyeComfortVintagePortfolio() {
 
             {/* Right Data Visualization */}
             <div className="lg:col-span-7 lg:sticky lg:top-32">
-              <div className="bg-transparent border border-[rgba(243,244,246,0.05)] backdrop-blur-md rounded-2xl p-8 relative overflow-hidden h-[480px] flex flex-col justify-between will-change-transform transform-gpu shadow-2xl">
+              <div className="bg-transparent border border-[rgba(243,244,246,0.05)] backdrop-blur-md rounded-2xl p-8 relative overflow-hidden flex flex-col justify-between will-change-transform transform-gpu shadow-2xl min-h-[500px]">
                 
-                {/* Header */}
-                <div className="flex justify-between items-center mb-6 relative z-10">
-                  <h5 className="font-display text-[#F3F4F6] text-sm font-medium tracking-wider uppercase">Active Impact Analytics Stream</h5>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono text-[#2563EB]">LIVE</span>
-                    <div className="w-2 h-2 rounded-full bg-[#2563EB] animate-pulse shadow-[0_0_8px_#2563EB]"></div>
-                  </div>
-                </div>
-
-                {/* Graph Canvas */}
-                <div className="absolute inset-0 top-20 bottom-32 px-8 w-full h-[240px] mt-2">
-                  {/* Grid Lines */}
-                  <div className="absolute inset-0 flex flex-col justify-between py-4 pointer-events-none z-0">
-                    {[1, 2, 3, 4, 5].map((line) => (
-                      <div key={line} className="w-full h-[1px] border-b border-dashed border-[rgba(243,244,246,0.02)]"></div>
-                    ))}
-                  </div>
-
-                  {/* SVG Graph */}
-                  <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full relative z-10 overflow-visible">
-                    <defs>
-                      <linearGradient id="graphGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor={activeSector === "seo" ? "#F3F4F6" : "#2563EB"} stopOpacity={activeSector === "seo" ? "0.03" : "0.06"} />
-                        <stop offset="100%" stopColor={activeSector === "seo" ? "#F3F4F6" : "#2563EB"} stopOpacity="0" />
-                      </linearGradient>
-                    </defs>
-                    <motion.path
-                      d={
-                        activeSector === "seo" 
-                          ? "M0 100 L0 90 L20 75 L40 55 L60 60 L80 30 L100 5 L100 100 Z" 
-                          : activeSector === "paid_ads"
-                          ? "M0 100 L0 80 L20 85 L40 40 L60 45 L80 20 L100 -10 L100 100 Z"
-                          : "M0 100 L0 10 L20 8 L40 5 L60 1 L80 2 L100 0 L100 100 Z"
-                      }
-                      fill="url(#graphGradient)"
-                      animate={{ d: activeSector === "seo" 
-                        ? "M0 100 L0 90 L20 75 L40 55 L60 60 L80 30 L100 5 L100 100 Z" 
-                        : activeSector === "paid_ads"
-                        ? "M0 100 L0 80 L20 85 L40 40 L60 45 L80 20 L100 -10 L100 100 Z"
-                        : "M0 100 L0 10 L20 8 L40 5 L60 1 L80 2 L100 0 L100 100 Z"
-                      }}
-                      transition={{ type: "spring", stiffness: 150, damping: 22 }}
-                    />
-                    <motion.path
-                      d={
-                        activeSector === "seo" 
-                          ? "M0 90 L20 75 L40 55 L60 60 L80 30 L100 5" 
-                          : activeSector === "paid_ads"
-                          ? "M0 80 L20 85 L40 40 L60 45 L80 20 L100 -10"
-                          : "M0 10 L20 8 L40 5 L60 1 L80 2 L100 0"
-                      }
-                      fill="none"
-                      stroke={activeSector === "seo" ? "#F3F4F6" : "#2563EB"}
-                      strokeWidth="1.5"
-                      vectorEffect="non-scaling-stroke"
-                      animate={{ 
-                        d: activeSector === "seo" 
-                        ? "M0 90 L20 75 L40 55 L60 60 L80 30 L100 5" 
-                        : activeSector === "paid_ads"
-                        ? "M0 80 L20 85 L40 40 L60 45 L80 20 L100 -10"
-                        : "M0 10 L20 8 L40 5 L60 1 L80 2 L100 0",
-                        stroke: activeSector === "seo" ? "#F3F4F6" : "#2563EB"
-                      }}
-                      transition={{ type: "spring", stiffness: 150, damping: 22 }}
-                    />
-                    
-                    {/* Data Points */}
-                    {[0, 20, 40, 60, 80, 100].map((cx, i) => {
-                      const cyValues = {
-                        seo: [90, 75, 55, 60, 30, 5],
-                        paid_ads: [80, 85, 40, 45, 20, -10],
-                        development: [10, 8, 5, 1, 2, 0]
-                      };
-                      return (
-                        <motion.circle
-                          key={i}
-                          cx={cx}
-                          cy={cyValues[activeSector][i]}
-                          r="0.5"
-                          fill="#0B0F19"
-                          stroke={activeSector === "seo" ? "#F3F4F6" : "#2563EB"}
-                          strokeWidth="1.5"
-                          vectorEffect="non-scaling-stroke"
-                          className="cursor-pointer origin-center transition-all duration-200 hover:scale-[2.5]"
-                          animate={{ 
-                            cy: cyValues[activeSector][i],
-                            stroke: activeSector === "seo" ? "#F3F4F6" : "#2563EB"
-                          }}
-                          whileHover={{ scale: 1.7 }}
-                          transition={{ type: "spring", stiffness: 150, damping: 22 }}
-                        />
-                      );
-                    })}
-                  </svg>
-                  
-                  {/* Graph Label Overlay */}
-                  <div className="absolute top-8 left-12 text-[#F3F4F6] font-mono text-xs uppercase tracking-wider bg-[rgba(243,244,246,0.05)] backdrop-blur-md border border-[rgba(243,244,246,0.1)] px-2 py-1 rounded">
-                    <motion.span
-                      key={activeSector}
-                      initial={{ opacity: 0, y: 5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {activeSector === "seo" ? "Organic Traffic Velocity" : activeSector === "paid_ads" ? "Conversion Multiplier" : "Core Web Vital Efficiency"}
-                    </motion.span>
-                  </div>
-                </div>
-
-                {/* Metric Footer */}
-                <div className="relative z-10 grid grid-cols-3 gap-4 pt-6 mt-4 border-t border-[rgba(243,244,246,0.05)] bg-transparent">
-                  <div>
-                    <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">
-                      {activeSector === "seo" ? "CTR Jump" : activeSector === "paid_ads" ? "Avg ROAS" : "Perf Score"}
-                    </span>
-                    <motion.span 
-                      key={activeSector + "1"}
-                      initial={{ scale: 0.9, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                      className="text-2xl font-bold text-[#F3F4F6] tracking-tight font-display block will-change-transform"
-                    >
-                      {activeSector === "seo" ? "+142%" : activeSector === "paid_ads" ? "4.8x" : "99/100"}
-                    </motion.span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">
-                      {activeSector === "seo" ? "Clicks / Mo" : activeSector === "paid_ads" ? "Ad Spend" : "FCP Time"}
-                    </span>
-                    <motion.span 
-                      key={activeSector + "2"}
-                      initial={{ scale: 0.9, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.05 }}
-                      className="text-2xl font-bold text-[#F3F4F6] tracking-tight font-display block will-change-transform"
-                    >
-                      {activeSector === "seo" ? "24.5K" : activeSector === "paid_ads" ? "Scale" : "0.4s"}
-                    </motion.span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">
-                      {activeSector === "seo" ? "Keywords" : activeSector === "paid_ads" ? "CPA Drop" : "TTI Rate"}
-                    </span>
-                    <motion.span 
-                      key={activeSector + "3"}
-                      initial={{ scale: 0.9, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.1 }}
-                      className="text-2xl font-bold text-[#F3F4F6] tracking-tight font-display block will-change-transform"
-                    >
-                      {activeSector === "seo" ? "Top 3" : activeSector === "paid_ads" ? "-32%" : "-58%"}
-                    </motion.span>
-                  </div>
-                </div>
-              </div>
-
-              {/* WorksModule_GraphSummaryCard */}
-              <div className="w-full mt-6 bg-transparent border border-[rgba(243,244,246,0.05)] backdrop-blur-md rounded-xl p-6 flex flex-col gap-3 relative overflow-hidden min-h-[220px]">
+                {/* Mode Switcher logic */}
                 <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeSector}
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="flex flex-col gap-3 absolute inset-6"
-                  >
-                    <span className="text-[10px] font-mono tracking-widest text-[#2563EB] uppercase">
-                      {activeSector === "seo" ? "DATA INFERENCE // ORGANIC VELOCITY" : activeSector === "paid_ads" ? "DATA INFERENCE // ACQUISITION EFFICIENCY" : "DATA INFERENCE // ARCHITECTURE CORE"}
-                    </span>
-                    <h4 className="text-lg font-bold text-[#F3F4F6] font-display">
-                      {activeSector === "seo" ? "Bypassing Crawl Blocks for Compounded Growth" : activeSector === "paid_ads" ? "Maximizing Yield with Automated Bid Protocols" : "Eliminating Core Web Vital Friction Points"}
-                    </h4>
-                    <p className="text-sm text-[#9CA3AF] leading-relaxed">
-                      {activeSector === "seo" 
-                        ? "This stream charts the deliberate lift in organic discovery after isolating and repairing critical indexing drop-offs. By structural alignment of site mapping and reinforcing high-authority backlink distribution, search crawling became predictive, locking in steady velocity spikes across high-intent keywords without recurring ad spend." 
-                        : activeSector === "paid_ads"
-                        ? "This data pipeline maps the direct traction of multi-platform scaling strategies. By deploying precise custom radius audiences on Meta networks and training Google Ads Smart Bidding parameters, conversion spikes were forced while systematically suppressing cost-per-acquisition (CPA) parameters."
-                        : "This performance horizontal benchmarks the optimization curve of the frontend stack. Engineering single-page applications with clean, decoupled logic structures drove layout shifts to zero and clipped interaction delays, proving that sub-second rendering directly preserves traffic volumes and conversion funnels."}
-                    </p>
-                  </motion.div>
+                  {activeSector !== "development" ? (
+                    <motion.div 
+                      key="mode-a"
+                      initial={{ opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.98 }}
+                      transition={{ duration: 0.18, ease: "easeOut" }}
+                      className="flex flex-col h-full w-full"
+                    >
+                      {/* Header MODE A */}
+                      <div className="flex justify-between items-center mb-6 relative z-10">
+                        <h5 className="font-display text-[#F3F4F6] text-sm font-medium tracking-wider uppercase">Active impact stream</h5>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-mono text-[#10B981]">LIVE</span>
+                          <div className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse shadow-[0_0_8px_#10B981]"></div>
+                        </div>
+                      </div>
+
+                      {/* Line Chart (SVG approximation matching requirements) */}
+                      <div className="relative w-full h-[220px] mt-2 mb-8">
+                        <div className="absolute inset-0 flex flex-col justify-between py-4 pointer-events-none z-0">
+                          {[1, 2, 3, 4, 5].map((line) => (
+                            <div key={line} className="w-full h-[1px] border-b border-dashed border-[rgba(243,244,246,0.05)]"></div>
+                          ))}
+                        </div>
+                        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full relative z-10 overflow-visible mt-4">
+                          <defs>
+                            <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#378ADD" stopOpacity="0.2" />
+                              <stop offset="100%" stopColor="#378ADD" stopOpacity="0" />
+                            </linearGradient>
+                          </defs>
+                          <motion.path
+                            d={activeSector === "seo" 
+                              ? "M0 100 L0 80 L20 60 L40 65 L60 40 L80 15 L100 5 L100 100 Z"
+                              : "M0 100 L0 90 L20 85 L40 50 L60 55 L80 20 L100 -5 L100 100 Z"}
+                            fill="url(#chartGradient)"
+                            transition={{ duration: 0.4 }}
+                          />
+                          <motion.path
+                            d={activeSector === "seo" 
+                              ? "M0 80 L20 60 L40 65 L60 40 L80 15 L100 5"
+                              : "M0 90 L20 85 L40 50 L60 55 L80 20 L100 -5"}
+                            fill="none"
+                            stroke="#378ADD"
+                            strokeWidth="2"
+                            vectorEffect="non-scaling-stroke"
+                            transition={{ duration: 0.4 }}
+                          />
+                          {[0, 20, 40, 60, 80, 100].map((cx, i) => {
+                            const cyValues = {
+                              seo: [80, 60, 65, 40, 15, 5],
+                              paid_ads: [90, 85, 50, 55, 20, -5]
+                            };
+                            return (
+                              <motion.circle
+                                key={i}
+                                cx={cx}
+                                cy={activeSector === "seo" ? cyValues.seo[i] : cyValues.paid_ads[i]}
+                                r="1.5"
+                                fill="#0B0F19"
+                                stroke="#378ADD"
+                                strokeWidth="2"
+                                vectorEffect="non-scaling-stroke"
+                                transition={{ duration: 0.4 }}
+                              />
+                            );
+                          })}
+                        </svg>
+                      </div>
+
+                      {/* Metrics Row A */}
+                      <div className="grid grid-cols-3 gap-4">
+                        <div>
+                          <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">Perf Score</span>
+                          <span className="text-2xl font-bold text-[#F3F4F6] font-display">
+                            {activeSector === "seo" ? "98/100" : "94/100"}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">FCP Time</span>
+                          <span className="text-2xl font-bold text-[#F3F4F6] font-display">
+                            {activeSector === "seo" ? "0.6s" : "0.8s"}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">TTI Improvement</span>
+                          <span className="text-2xl font-bold text-[#10B981] font-display flex items-center gap-1">
+                            ↑ {activeSector === "seo" ? "42%" : "38%"}
+                          </span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div 
+                      key="mode-b"
+                      initial={{ opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.98 }}
+                      transition={{ duration: 0.18, ease: "easeOut" }}
+                      className="flex flex-col h-full w-full"
+                    >
+                      {/* Header MODE B */}
+                      <div className="flex justify-between items-center mb-6 relative z-10">
+                        <h5 className="font-display text-[#F3F4F6] text-sm font-medium tracking-wider uppercase">Shipped platforms</h5>
+                      </div>
+
+                      {/* 2x2 Showcase Grid */}
+                      <div className="grid grid-cols-2 gap-4 h-[220px] mt-2 mb-8">
+                        {[
+                          { name: "MARKETING ON MY WAY", color: "#378ADD", type: "CMS Platform" },
+                          { name: "FINTECH DASHBOARD", color: "#10B981", type: "Web App" },
+                          { name: "E-COMMERCE OS", color: "#F59E0B", type: "Storefront" },
+                          { name: "ANALYTICS HUB", color: "#8B5CF6", type: "Internal Tool" }
+                        ].map((site, i) => (
+                          <div key={i} className="bg-[#111827] border border-[rgba(243,244,246,0.1)] rounded-lg flex flex-col overflow-hidden group hover:border-[rgba(243,244,246,0.2)] transition-colors duration-[180ms]">
+                            {/* macOS Header */}
+                            <div className="h-6 bg-[#1F2937] flex items-center px-2 gap-1.5 border-b border-[rgba(243,244,246,0.05)]">
+                              <div className="w-2 h-2 rounded-full bg-[#EF4444]"></div>
+                              <div className="w-2 h-2 rounded-full bg-[#F59E0B]"></div>
+                              <div className="w-2 h-2 rounded-full bg-[#10B981]"></div>
+                            </div>
+                            {/* Browser Body */}
+                            <div className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+                              <div className="absolute inset-0 bg-gradient-to-br from-transparent to-[rgba(255,255,255,0.02)] z-0"></div>
+                              <span className="font-mono text-xs font-bold text-center z-10" style={{ color: site.color }}>
+                                {site.name}
+                              </span>
+                              <span className="text-[9px] uppercase tracking-widest text-[#9CA3AF] mt-2 z-10">
+                                {site.type}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Metrics Row B */}
+                      <div className="grid grid-cols-3 gap-4">
+                        <div>
+                          <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">Sites Shipped</span>
+                          <span className="text-2xl font-bold text-[#F3F4F6] font-display">12+</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">Avg LCP</span>
+                          <span className="text-2xl font-bold text-[#F3F4F6] font-display">0.9s</span>
+                        </div>
+                        <div>
+                          <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">TTI Gain</span>
+                          <span className="text-2xl font-bold text-[#10B981] font-display flex items-center gap-1">
+                            ↑ 65%
+                          </span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
                 </AnimatePresence>
+
+                {/* Panel Footer (Both Modes) */}
+                <div className="mt-8 pt-4 border-t border-[rgba(243,244,246,0.1)] flex items-start gap-3">
+                  <div className="mt-0.5 text-[#9CA3AF]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                  </div>
+                  <p className="text-sm text-[#9CA3AF] leading-snug">
+                    <strong className="text-[#F3F4F6] font-medium">
+                      {activeSector === "seo" 
+                        ? "Organic Search Expansion" 
+                        : activeSector === "paid_ads" 
+                        ? "Performance Ad Systems" 
+                        : "Engineered Web Platforms"}
+                    </strong> 
+                    {" — "}
+                    {activeSector === "seo"
+                      ? "Restructured technical architecture to permanently lift baseline indexation velocity and compound organic keyword discovery."
+                      : activeSector === "paid_ads"
+                      ? "Deployed high-density signal tracking arrays to train Smart Bidding models, slashing CPA while scaling conversion volume."
+                      : "Built modular React environments combining server-side caching and dynamic client hydration for zero-latency user flows."}
+                  </p>
+                </div>
+
               </div>
             </div>
           </div>
