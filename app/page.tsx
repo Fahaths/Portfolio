@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import { 
   ArrowUpRight, 
   MessageCircle, 
@@ -27,12 +27,23 @@ import {
 // Component 0: Sequential Typewriter Effect
 // -------------------------------------------------------------
 function SequentialTypewriter({ roles }: { roles: string[] }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { margin: "-10% 0px -10% 0px" });
+
   const [step, setStep] = useState(0);
   const [displayText, setDisplayText] = useState("");
   const [charIndex, setCharIndex] = useState(0);
   const [isFadingOut, setIsFadingOut] = useState(false);
 
   useEffect(() => {
+    if (!isInView) {
+      setStep(0);
+      setDisplayText("");
+      setCharIndex(0);
+      setIsFadingOut(false);
+      return;
+    }
+
     if (step >= roles.length) return;
 
     let timeout: NodeJS.Timeout;
@@ -56,38 +67,38 @@ function SequentialTypewriter({ roles }: { roles: string[] }) {
     }
 
     return () => clearTimeout(timeout);
-  }, [charIndex, isFadingOut, step, roles]);
-
-  if (step >= roles.length) {
-    return (
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="flex flex-wrap items-center gap-x-2 md:gap-x-3 text-[var(--accent-gold)] font-display font-semibold tracking-wide"
-      >
-        <span>{roles[0]}</span>
-        <span className="opacity-50">·</span>
-        <span>{roles[1]}</span>
-        <span className="opacity-50">·</span>
-        <span>{roles[2]}</span>
-      </motion.div>
-    );
-  }
+  }, [charIndex, isFadingOut, step, roles, isInView]);
 
   return (
-    <motion.div 
-      animate={{ opacity: isFadingOut ? 0 : 1 }}
-      transition={{ duration: 0.5 }}
-      className="inline-flex items-center text-[var(--accent-gold)] font-display font-semibold tracking-wide"
-    >
-      {displayText}
-      <motion.span 
-        animate={{ opacity: [1, 0] }} 
-        transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
-        className="w-[2px] h-4 bg-[var(--accent-gold)] ml-1 inline-block"
-      />
-    </motion.div>
+    <div ref={ref} className="inline-flex min-h-[32px] items-center">
+      {step >= roles.length ? (
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="flex flex-wrap items-center gap-x-2 md:gap-x-3 text-[var(--accent-gold)] font-display font-semibold tracking-wide"
+        >
+          <span>{roles[0]}</span>
+          <span className="opacity-50">·</span>
+          <span>{roles[1]}</span>
+          <span className="opacity-50">·</span>
+          <span>{roles[2]}</span>
+        </motion.div>
+      ) : (
+        <motion.div 
+          animate={{ opacity: isFadingOut ? 0 : 1 }}
+          transition={{ duration: 0.5 }}
+          className="inline-flex items-center text-[var(--accent-gold)] font-display font-semibold tracking-wide"
+        >
+          {displayText}
+          <motion.span 
+            animate={{ opacity: [1, 0] }} 
+            transition={{ repeat: Infinity, duration: 0.8, ease: "linear" }}
+            className="w-[2px] h-4 bg-[var(--accent-gold)] ml-1 inline-block"
+          />
+        </motion.div>
+      )}
+    </div>
   );
 }
 
@@ -119,7 +130,7 @@ function EditorialReveal({ children, delay = 0, className = "" }: RevealProps) {
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: false, margin: "-80px" }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay }}
       className={className}
     >
@@ -131,40 +142,96 @@ function EditorialReveal({ children, delay = 0, className = "" }: RevealProps) {
 function AnimatedCounter({ endValue, suffix = "", duration = 1500, className = "" }: { endValue: number, suffix?: string, duration?: number, className?: string }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { margin: "-10% 0px -10% 0px" });
   
   useEffect(() => {
+    if (!isInView) {
+      setCount(0);
+      return;
+    }
+
     let startTimestamp: number | null = null;
     let frameId: number;
-    let hasStarted = false;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !hasStarted) {
-          hasStarted = true;
-          const step = (timestamp: number) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-            setCount(Math.floor(easeProgress * endValue));
-            if (progress < 1) {
-              frameId = window.requestAnimationFrame(step);
-            }
-          };
-          frameId = window.requestAnimationFrame(step);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (ref.current) observer.observe(ref.current);
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      setCount(Math.floor(easeProgress * endValue));
+      if (progress < 1) {
+        frameId = window.requestAnimationFrame(step);
+      }
+    };
+    frameId = window.requestAnimationFrame(step);
 
     return () => {
       if (frameId) window.cancelAnimationFrame(frameId);
-      observer.disconnect();
     };
-  }, [endValue, duration]);
+  }, [endValue, duration, isInView]);
 
   return <span ref={ref} className={className}>{count}{suffix}</span>;
+}
+
+function DynamicCounter({ value, suffix = "", prefix = "", duration = 500, className = "" }: { value: number, suffix?: string, prefix?: string, duration?: number, className?: string }) {
+  const [count, setCount] = useState(0);
+  const prevValueRef = useRef(0);
+
+  useEffect(() => {
+    const startValue = prevValueRef.current;
+    const endValue = value;
+    let startTimestamp: number | null = null;
+    let frameId: number;
+
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      setCount(startValue + (endValue - startValue) * easeProgress);
+      if (progress < 1) {
+        frameId = window.requestAnimationFrame(step);
+      } else {
+        setCount(endValue);
+        prevValueRef.current = endValue;
+      }
+    };
+    frameId = window.requestAnimationFrame(step);
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [value, duration]);
+
+  const displayCount = Number.isInteger(value) ? Math.floor(count) : count.toFixed(1);
+  return <span className={className}>{prefix}{displayCount}{suffix}</span>;
+}
+
+function ScrambleText({ text, duration = 300, className = "" }: { text: string, duration?: number, className?: string }) {
+  const [displayText, setDisplayText] = useState(text);
+
+  useEffect(() => {
+    let step = 0;
+    const maxSteps = 3;
+    const chars = "!<>-_\\/[]{}—=+*^?#_";
+    const intervalTime = duration / maxSteps;
+    
+    setDisplayText(text.split('').map(c => c === ' ' ? ' ' : chars[Math.floor(Math.random() * chars.length)]).join(''));
+    
+    const interval = setInterval(() => {
+      if (step >= maxSteps - 1) {
+        clearInterval(interval);
+        setDisplayText(text);
+        return;
+      }
+      const scrambled = text.split('').map(char => {
+        if (char === ' ') return ' ';
+        return chars[Math.floor(Math.random() * chars.length)];
+      }).join('');
+      setDisplayText(scrambled);
+      step++;
+    }, intervalTime);
+
+    return () => clearInterval(interval);
+  }, [text, duration]);
+
+  return <span className={className}>{displayText}</span>;
 }
 
 const BloggerInsightsStream = () => {
@@ -227,7 +294,7 @@ const BloggerInsightsStream = () => {
           <span className="font-sans text-lg text-[#9CA3AF] leading-relaxed block max-w-2xl">Real-time updates on search architecture, marketing frameworks, and AI content optimization streaming directly from marketingonmyway.blogspot.com.</span>
         </div>
 
-        <div className="flex flex-col gap-0 border-t border-[rgba(243,244,246,0.05)] min-h-[400px]">
+        <div className="min-h-[400px]">
           <AnimatePresence mode="wait">
             {loading ? (
               <motion.div
@@ -235,16 +302,17 @@ const BloggerInsightsStream = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0, transition: { duration: 0.15 } }}
-                className="flex flex-col gap-0 w-full"
+                className="w-full grid grid-cols-1 md:grid-cols-3 gap-6"
               >
-                {[1, 2, 3].map((skeleton) => (
-                  <div key={skeleton} className="p-8 border-b border-[rgba(243,244,246,0.05)] grid grid-cols-1 md:grid-cols-12 gap-6 items-center w-full">
-                    <div className="md:col-span-2 h-4 bg-[rgba(243,244,246,0.05)] rounded animate-pulse"></div>
-                    <div className="md:col-span-7 flex flex-col gap-3">
-                      <div className="h-6 w-3/4 bg-[rgba(243,244,246,0.05)] rounded animate-pulse"></div>
-                      <div className="h-4 w-full bg-[rgba(243,244,246,0.02)] rounded animate-pulse"></div>
+                {[0, 1, 2].map((idx) => (
+                  <div key={idx} className="p-8 border border-[rgba(243,244,246,0.05)] bg-[rgba(243,244,246,0.01)] backdrop-blur-md rounded-2xl flex flex-col justify-between min-h-[350px]">
+                    <div className="space-y-4">
+                      <div className="h-3 w-20 bg-[rgba(243,244,246,0.05)] rounded animate-pulse"></div>
+                      <div className="h-8 w-full bg-[rgba(243,244,246,0.05)] rounded animate-pulse"></div>
+                      <div className="h-4 w-full bg-[rgba(243,244,246,0.02)] rounded animate-pulse mt-4"></div>
+                      <div className="h-4 w-4/5 bg-[rgba(243,244,246,0.02)] rounded animate-pulse"></div>
                     </div>
-                    <div className="md:col-span-3 flex justify-end gap-2">
+                    <div className="mt-8 flex gap-2">
                       <div className="h-6 w-16 bg-[rgba(243,244,246,0.05)] rounded-full animate-pulse"></div>
                       <div className="h-6 w-16 bg-[rgba(243,244,246,0.05)] rounded-full animate-pulse"></div>
                     </div>
@@ -252,43 +320,55 @@ const BloggerInsightsStream = () => {
                 ))}
               </motion.div>
             ) : (
-              posts.map((post, idx) => (
-                <motion.a
-                  key={idx}
-                  href={post.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.4, delay: idx * 0.1, ease: "easeOut" }}
-                  className="group relative bg-transparent border-b border-[rgba(243,244,246,0.05)] hover:border-[#2563EB]/40 p-8 transition-all duration-300 grid grid-cols-1 md:grid-cols-12 gap-6 items-center cursor-pointer transform-gpu will-change-transform overflow-hidden block"
-                >
-                  {/* Hover Background Tint Animation */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-[rgba(37,99,235,0.01)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-
-                  <div className="md:col-span-2 text-xs font-mono tracking-widest text-[#2563EB] transform-gpu group-hover:translate-x-2 transition-transform duration-200 ease-out z-10 relative">
-                    {post.date}
-                  </div>
-                  
-                  <div className="md:col-span-7 transform-gpu group-hover:translate-x-2 transition-transform duration-200 ease-out z-10 relative">
-                    <h4 className="text-xl md:text-2xl font-bold text-[#F3F4F6] group-hover:text-[#2563EB] transition-colors duration-200 mb-2 font-display">
-                      {post.title}
-                    </h4>
-                    <p className="text-sm text-[#9CA3AF] leading-relaxed line-clamp-2">
-                      {post.summary}
-                    </p>
-                  </div>
-                  
-                  <div className="md:col-span-3 flex flex-wrap gap-2 md:justify-end transform-gpu group-hover:translate-x-2 transition-transform duration-200 ease-out z-10 relative">
-                    {post.tags.map((tag: string, i: number) => (
-                      <span key={i} className="text-xs px-3 py-1 bg-transparent text-[#2563EB] rounded-full border border-[rgba(37,99,235,0.15)] whitespace-nowrap">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </motion.a>
-              ))
+              <motion.div
+                key="posts"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, transition: { duration: 0.15 } }}
+                className="w-full grid grid-cols-1 md:grid-cols-3 gap-6"
+              >
+                {posts.map((post, idx) => (
+                  <motion.a
+                    key={idx}
+                    href={post.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: false, margin: "-50px" }}
+                    transition={{ duration: 0.5, delay: idx * 0.15, ease: [0.16, 1, 0.3, 1] }}
+                    className="group relative bg-[rgba(243,244,246,0.01)] backdrop-blur-md border border-[rgba(243,244,246,0.08)] rounded-2xl hover:border-[#2563EB]/40 p-8 transition-all duration-500 flex flex-col justify-between cursor-pointer transform-gpu will-change-transform overflow-hidden min-h-[350px] hover:-translate-y-2 hover:shadow-[0_20px_40px_-10px_rgba(37,99,235,0.15)]"
+                  >
+                    {/* Hover Background Tint Animation */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-[#2563EB]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                    
+                    <div className="z-10 relative">
+                      <div className="text-[10px] font-mono tracking-[0.2em] uppercase text-[#2563EB] mb-4">
+                        {post.date}
+                      </div>
+                      <h4 className="text-2xl font-bold text-[#F3F4F6] group-hover:text-[#2563EB] transition-colors duration-300 mb-4 font-display leading-tight">
+                        {post.title}
+                      </h4>
+                      <p className="text-sm text-[#9CA3AF] leading-relaxed line-clamp-3">
+                        {post.summary}
+                      </p>
+                    </div>
+                    
+                    <div className="mt-8 flex flex-wrap gap-2 z-10 relative">
+                      {post.tags.map((tag: string, i: number) => (
+                        <span key={i} className="text-[10px] px-3 py-1.5 bg-[rgba(37,99,235,0.05)] text-[#2563EB] rounded-full border border-[rgba(37,99,235,0.15)] whitespace-nowrap">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    
+                    {/* Arrow Icon top right on hover */}
+                    <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transform -translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300 text-[#2563EB]">
+                      <ArrowUpRight className="w-5 h-5" />
+                    </div>
+                  </motion.a>
+                ))}
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
@@ -565,7 +645,7 @@ export default function EyeComfortVintagePortfolio() {
               }}
               className="hero-description mb-8"
             >
-              Scaling data-driven ad channels (Meta, Google Ads) and building high-performance web solutions. Managed $50K+ in ad spend across Meta &amp; Google.
+              With <span className="text-[#2563EB] font-bold">15+</span> SEO projects, <span className="text-[#2563EB] font-bold">67%</span> organic traffic growth, <span className="text-[#2563EB] font-bold">50+</span> keyword rankings, and <span className="text-[#2563EB] font-bold">₹1L+</span> monthly ad spend managed across Meta &amp; Google Ads, I blend SEO, Performance Marketing, and Web Development to create digital experiences that drive measurable business results.
             </motion.p>
             
             {/* CTA Buttons */}
@@ -861,24 +941,38 @@ export default function EyeComfortVintagePortfolio() {
                   <div
                     key={card.id}
                     onClick={() => setActiveSector(card.id as any)}
-                    className={`relative p-6 rounded-xl cursor-pointer will-change-transform will-change-opacity transition-all duration-[180ms] ease-out transform-gpu overflow-hidden ${
-                      isActive 
-                        ? "bg-[#378ADD]/10 opacity-100 border border-[#378ADD]/30" 
-                        : "bg-transparent opacity-40 border border-transparent hover:opacity-70"
-                    }`}
+                    className="relative p-6 rounded-xl cursor-pointer will-change-transform will-change-opacity overflow-hidden"
+                    style={{
+                      transition: "opacity 0.25s ease, border-color 0.25s ease, background-color 0.25s ease",
+                      opacity: isActive ? 1 : 0.4,
+                      backgroundColor: isActive ? "rgba(55, 138, 221, 0.1)" : "transparent",
+                      borderColor: isActive ? "rgba(55, 138, 221, 0.3)" : "transparent",
+                      borderWidth: 1,
+                      borderStyle: "solid"
+                    }}
                   >
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeSectorBorder"
-                        className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#378ADD] shadow-[0_0_8px_#378ADD]"
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                      />
-                    )}
+                    <AnimatePresence>
+                      {isActive && (
+                        <motion.div
+                          className="absolute left-0 top-0 bottom-0 w-[3px] bg-[#378ADD] shadow-[0_0_8px_#378ADD] origin-top"
+                          initial={{ scaleY: 0 }}
+                          animate={{ scaleY: 1 }}
+                          exit={{ scaleY: 0 }}
+                          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                        />
+                      )}
+                    </AnimatePresence>
                     <div className="flex flex-col gap-2 relative z-10 pl-2">
                       <span className="font-mono text-xs uppercase tracking-widest text-[#378ADD] font-bold">
                         {card.category}
                       </span>
-                      <h4 className={`font-display text-xl font-bold transition-colors duration-[180ms] ${isActive ? "text-[#F3F4F6]" : "text-[#9CA3AF]"}`}>
+                      <h4 
+                        className="font-display text-xl font-bold"
+                        style={{
+                          transition: "color 0.25s ease",
+                          color: isActive ? "#F3F4F6" : "#9CA3AF"
+                        }}
+                      >
                         {card.project_name}
                       </h4>
                       <p className="font-sans text-sm text-[#9CA3AF] leading-relaxed mt-1">
@@ -899,25 +993,38 @@ export default function EyeComfortVintagePortfolio() {
 
             {/* Right Data Visualization */}
             <div className="lg:col-span-7 lg:sticky lg:top-32">
-              <div className="bg-transparent border border-[rgba(243,244,246,0.05)] backdrop-blur-md rounded-2xl p-8 relative overflow-hidden flex flex-col justify-between will-change-transform transform-gpu shadow-2xl min-h-[500px]">
+              <div className="bg-transparent border border-[rgba(243,244,246,0.05)] backdrop-blur-md rounded-2xl p-8 relative overflow-hidden flex flex-col justify-between will-change-transform transform-gpu shadow-2xl min-h-[600px]">
                 
                 {/* Mode Switcher logic */}
-                <AnimatePresence mode="wait">
+                <AnimatePresence>
                   {activeSector !== "development" ? (
                     <motion.div 
                       key="mode-a"
-                      initial={{ opacity: 0, scale: 0.98 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.98 }}
-                      transition={{ duration: 0.18, ease: "easeOut" }}
-                      className="flex flex-col h-full w-full"
+                      initial={{ opacity: 0, scale: 0.97 }}
+                      animate={{ opacity: 1, scale: 1, transition: { delay: 0.18, duration: 0.22, ease: [0.4, 0, 0.2, 1] } }}
+                      exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.18, ease: [0.4, 0, 0.2, 1] } }}
+                      className="flex flex-col h-full w-full absolute inset-0 p-8"
                     >
                       {/* Header MODE A */}
                       <div className="flex justify-between items-center mb-6 relative z-10">
-                        <h5 className="font-display text-[#F3F4F6] text-sm font-medium tracking-wider uppercase">Active impact stream</h5>
+                        <AnimatePresence mode="wait">
+                          <motion.h5 
+                            key={activeSector}
+                            initial={{ opacity: 0, y: -6 }}
+                            animate={{ opacity: 1, y: 0, transition: { delay: 0.02, duration: 0.2, ease: "easeOut" } }}
+                            exit={{ opacity: 0, y: -6, transition: { duration: 0.2, ease: "easeIn" } }}
+                            className="font-display text-[#F3F4F6] text-sm font-medium tracking-wider uppercase"
+                          >
+                            Active impact stream
+                          </motion.h5>
+                        </AnimatePresence>
                         <div className="flex items-center gap-2">
                           <span className="text-xs font-mono text-[#10B981]">LIVE</span>
-                          <div className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse shadow-[0_0_8px_#10B981]"></div>
+                          <motion.div 
+                            className="w-2 h-2 rounded-full bg-[#10B981] shadow-[0_0_8px_#10B981]"
+                            animate={{ opacity: [1, 0.3, 1], scale: [1, 0.85, 1] }}
+                            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                          ></motion.div>
                         </div>
                       </div>
 
@@ -936,13 +1043,17 @@ export default function EyeComfortVintagePortfolio() {
                             </linearGradient>
                           </defs>
                           <motion.path
+                            key={`fill-${activeSector}`}
                             d={activeSector === "seo" 
                               ? "M0 100 L0 80 L20 60 L40 65 L60 40 L80 15 L100 5 L100 100 Z"
                               : "M0 100 L0 90 L20 85 L40 50 L60 55 L80 20 L100 -5 L100 100 Z"}
                             fill="url(#chartGradient)"
-                            transition={{ duration: 0.4 }}
+                            initial={{ pathLength: 0, opacity: 0 }}
+                            animate={{ pathLength: 1, opacity: 1 }}
+                            transition={{ duration: 0.6, ease: [0.77, 0, 0.175, 1] }}
                           />
                           <motion.path
+                            key={`stroke-${activeSector}`}
                             d={activeSector === "seo" 
                               ? "M0 80 L20 60 L40 65 L60 40 L80 15 L100 5"
                               : "M0 90 L20 85 L40 50 L60 55 L80 20 L100 -5"}
@@ -950,7 +1061,9 @@ export default function EyeComfortVintagePortfolio() {
                             stroke="#378ADD"
                             strokeWidth="2"
                             vectorEffect="non-scaling-stroke"
-                            transition={{ duration: 0.4 }}
+                            initial={{ pathLength: 0, opacity: 0 }}
+                            animate={{ pathLength: 1, opacity: 1 }}
+                            transition={{ duration: 0.6, ease: [0.77, 0, 0.175, 1] }}
                           />
                           {[0, 20, 40, 60, 80, 100].map((cx, i) => {
                             const cyValues = {
@@ -959,7 +1072,7 @@ export default function EyeComfortVintagePortfolio() {
                             };
                             return (
                               <motion.circle
-                                key={i}
+                                key={`${activeSector}-${i}`}
                                 cx={cx}
                                 cy={activeSector === "seo" ? cyValues.seo[i] : cyValues.paid_ads[i]}
                                 r="1.5"
@@ -967,7 +1080,9 @@ export default function EyeComfortVintagePortfolio() {
                                 stroke="#378ADD"
                                 strokeWidth="2"
                                 vectorEffect="non-scaling-stroke"
-                                transition={{ duration: 0.4 }}
+                                initial={{ scale: 0, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{ duration: 0.4, delay: i * 0.1, ease: "easeOut" }}
                               />
                             );
                           })}
@@ -979,19 +1094,19 @@ export default function EyeComfortVintagePortfolio() {
                         <div>
                           <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">Perf Score</span>
                           <span className="text-2xl font-bold text-[#F3F4F6] font-display">
-                            {activeSector === "seo" ? "98/100" : "94/100"}
+                            <DynamicCounter value={activeSector === "seo" ? 98 : 94} suffix="/100" />
                           </span>
                         </div>
                         <div>
                           <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">FCP Time</span>
                           <span className="text-2xl font-bold text-[#F3F4F6] font-display">
-                            {activeSector === "seo" ? "0.6s" : "0.8s"}
+                            <ScrambleText text={activeSector === "seo" ? "0.6s" : "0.8s"} />
                           </span>
                         </div>
                         <div>
                           <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">TTI Improvement</span>
                           <span className="text-2xl font-bold text-[#10B981] font-display flex items-center gap-1">
-                            ↑ {activeSector === "seo" ? "42%" : "38%"}
+                            <DynamicCounter value={activeSector === "seo" ? 42 : 38} prefix="↑ " suffix="%" />
                           </span>
                         </div>
                       </div>
@@ -999,91 +1114,143 @@ export default function EyeComfortVintagePortfolio() {
                   ) : (
                     <motion.div 
                       key="mode-b"
-                      initial={{ opacity: 0, scale: 0.98 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.98 }}
-                      transition={{ duration: 0.18, ease: "easeOut" }}
-                      className="flex flex-col h-full w-full"
+                      initial={{ opacity: 0, scale: 0.97 }}
+                      animate={{ opacity: 1, scale: 1, transition: { delay: 0.18, duration: 0.22, ease: [0.4, 0, 0.2, 1] } }}
+                      exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.18, ease: [0.4, 0, 0.2, 1] } }}
+                      className="flex flex-col h-full w-full absolute inset-0 p-8"
                     >
                       {/* Header MODE B */}
                       <div className="flex justify-between items-center mb-6 relative z-10">
                         <h5 className="font-display text-[#F3F4F6] text-sm font-medium tracking-wider uppercase">Shipped platforms</h5>
                       </div>
 
-                      {/* 2x2 Showcase Grid */}
-                      <div className="grid grid-cols-2 gap-4 h-[220px] mt-2 mb-8">
-                        {[
-                          { name: "MARKETING ON MY WAY", color: "#378ADD", type: "CMS Platform" },
-                          { name: "FINTECH DASHBOARD", color: "#10B981", type: "Web App" },
-                          { name: "E-COMMERCE OS", color: "#F59E0B", type: "Storefront" },
-                          { name: "ANALYTICS HUB", color: "#8B5CF6", type: "Internal Tool" }
-                        ].map((site, i) => (
-                          <div key={i} className="bg-[#111827] border border-[rgba(243,244,246,0.1)] rounded-lg flex flex-col overflow-hidden group hover:border-[rgba(243,244,246,0.2)] transition-colors duration-[180ms]">
-                            {/* macOS Header */}
-                            <div className="h-6 bg-[#1F2937] flex items-center px-2 gap-1.5 border-b border-[rgba(243,244,246,0.05)]">
-                              <div className="w-2 h-2 rounded-full bg-[#EF4444]"></div>
-                              <div className="w-2 h-2 rounded-full bg-[#F59E0B]"></div>
-                              <div className="w-2 h-2 rounded-full bg-[#10B981]"></div>
-                            </div>
-                            {/* Browser Body */}
-                            <div className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden">
-                              <div className="absolute inset-0 bg-gradient-to-br from-transparent to-[rgba(255,255,255,0.02)] z-0"></div>
-                              <span className="font-mono text-xs font-bold text-center z-10" style={{ color: site.color }}>
-                                {site.name}
-                              </span>
-                              <span className="text-[9px] uppercase tracking-widest text-[#9CA3AF] mt-2 z-10">
-                                {site.type}
-                              </span>
+                      {/* Single Featured Project Card */}
+                      <motion.div 
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.18, duration: 0.35, ease: "easeOut" }}
+                        className="bg-[#0d0d0d] border border-[rgba(243,244,246,0.1)] rounded-lg flex flex-col overflow-hidden w-full h-[300px] mt-2 mb-8 relative group hover:border-[rgba(243,244,246,0.2)] transition-colors duration-[180ms]"
+                      >
+                        {/* macOS Header & URL Bar */}
+                        <div className="h-8 bg-[#1F2937] flex items-center px-3 gap-3 border-b border-[rgba(243,244,246,0.05)] relative z-20">
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <div className="w-2.5 h-2.5 rounded-full bg-[#EF4444]"></div>
+                            <div className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]"></div>
+                            <div className="w-2.5 h-2.5 rounded-full bg-[#10B981]"></div>
+                          </div>
+                          <div className="bg-[#111827] rounded text-[10px] text-[#9CA3AF] font-mono px-3 py-1 flex-1 text-center truncate shadow-inner">
+                            al-fahath-bags-and-footwear-sooty.vercel.app
+                          </div>
+                          <div className="w-12 shrink-0"></div>
+                        </div>
+
+                        {/* Browser Body (Iframe) */}
+                        <div className="flex-1 relative overflow-hidden bg-[#0a0a0a]">
+                          {activeSector === "development" && (
+                            <motion.div
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ delay: 0.38, duration: 0.5 }}
+                              className="w-full h-full"
+                            >
+                              <iframe 
+                                src="https://al-fahath-bags-and-footwear-sooty.vercel.app/" 
+                                style={{ 
+                                  width: "133%", 
+                                  height: "300px", 
+                                  border: "none", 
+                                  pointerEvents: "none", 
+                                  transform: "scale(0.75)", 
+                                  transformOrigin: "top left" 
+                                }} 
+                                title="Al Fahath Bags & Footwears Preview"
+                              />
+                            </motion.div>
+                          )}
+                        </div>
+
+                        {/* Bottom Info Bar */}
+                        <div className="h-12 bg-[#111827] border-t border-[rgba(243,244,246,0.05)] flex items-center justify-between px-4 relative z-20">
+                          <div className="flex items-center gap-3">
+                            <span className="font-sans text-[14px] font-medium text-[#F3F4F6]">
+                              Al Fahath Bags & Footwears
+                            </span>
+                            <span className="font-mono text-[9px] uppercase tracking-widest text-[#9CA3AF] bg-[rgba(243,244,246,0.05)] px-2 py-0.5 rounded hidden sm:inline-block">
+                              E-commerce
+                            </span>
+                            <div className="gap-1.5 ml-2 hidden md:flex">
+                              <span className="font-mono text-[8px] uppercase tracking-widest text-[#F3F4F6] border border-[rgba(243,244,246,0.1)] px-1.5 py-0.5 rounded">Next.js</span>
+                              <span className="font-mono text-[8px] uppercase tracking-widest text-[#F3F4F6] border border-[rgba(243,244,246,0.1)] px-1.5 py-0.5 rounded">Vercel</span>
                             </div>
                           </div>
-                        ))}
-                      </div>
+                          <a href="https://al-fahath-bags-and-footwear-sooty.vercel.app/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[#378ADD] hover:text-[#5fa2e6] transition-colors text-xs font-mono group/link cursor-pointer pointer-events-auto">
+                            VIEW LIVE
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                          </a>
+                        </div>
+                      </motion.div>
 
                       {/* Metrics Row B */}
                       <div className="grid grid-cols-3 gap-4">
-                        <div>
-                          <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">Sites Shipped</span>
-                          <span className="text-2xl font-bold text-[#F3F4F6] font-display">12+</span>
-                        </div>
-                        <div>
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.3 }}>
+                          <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">Lighthouse</span>
+                          <span className="text-2xl font-bold text-[#10B981] font-display flex items-center gap-1">
+                            ↑ <DynamicCounter value={97} />/100
+                          </span>
+                        </motion.div>
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.26, duration: 0.3 }}>
                           <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">Avg LCP</span>
-                          <span className="text-2xl font-bold text-[#F3F4F6] font-display">0.9s</span>
-                        </div>
-                        <div>
+                          <span className="text-2xl font-bold text-[#10B981] font-display flex items-center gap-1">
+                            ↓ <ScrambleText text="0.6s" />
+                          </span>
+                        </motion.div>
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.34, duration: 0.3 }}>
                           <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">TTI Gain</span>
                           <span className="text-2xl font-bold text-[#10B981] font-display flex items-center gap-1">
-                            ↑ 65%
+                            ↑ <DynamicCounter value={42} suffix="%" />
                           </span>
-                        </div>
+                        </motion.div>
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
 
+                {/* Spacer to push footer down since modes are absolute positioned */}
+                <div className="flex-1 opacity-0 pointer-events-none"></div>
+
                 {/* Panel Footer (Both Modes) */}
-                <div className="mt-8 pt-4 border-t border-[rgba(243,244,246,0.1)] flex items-start gap-3">
+                <div className="mt-8 pt-4 border-t border-[rgba(243,244,246,0.1)] flex items-start gap-3 relative z-20">
                   <div className="mt-0.5 text-[#9CA3AF]">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
                   </div>
-                  <p className="text-sm text-[#9CA3AF] leading-snug">
-                    <strong className="text-[#F3F4F6] font-medium">
-                      {activeSector === "seo" 
-                        ? "Organic Search Expansion" 
-                        : activeSector === "paid_ads" 
-                        ? "Performance Ad Systems" 
-                        : "Engineered Web Platforms"}
-                    </strong> 
-                    {" — "}
-                    {activeSector === "seo"
-                      ? "Restructured technical architecture to permanently lift baseline indexation velocity and compound organic keyword discovery."
-                      : activeSector === "paid_ads"
-                      ? "Deployed high-density signal tracking arrays to train Smart Bidding models, slashing CPA while scaling conversion volume."
-                      : "Built modular React environments combining server-side caching and dynamic client hydration for zero-latency user flows."}
-                  </p>
+                  <AnimatePresence mode="wait">
+                    <motion.p 
+                      key={activeSector}
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0, transition: { delay: 0.02, duration: 0.2, ease: "easeOut" } }}
+                      exit={{ opacity: 0, y: -6, transition: { duration: 0.2, ease: "easeIn" } }}
+                      className="text-sm text-[#9CA3AF] leading-snug w-full"
+                    >
+                      <strong className="text-[#F3F4F6] font-medium">
+                        {activeSector === "seo" 
+                          ? "Organic Search Expansion" 
+                          : activeSector === "paid_ads" 
+                          ? "Performance Ad Systems" 
+                          : "Al Fahath Bags & Footwears"}
+                      </strong> 
+                      {" — "}
+                      {activeSector === "seo"
+                        ? "Restructured technical architecture to permanently lift baseline indexation velocity and compound organic keyword discovery."
+                        : activeSector === "paid_ads"
+                        ? "Deployed high-density signal tracking arrays to train Smart Bidding models, slashing CPA while scaling conversion volume."
+                        : "built a full e-commerce storefront with Next.js, optimised for 97/100 Lighthouse score and deployed on Vercel's edge network for sub-second load times."}
+                    </motion.p>
+                  </AnimatePresence>
                 </div>
 
               </div>
             </div>
+
           </div>
         </div>
       </section>
@@ -1122,7 +1289,7 @@ export default function EyeComfortVintagePortfolio() {
                   className="drop-shadow-[0_0_8px_rgba(37,99,235,0.5)]"
                   initial={{ pathLength: 0 }}
                   whileInView={{ pathLength: 1 }}
-                  viewport={{ once: true, margin: "-100px" }}
+                  viewport={{ once: false, margin: "-100px" }}
                   transition={{ ease: "easeInOut", stiffness: 80, damping: 15, duration: 1.5 }}
                 />
               </svg>
@@ -1134,7 +1301,7 @@ export default function EyeComfortVintagePortfolio() {
               className="absolute left-8 top-0 w-[2px] bg-[#2563EB] -translate-x-1/2 origin-top lg:hidden"
               initial={{ scaleY: 0 }}
               whileInView={{ scaleY: 1 }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: false, margin: "-100px" }}
               transition={{ duration: 1.5, ease: "easeOut" }}
             ></motion.div>
 
@@ -1146,7 +1313,7 @@ export default function EyeComfortVintagePortfolio() {
                   <motion.div
                     initial={{ opacity: 0, x: -20, scale: 0.95 }}
                     whileInView={{ opacity: 1, x: 0, scale: 1 }}
-                    viewport={{ once: true, margin: "-50px" }}
+                    viewport={{ once: false, margin: "-50px" }}
                     transition={{ duration: 0.4 }}
                     className="inline-block p-6 rounded-xl bg-transparent border border-[rgba(243,244,246,0.05)] backdrop-blur-md text-left w-full max-w-md ml-auto"
                   >
@@ -1160,7 +1327,7 @@ export default function EyeComfortVintagePortfolio() {
                   <motion.div
                     initial={{ opacity: 0, x: 20, scale: 0.95 }}
                     whileInView={{ opacity: 1, x: 0, scale: 1 }}
-                    viewport={{ once: true, margin: "-50px" }}
+                    viewport={{ once: false, margin: "-50px" }}
                     transition={{ duration: 0.4 }}
                     className="p-6 rounded-xl bg-transparent border border-[rgba(243,244,246,0.05)] backdrop-blur-md w-full"
                   >
@@ -1180,7 +1347,7 @@ export default function EyeComfortVintagePortfolio() {
                   <motion.div
                     initial={{ opacity: 0, x: 20, scale: 0.95 }}
                     whileInView={{ opacity: 1, x: 0, scale: 1 }}
-                    viewport={{ once: true, margin: "-50px" }}
+                    viewport={{ once: false, margin: "-50px" }}
                     transition={{ duration: 0.4 }}
                     className="p-6 rounded-xl bg-transparent border border-[rgba(243,244,246,0.05)] backdrop-blur-md w-full max-w-md"
                   >
@@ -1197,7 +1364,7 @@ export default function EyeComfortVintagePortfolio() {
                   <motion.div
                     initial={{ opacity: 0, x: -20, scale: 0.95 }}
                     whileInView={{ opacity: 1, x: 0, scale: 1 }}
-                    viewport={{ once: true, margin: "-50px" }}
+                    viewport={{ once: false, margin: "-50px" }}
                     transition={{ duration: 0.4 }}
                     className="inline-block p-6 rounded-xl bg-transparent border border-[rgba(37,99,235,0.2)] backdrop-blur-md text-left w-full max-w-md ml-auto relative overflow-hidden"
                   >
@@ -1217,7 +1384,7 @@ export default function EyeComfortVintagePortfolio() {
                   <motion.div
                     initial={{ opacity: 0, x: 20, scale: 0.95 }}
                     whileInView={{ opacity: 1, x: 0, scale: 1 }}
-                    viewport={{ once: true, margin: "-50px" }}
+                    viewport={{ once: false, margin: "-50px" }}
                     transition={{ duration: 0.4 }}
                     className="p-6 rounded-xl bg-transparent border border-[rgba(37,99,235,0.2)] backdrop-blur-md w-full relative overflow-hidden"
                   >
@@ -1272,93 +1439,7 @@ export default function EyeComfortVintagePortfolio() {
             </div>
           </div>
 
-          {/* Inline Email Form inside flat surface container */}
-          <div className="w-full max-w-2xl mt-12 bg-[var(--bg-surface)] border border-[var(--border-vintage)] rounded-lg p-6 md:p-8 text-left">
-            <form
-              ref={formRef}
-              onSubmit={handleTransmit}
-              onInput={checkValidity}
-              className="space-y-6"
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {/* Name */}
-                <div className="flex flex-col space-y-1.5">
-                  <label htmlFor="from_name" className="font-display text-[9.5px] uppercase tracking-widest text-[var(--text-charcoal)]/80 font-bold">
-                    Your Name *
-                  </label>
-                  <input
-                    type="text"
-                    id="from_name"
-                    name="from_name"
-                    required
-                    placeholder="e.g. S. Fahad"
-                    className="bg-[var(--bg-cream-rich)] border border-[var(--border-vintage)] focus:border-[var(--accent-gold)] focus:outline-none rounded px-3.5 py-2.5 text-xs text-[var(--text-charcoal)] placeholder-[var(--text-taupe)] w-full transition-colors duration-300"
-                  />
-                </div>
 
-                {/* Email */}
-                <div className="flex flex-col space-y-1.5">
-                  <label htmlFor="reply_to" className="font-display text-[9.5px] uppercase tracking-widest text-[var(--text-charcoal)]/80 font-bold">
-                    Your Email *
-                  </label>
-                  <input
-                    type="email"
-                    id="reply_to"
-                    name="reply_to"
-                    required
-                    placeholder="e.g. contact@business.com"
-                    className="bg-[var(--bg-cream-rich)] border border-[var(--border-vintage)] focus:border-[var(--accent-gold)] focus:outline-none rounded px-3.5 py-2.5 text-xs text-[var(--text-charcoal)] placeholder-[var(--text-taupe)] w-full transition-colors duration-300"
-                  />
-                </div>
-              </div>
-
-              {/* Subject */}
-              <div className="flex flex-col space-y-1.5">
-                <label htmlFor="subject" className="font-display text-[9.5px] uppercase tracking-widest text-[var(--text-charcoal)]/80 font-bold">
-                  Campaign Scope / Development Need
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  placeholder="e.g. Search Momentum Optimization / Google Ads Scoping"
-                  className="bg-[var(--bg-cream-rich)] border border-[var(--border-vintage)] focus:border-[var(--accent-gold)] focus:outline-none rounded px-3.5 py-2.5 text-xs text-[var(--text-charcoal)] placeholder-[var(--text-taupe)] w-full transition-colors duration-300"
-                />
-              </div>
-
-              {/* Recipient info hidden */}
-              <input type="hidden" name="to_name" value="Fahad" />
-
-              {/* Message */}
-              <div className="flex flex-col space-y-1.5">
-                <label htmlFor="message" className="font-display text-[9.5px] uppercase tracking-widest text-[var(--text-charcoal)]/80 font-bold">
-                  Your Brief *
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  required
-                  rows={4}
-                  placeholder="Provide details about your marketing funnels, budgets, timeline..."
-                  className="bg-[var(--bg-cream-rich)] border border-[var(--border-vintage)] focus:border-[var(--accent-gold)] focus:outline-none rounded px-3.5 py-2.5 text-xs text-[var(--text-charcoal)] placeholder-[var(--text-taupe)] w-full transition-colors duration-300 resize-none"
-                />
-              </div>
-
-              {/* Submit button */}
-              <div className="flex justify-end pt-2">
-                <button
-                  type="submit"
-                  disabled={isTransmitting}
-                  className={`editorial-btn-primary px-8 py-3 rounded text-xs tracking-wider flex items-center space-x-2 transition-all duration-300 ${
-                    isTransmitting ? "opacity-75 cursor-wait" : ""
-                  } ${isValid ? "ring-2 ring-[var(--accent-gold)]/30" : ""}`}
-                >
-                  <Send className="w-3.5 h-3.5 text-[#000000]" />
-                  <span>{isTransmitting ? "TRANSMITTING..." : "TRANSMIT LETTER"}</span>
-                </button>
-              </div>
-            </form>
-          </div>
 
         </div>
       </section>
@@ -1372,7 +1453,7 @@ export default function EyeComfortVintagePortfolio() {
           {/* Copyright left */}
           <div className="space-y-0.5 text-center md:text-left">
             <span className="font-display font-bold text-[var(--text-charcoal)]">
-              Fahad S. &copy; 2026
+              Fahath S. &copy; 2026
             </span>
             <p className="text-[10px] text-[var(--text-charcoal)]/60 leading-none">
               Performance Marketer, SEO Analyst & Web Developer. All rights reserved.

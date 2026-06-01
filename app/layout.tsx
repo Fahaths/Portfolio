@@ -4,12 +4,12 @@ import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://fahath-s-digital-marketer.vercel.app'),
-  title: 'S. Fahad | Performance Marketing & SEO Analyst / Website Developer',
+  title: 'S. Fahath | Performance Marketing & SEO Analyst / Website Developer',
   description: 'Performance Marketer, SEO Analyst, and Web Developer specializing in high-converting ad channels (Meta, Google Ads) and high-performance web solutions.',
-  applicationName: 'S. Fahad Portfolio',
+  applicationName: 'S. Fahath Portfolio',
   keywords: [
-    'S Fahad',
-    'Fahad S',
+    'S Fahath',
+    'Fahath S',
     'digital marketer',
     'SEO analyst',
     'Web Developer',
@@ -19,9 +19,9 @@ export const metadata: Metadata = {
     'SEO strategy',
     'editorial marketing portfolio'
   ],
-  authors: [{ name: 'S. Fahad', url: 'https://fahath-s-digital-marketer.vercel.app' }],
-  creator: 'S. Fahad',
-  publisher: 'S. Fahad',
+  authors: [{ name: 'S. Fahath', url: 'https://fahath-s-digital-marketer.vercel.app' }],
+  creator: 'S. Fahath',
+  publisher: 'S. Fahath',
   robots: {
     index: true,
     follow: true,
@@ -39,22 +39,22 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: 'https://fahath-s-digital-marketer.vercel.app/',
-    title: 'S. Fahad | Editorial Digital Portfolio',
-    description: 'Explore the performance marketing, SEO, and web development craftsmanship of S. Fahad. High-performance, data-driven systems wrapped in an eye-comfort vintage editorial style.',
-    siteName: 'S. Fahad Portfolio',
+    title: 'S. Fahath | Editorial Digital Portfolio',
+    description: 'Explore the performance marketing, SEO, and web development craftsmanship of S. Fahath. High-performance, data-driven systems wrapped in an eye-comfort vintage editorial style.',
+    siteName: 'S. Fahath Portfolio',
     locale: 'en_IN',
     images: [
       {
         url: '/logo-v2.webp',
         width: 1200,
         height: 630,
-        alt: 'S. Fahad | Performance Marketing & SEO Analyst',
+        alt: 'S. Fahath | Performance Marketing & SEO Analyst',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'S. Fahad | Editorial Digital Portfolio',
+    title: 'S. Fahath | Editorial Digital Portfolio',
     description: 'Performance Marketer, SEO Analyst, and Web Developer specializing in high-converting ad channels (Meta, Google Ads) and high-performance web solutions.',
     images: ['/logo-v2.webp'],
   },
@@ -84,8 +84,8 @@ export default function RootLayout({
         '@type': 'WebSite',
         '@id': 'https://fahath-s-digital-marketer.vercel.app/#website',
         'url': 'https://fahath-s-digital-marketer.vercel.app/',
-        'name': 'S. Fahad Portfolio',
-        'alternateName': ['S. Fahad', 'Fahad Portfolio', 'Fahad S'],
+        'name': 'S. Fahath Portfolio',
+        'alternateName': ['S. Fahath', 'Fahath Portfolio', 'Fahath S'],
         'description': 'SEO Analyst, Performance Marketer, and Web Developer specializing in Google Ads, Meta Ads, and bespoke web solutions.',
         'publisher': {
           '@id': 'https://fahath-s-digital-marketer.vercel.app/#person',
@@ -94,7 +94,7 @@ export default function RootLayout({
       {
         '@type': 'Person',
         '@id': 'https://fahath-s-digital-marketer.vercel.app/#person',
-        'name': 'S. Fahad',
+        'name': 'S. Fahath',
         'jobTitle': 'Performance Marketing & SEO Analyst / Website Developer',
         'url': 'https://fahath-s-digital-marketer.vercel.app/',
         'sameAs': [
