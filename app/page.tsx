@@ -805,10 +805,10 @@ export default function EyeComfortVintagePortfolio() {
           {/* Module Header */}
           <div className="mb-20">
             <span className="font-display text-xs uppercase tracking-[0.2em] text-[#9CA3AF] font-semibold mb-6 block">
-              01. THE JOURNEY
+              01. MY STORY
             </span>
             <h3 className="font-display text-4xl lg:text-5xl font-black text-[#F3F4F6] tracking-tight leading-[1.15]">
-              From Execution to Strategy.
+              From Curiosity to Career.
             </h3>
           </div>
 
@@ -818,7 +818,7 @@ export default function EyeComfortVintagePortfolio() {
             <div className="w-full lg:w-[40%] flex flex-col">
               <EditorialReveal delay={0.1}>
                 <p className="font-display text-2xl lg:text-3xl font-bold text-[#F3F4F6] leading-tight">
-                  From executing basics to driving the full digital stack. Fast.
+                  Where Passion Met Performance.
                 </p>
               </EditorialReveal>
 
@@ -849,25 +849,13 @@ export default function EyeComfortVintagePortfolio() {
             {/* Right Column (The Story Summary) - 60% */}
             <div className="w-full lg:w-[60%] flex flex-col gap-8">
               
-              {/* Milestone 1 */}
+              {/* Story Block */}
               <EditorialReveal delay={0.2} className="flex flex-col gap-2">
-                <div className="flex flex-wrap items-baseline gap-x-4">
-                  <h4 className="font-display text-xl font-bold text-[#F3F4F6]">The Sandbox / Intern</h4>
-                  <span className="text-sm font-mono text-[#9CA3AF]">Crux Creations • Pre-September 2025</span>
+                <div className="flex flex-wrap items-baseline gap-x-4 mb-2">
+                  <h4 className="font-display text-xl font-bold text-[#F3F4F6]">The Beginning & Evolution:</h4>
                 </div>
                 <p className="font-sans text-[#9CA3AF] leading-relaxed">
-                  My journey started in the sandbox of digital marketing, mastering the core mechanics of technical SEO, high-authority link building, and user intent parameters.
-                </p>
-              </EditorialReveal>
-
-              {/* Milestone 2 */}
-              <EditorialReveal delay={0.3} className="flex flex-col gap-2">
-                <div className="flex flex-wrap items-baseline gap-x-4">
-                  <h4 className="font-display text-xl font-bold text-[#F3F4F6]">The Shift / SEO Analyst</h4>
-                  <span className="text-sm font-mono text-[#2563EB]">Crux Creations (Full-Time) • September 1, 2025 - Present</span>
-                </div>
-                <p className="font-sans text-[#F3F4F6] leading-relaxed">
-                  That foundation quickly accelerated into a full-time role as an SEO Analyst, where I expanded my scope to bridge the gap between frontend development and advanced search visibility frameworks.
+                  My journey in digital marketing began at Crux Creations as an intern, where I transformed my basic understanding of marketing into practical expertise. Through hands-on experience, I learned the fundamentals of SEO, content optimization, search intent, website performance, and digital growth strategies. As my skills and confidence grew, I transitioned into a full-time role, expanding my focus beyond SEO into performance marketing. Today, as an SEO Analyst and Performance Marketer, I combine organic search, paid advertising, analytics, and web optimization to help businesses increase visibility, drive qualified leads, and achieve measurable growth.
                 </p>
               </EditorialReveal>
 
@@ -904,9 +892,9 @@ export default function EyeComfortVintagePortfolio() {
         <div className="w-full max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-20">
-            <span className="font-mono text-xs uppercase tracking-[0.2em] text-[#9CA3AF] font-semibold mb-6 block">Portfolio impact</span>
-            <h3 className="font-display text-4xl lg:text-5xl font-black text-[#F3F4F6] tracking-tight block mb-2">Explore by sector.</h3>
-            <span className="font-sans text-lg text-[#9CA3AF]">Select a sector to view its live performance metrics.</span>
+            <span className="font-mono text-xs uppercase tracking-[0.2em] text-[#9CA3AF] font-semibold mb-6 block">Showcase</span>
+            <h3 className="font-display text-4xl lg:text-5xl font-black text-[#F3F4F6] tracking-tight block mb-2">The Work Behind the Numbers</h3>
+            <span className="font-sans text-lg text-[#9CA3AF]">The areas where I spend most of my time building, optimizing, and improving.</span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
@@ -916,10 +904,10 @@ export default function EyeComfortVintagePortfolio() {
               {[
                 {
                   id: "seo",
-                  project_name: "Organic Search Expansion",
-                  category: "Technical SEO & Indexing",
-                  summary: "Deep site restructures, high-authority backlink maps, and rapid indexing strategies.",
-                  tech_tags: ["Search Console", "Indexing Engine", "Screaming Frog"]
+                  project_name: "Search Engine Optimization",
+                  category: "SEO Growth",
+                  summary: "Building strong technical foundations that help websites rank better, grow visibility, and attract qualified traffic.",
+                  tech_tags: ["Search Console", "GA4", "Semrush"]
                 },
                 {
                   id: "paid_ads",
@@ -998,13 +986,13 @@ export default function EyeComfortVintagePortfolio() {
                 {/* Mode Switcher logic */}
                 <AnimatePresence>
                   {activeSector !== "development" ? (
-                    <motion.div 
-                      key="mode-a"
-                      initial={{ opacity: 0, scale: 0.97 }}
-                      animate={{ opacity: 1, scale: 1, transition: { delay: 0.18, duration: 0.22, ease: [0.4, 0, 0.2, 1] } }}
-                      exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.18, ease: [0.4, 0, 0.2, 1] } }}
-                      className="flex flex-col h-full w-full absolute inset-0 p-8"
-                    >
+                      <motion.div 
+                        key="mode-a"
+                        initial={{ opacity: 0, scale: 0.97 }}
+                        animate={{ opacity: 1, scale: 1, transition: { delay: 0.18, duration: 0.22, ease: [0.4, 0, 0.2, 1] } }}
+                        exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.18, ease: [0.4, 0, 0.2, 1] } }}
+                        className="flex flex-col h-full w-full absolute inset-0 p-8 pb-[130px]"
+                      >
                       {/* Header MODE A */}
                       <div className="flex justify-between items-center mb-6 relative z-10">
                         <AnimatePresence mode="wait">
@@ -1015,7 +1003,7 @@ export default function EyeComfortVintagePortfolio() {
                             exit={{ opacity: 0, y: -6, transition: { duration: 0.2, ease: "easeIn" } }}
                             className="font-display text-[#F3F4F6] text-sm font-medium tracking-wider uppercase"
                           >
-                            Active impact stream
+                            {activeSector === "seo" ? "Growth Timeline" : "Active impact stream"}
                           </motion.h5>
                         </AnimatePresence>
                         <div className="flex items-center gap-2">
@@ -1028,85 +1016,123 @@ export default function EyeComfortVintagePortfolio() {
                         </div>
                       </div>
 
-                      {/* Line Chart (SVG approximation matching requirements) */}
-                      <div className="relative w-full h-[220px] mt-2 mb-8">
-                        <div className="absolute inset-0 flex flex-col justify-between py-4 pointer-events-none z-0">
-                          {[1, 2, 3, 4, 5].map((line) => (
-                            <div key={line} className="w-full h-[1px] border-b border-dashed border-[rgba(243,244,246,0.05)]"></div>
-                          ))}
+                      {/* Line Chart & Visualization */}
+                      <div className="relative w-full flex-1 mt-2 mb-12 min-h-[220px] flex">
+                        {/* Y-axis Labels for SEO */}
+                        {activeSector === "seo" && (
+                          <div className="w-10 flex-shrink-0 flex flex-col justify-between py-4 text-[10px] text-[rgba(156,163,175,0.6)] font-mono text-right pr-3 pointer-events-none relative z-10">
+                            <span className="leading-none translate-y-[2px]">8k</span>
+                            <span className="leading-none translate-y-[1px]">6k</span>
+                            <span className="leading-none">4k</span>
+                            <span className="leading-none -translate-y-[1px]">2k</span>
+                            <span className="leading-none -translate-y-[2px]">0</span>
+                          </div>
+                        )}
+                        
+                        <div className="flex-1 relative">
+                          <div className="absolute inset-0 flex flex-col justify-between py-4 pointer-events-none z-0">
+                            {[1, 2, 3, 4, 5].map((line) => (
+                              <div key={line} className="w-full h-[1px] border-b border-dashed border-[rgba(243,244,246,0.05)]"></div>
+                            ))}
+                          </div>
+                          {activeSector === "seo" ? (
+                            <div className="absolute inset-0 z-10">
+                              <div className="absolute inset-0 py-4 flex items-end px-3" style={{ justifyContent: 'space-between' }}>
+                                {[0, 1, 2, 3, 4, 5].map((i) => {
+                                  const cy = [85, 70, 55, 35, 15, 5][i];
+                                  const heightPct = 100 - cy;
+                                  return (
+                                    <motion.div
+                                      key={`bar-${i}`}
+                                      className="w-[8%] max-w-[40px] bg-gradient-to-t from-transparent to-[rgba(55,138,221,0.2)] border border-[#378ADD] border-b-0 rounded-t-md shadow-[0_-5px_15px_rgba(55,138,221,0.1)] relative"
+                                      style={{ transformOrigin: 'bottom' }}
+                                      initial={{ height: "0%" }}
+                                      animate={{ height: `${heightPct}%` }}
+                                      transition={{ duration: 0.5, delay: i * 0.08, ease: "easeOut" }}
+                                    >
+                                      <div className="absolute top-0 left-0 right-0 h-1 bg-[#378ADD]/30 rounded-t-md"></div>
+                                    </motion.div>
+                                  );
+                                })}
+                              </div>
+                              {/* X-axis removed as requested */}
+                            </div>
+                          ) : (
+                            <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full relative z-10 overflow-visible mt-4">
+                              <defs>
+                                <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor="#378ADD" stopOpacity="0.2" />
+                                  <stop offset="100%" stopColor="#378ADD" stopOpacity="0" />
+                                </linearGradient>
+                              </defs>
+                              <g>
+                                <motion.path
+                                  key={`fill-${activeSector}`}
+                                  d="M0 100 L0 90 L20 85 L40 50 L60 55 L80 20 L100 -5 L100 100 Z"
+                                  fill="url(#chartGradient)"
+                                  initial={{ pathLength: 0, opacity: 0 }}
+                                  animate={{ pathLength: 1, opacity: 1 }}
+                                  transition={{ duration: 0.6, ease: [0.77, 0, 0.175, 1] }}
+                                />
+                                <motion.path
+                                  key={`stroke-${activeSector}`}
+                                  d="M0 90 L20 85 L40 50 L60 55 L80 20 L100 -5"
+                                  fill="none"
+                                  stroke="#378ADD"
+                                  strokeWidth="2"
+                                  vectorEffect="non-scaling-stroke"
+                                  initial={{ pathLength: 0, opacity: 0 }}
+                                  animate={{ pathLength: 1, opacity: 1 }}
+                                  transition={{ duration: 0.6, ease: [0.77, 0, 0.175, 1] }}
+                                />
+                                {[0, 20, 40, 60, 80, 100].map((cx, i) => {
+                                  const cyValues = [90, 85, 50, 55, 20, -5];
+                                  return (
+                                    <motion.circle
+                                      key={`circle-${i}`}
+                                      cx={cx}
+                                      cy={cyValues[i]}
+                                      r="1.5"
+                                      fill="#0B0F19"
+                                      stroke="#378ADD"
+                                      strokeWidth="2"
+                                      vectorEffect="non-scaling-stroke"
+                                      initial={{ scale: 0, opacity: 0 }}
+                                      animate={{ scale: 1, opacity: 1 }}
+                                      transition={{ duration: 0.4, delay: i * 0.1, ease: "easeOut" }}
+                                    />
+                                  );
+                                })}
+                              </g>
+                            </svg>
+                          )}
                         </div>
-                        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full relative z-10 overflow-visible mt-4">
-                          <defs>
-                            <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="#378ADD" stopOpacity="0.2" />
-                              <stop offset="100%" stopColor="#378ADD" stopOpacity="0" />
-                            </linearGradient>
-                          </defs>
-                          <motion.path
-                            key={`fill-${activeSector}`}
-                            d={activeSector === "seo" 
-                              ? "M0 100 L0 80 L20 60 L40 65 L60 40 L80 15 L100 5 L100 100 Z"
-                              : "M0 100 L0 90 L20 85 L40 50 L60 55 L80 20 L100 -5 L100 100 Z"}
-                            fill="url(#chartGradient)"
-                            initial={{ pathLength: 0, opacity: 0 }}
-                            animate={{ pathLength: 1, opacity: 1 }}
-                            transition={{ duration: 0.6, ease: [0.77, 0, 0.175, 1] }}
-                          />
-                          <motion.path
-                            key={`stroke-${activeSector}`}
-                            d={activeSector === "seo" 
-                              ? "M0 80 L20 60 L40 65 L60 40 L80 15 L100 5"
-                              : "M0 90 L20 85 L40 50 L60 55 L80 20 L100 -5"}
-                            fill="none"
-                            stroke="#378ADD"
-                            strokeWidth="2"
-                            vectorEffect="non-scaling-stroke"
-                            initial={{ pathLength: 0, opacity: 0 }}
-                            animate={{ pathLength: 1, opacity: 1 }}
-                            transition={{ duration: 0.6, ease: [0.77, 0, 0.175, 1] }}
-                          />
-                          {[0, 20, 40, 60, 80, 100].map((cx, i) => {
-                            const cyValues = {
-                              seo: [80, 60, 65, 40, 15, 5],
-                              paid_ads: [90, 85, 50, 55, 20, -5]
-                            };
-                            return (
-                              <motion.circle
-                                key={`${activeSector}-${i}`}
-                                cx={cx}
-                                cy={activeSector === "seo" ? cyValues.seo[i] : cyValues.paid_ads[i]}
-                                r="1.5"
-                                fill="#0B0F19"
-                                stroke="#378ADD"
-                                strokeWidth="2"
-                                vectorEffect="non-scaling-stroke"
-                                initial={{ scale: 0, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                transition={{ duration: 0.4, delay: i * 0.1, ease: "easeOut" }}
-                              />
-                            );
-                          })}
-                        </svg>
                       </div>
 
                       {/* Metrics Row A */}
-                      <div className="grid grid-cols-3 gap-4">
-                        <div>
-                          <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">Perf Score</span>
+                      <div className="grid grid-cols-3 gap-4 mt-auto relative z-20">
+                        <div className="text-center">
+                          <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">{activeSector === "seo" ? "SEO Projects" : "Perf Score"}</span>
                           <span className="text-2xl font-bold text-[#F3F4F6] font-display">
-                            <DynamicCounter value={activeSector === "seo" ? 98 : 94} suffix="/100" />
+                            {activeSector === "seo" 
+                              ? <DynamicCounter value={15} suffix="+" />
+                              : <DynamicCounter value={94} suffix="/100" />}
                           </span>
                         </div>
-                        <div>
-                          <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">FCP Time</span>
+                        <div className="text-center">
+                          <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">{activeSector === "seo" ? "Keywords Ranked" : "FCP Time"}</span>
                           <span className="text-2xl font-bold text-[#F3F4F6] font-display">
-                            <ScrambleText text={activeSector === "seo" ? "0.6s" : "0.8s"} />
+                            {activeSector === "seo"
+                              ? <DynamicCounter value={50} suffix="+" />
+                              : <ScrambleText text="0.8s" />}
                           </span>
                         </div>
-                        <div>
-                          <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">TTI Improvement</span>
-                          <span className="text-2xl font-bold text-[#10B981] font-display flex items-center gap-1">
-                            <DynamicCounter value={activeSector === "seo" ? 42 : 38} prefix="↑ " suffix="%" />
+                        <div className="text-center">
+                          <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">{activeSector === "seo" ? "Organic Growth" : "TTI Improvement"}</span>
+                          <span className="text-2xl font-bold text-[#10B981] font-display flex items-center justify-center gap-1">
+                            {activeSector === "seo"
+                              ? <DynamicCounter value={67} prefix="↑ " suffix="%" />
+                              : <DynamicCounter value={38} prefix="↑ " suffix="%" />}
                           </span>
                         </div>
                       </div>
@@ -1117,7 +1143,7 @@ export default function EyeComfortVintagePortfolio() {
                       initial={{ opacity: 0, scale: 0.97 }}
                       animate={{ opacity: 1, scale: 1, transition: { delay: 0.18, duration: 0.22, ease: [0.4, 0, 0.2, 1] } }}
                       exit={{ opacity: 0, scale: 0.97, transition: { duration: 0.18, ease: [0.4, 0, 0.2, 1] } }}
-                      className="flex flex-col h-full w-full absolute inset-0 p-8"
+                      className="flex flex-col h-full w-full absolute inset-0 p-8 pb-[130px]"
                     >
                       {/* Header MODE B */}
                       <div className="flex justify-between items-center mb-6 relative z-10">
@@ -1191,22 +1217,22 @@ export default function EyeComfortVintagePortfolio() {
                       </motion.div>
 
                       {/* Metrics Row B */}
-                      <div className="grid grid-cols-3 gap-4">
-                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.3 }}>
+                      <div className="grid grid-cols-3 gap-4 mt-auto relative z-20">
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: 0.3 }} className="text-center">
                           <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">Lighthouse</span>
-                          <span className="text-2xl font-bold text-[#10B981] font-display flex items-center gap-1">
+                          <span className="text-2xl font-bold text-[#10B981] font-display flex items-center justify-center gap-1">
                             ↑ <DynamicCounter value={97} />/100
                           </span>
                         </motion.div>
-                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.26, duration: 0.3 }}>
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.26, duration: 0.3 }} className="text-center">
                           <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">Avg LCP</span>
-                          <span className="text-2xl font-bold text-[#10B981] font-display flex items-center gap-1">
+                          <span className="text-2xl font-bold text-[#10B981] font-display flex items-center justify-center gap-1">
                             ↓ <ScrambleText text="0.6s" />
                           </span>
                         </motion.div>
-                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.34, duration: 0.3 }}>
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.34, duration: 0.3 }} className="text-center">
                           <span className="text-[10px] uppercase tracking-widest text-[#9CA3AF] block mb-1">TTI Gain</span>
-                          <span className="text-2xl font-bold text-[#10B981] font-display flex items-center gap-1">
+                          <span className="text-2xl font-bold text-[#10B981] font-display flex items-center justify-center gap-1">
                             ↑ <DynamicCounter value={42} suffix="%" />
                           </span>
                         </motion.div>
@@ -1233,14 +1259,14 @@ export default function EyeComfortVintagePortfolio() {
                     >
                       <strong className="text-[#F3F4F6] font-medium">
                         {activeSector === "seo" 
-                          ? "Organic Search Expansion" 
+                          ? "Organic Growth Engine" 
                           : activeSector === "paid_ads" 
                           ? "Performance Ad Systems" 
                           : "Al Fahath Bags & Footwears"}
                       </strong> 
                       {" — "}
                       {activeSector === "seo"
-                        ? "Restructured technical architecture to permanently lift baseline indexation velocity and compound organic keyword discovery."
+                        ? "Increased organic traffic by 67% through technical SEO optimization, indexing improvements, and strategic keyword expansion across multiple projects."
                         : activeSector === "paid_ads"
                         ? "Deployed high-density signal tracking arrays to train Smart Bidding models, slashing CPA while scaling conversion volume."
                         : "built a full e-commerce storefront with Next.js, optimised for 97/100 Lighthouse score and deployed on Vercel's edge network for sub-second load times."}
