@@ -8,7 +8,7 @@ export default function Footer() {
   const isInView = useInView(ref, { once: true, margin: "-10%" });
 
   return (
-    <footer ref={ref} className="bg-[var(--color-bg)] pt-32 pb-12 px-6 lg:px-16 overflow-hidden z-10 relative">
+    <footer ref={ref} className="bg-[#0B111E] text-[var(--color-bg)] pt-32 pb-12 px-6 lg:px-16 overflow-hidden z-10 relative border-t border-[var(--color-bg)]/10">
       
       {/* Animated Divider */}
       <div className="max-w-7xl mx-auto mb-20 relative h-[1px]">
@@ -16,7 +16,7 @@ export default function Footer() {
           initial={{ width: "0%" }}
           animate={isInView ? { width: "100%" } : {}}
           transition={{ duration: 1.5, ease: "easeInOut" }}
-          className="absolute top-0 left-0 h-full bg-[rgba(61,64,91,0.2)]"
+          className="absolute top-0 left-0 h-full bg-[var(--color-bg)]/25"
         />
       </div>
 
@@ -29,14 +29,14 @@ export default function Footer() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="space-y-6"
         >
-          <div className="font-display font-black text-4xl text-[var(--color-text)] tracking-tighter" data-cursor="VIEW">
+          <div className="font-display font-black text-4xl text-[var(--color-bg)] tracking-tighter" data-cursor="VIEW">
             FAA.
           </div>
           <div className="font-sans font-bold text-[var(--color-accent)] uppercase tracking-widest text-xs">
             SEO Analyst • Performance Marketing • AI Native Developer
           </div>
           
-          <div className="pt-4 space-y-2 opacity-80 text-sm">
+          <div className="pt-4 space-y-2 text-[var(--color-bg)]/80 text-sm">
             <div><span className="font-bold">Location:</span> Chennai, India</div>
             <div><span className="font-bold">Status:</span> Available for freelance projects and collaborations.</div>
           </div>
@@ -47,7 +47,7 @@ export default function Footer() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="flex flex-col space-y-4 md:items-center font-sans font-bold uppercase tracking-wider text-sm opacity-80"
+          className="flex flex-col space-y-4 md:items-center font-sans font-bold uppercase tracking-wider text-sm text-[var(--color-bg)]/80"
         >
           <a href="#" className="hover:text-[var(--color-accent)] transition-colors">SEO</a>
           <a href="#" className="hover:text-[var(--color-accent)] transition-colors">Performance Marketing</a>
@@ -60,13 +60,13 @@ export default function Footer() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="flex flex-col space-y-4 md:items-end font-sans font-bold text-lg"
+          className="flex flex-col space-y-4 md:items-end font-sans font-bold text-[var(--color-bg)] text-lg"
         >
           {["LinkedIn", "GitHub", "Instagram", "WhatsApp", "Email"].map((link) => {
             const socialHrefs = {
               LinkedIn: "https://www.linkedin.com/in/fahath-s-digital-marketer",
               GitHub: "https://github.com/Fahaths",
-              Instagram: "#",
+              Instagram: "https://www.instagram.com/its_me_s.fahath",
               WhatsApp: "https://wa.me/919840031124",
               Email: "mailto:fahaths.official@gmail.com"
             };
@@ -94,7 +94,7 @@ export default function Footer() {
         initial={{ opacity: 0 }}
         animate={isInView ? { opacity: 1 } : {}}
         transition={{ duration: 1, delay: 1 }}
-        className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-xs font-sans opacity-50 uppercase tracking-widest space-y-4 md:space-y-0"
+        className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-xs font-sans text-[var(--color-bg)]/50 uppercase tracking-widest space-y-4 md:space-y-0"
       >
         <div>© 2026 FAA. All Rights Reserved.</div>
         <div>Built with Next.js, GSAP, Three.js, and modern web technologies.</div>

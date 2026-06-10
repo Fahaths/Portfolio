@@ -1,19 +1,14 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, TrendingUp, Target, Cpu, Layout, ArrowDown, Layers, ArrowRight, CheckCircle2, MapPin, Globe, Award } from "lucide-react";
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
+import { TrendingUp, Target, Cpu, Layout, ArrowRight, CheckCircle2, Sparkles, ArrowDown } from "lucide-react";
 
-gsap.registerPlugin(ScrollTrigger);
-
-// Custom High-Performance Count-Up Component (GPU-accelerated, 60fps)
+// Lightweight Count-Up Component
 function CountUp({ end, duration = 1.5, prefix = "", suffix = "" }) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    // Parse target integer from formatted text (e.g., ₹2,00,000+ -> 200000)
     const endVal = parseInt(end.replace(/,/g, "").replace(/\+/g, "").replace(/₹/g, ""), 10) || 0;
     if (endVal === 0) return;
 
@@ -43,589 +38,340 @@ function CountUp({ end, duration = 1.5, prefix = "", suffix = "" }) {
 }
 
 export default function SkillsUniverse() {
-  const containerRef = useRef(null);
-  const pinContainerRef = useRef(null);
+  const sectionRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"]
+  });
+
   const [activeLayer, setActiveLayer] = useState(0);
   const [particles, setParticles] = useState([]);
-  const [isMobile, setIsMobile] = useState(false);
 
-  const activeLayerRef = useRef(0);
-  const isTransitioning = useRef(false);
-  const triggerRef = useRef(null);
-
-  // Sync activeLayer to ref
-  useEffect(() => {
-    activeLayerRef.current = activeLayer;
-  }, [activeLayer]);
-
-  // 1. Generate background floating particles once (hydration safe)
+  // Generate background floating particles
   useEffect(() => {
     const list = [];
-    const colors = ["#81B29A", "#E07A5F", "#818CF8", "#F2CC8F"];
-    for (let i = 0; i < 40; i++) {
+    const colors = ["rgba(61, 64, 91, 0.4)", "rgba(224, 122, 95, 0.4)", "rgba(129, 178, 154, 0.4)"];
+    for (let i = 0; i < 30; i++) {
       list.push({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
-        size: Math.random() * 2.5 + 0.8,
+        size: Math.random() * 2 + 1,
         color: colors[i % colors.length],
         delay: Math.random() * 5
       });
     }
     setParticles(list);
-
-    const checkScreen = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkScreen();
-    window.addEventListener("resize", checkScreen);
-    return () => window.removeEventListener("resize", checkScreen);
   }, []);
 
-  // 2. Setup GSAP ScrollTrigger Pinned Layer Scrub (Desktop) with snap-locking
-  useEffect(() => {
-    if (isMobile || !pinContainerRef.current) return;
+  // Map scroll progress to the active layer indices
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (latest < 0.20) {
+      setActiveLayer(0);
+    } else if (latest < 0.45) {
+      setActiveLayer(1);
+    } else if (latest < 0.75) {
+      setActiveLayer(2);
+    } else {
+      setActiveLayer(3);
+    }
+  });
 
-    const trigger = ScrollTrigger.create({
-      trigger: pinContainerRef.current,
-      start: "top top",
-      end: "+=6500", // Pinned depth for 13 layers (0 to 12)
-      pin: true,
-      scrub: 0.3,
-      snap: {
-        snapTo: 1 / 12,
-        duration: { min: 0.2, max: 0.5 },
-        delay: 0.05,
-        ease: "power2.inOut"
-      },
-      onUpdate: (self) => {
-        const p = self.progress;
-        // Divide progress evenly into 13 segments (0 to 12)
-        const index = Math.round(p * 12);
-        setActiveLayer(index);
-      }
-    });
+  // Layer transition configs
+  const transitionConfig = { duration: 0.6, ease: [0.22, 1, 0.36, 1] };
 
-    triggerRef.current = trigger;
-
-    return () => {
-      trigger.kill();
-      triggerRef.current = null;
-    };
-  }, [isMobile]);
-
-  // 3. Setup Wheel and Keyboard Interceptors for Step-by-Step Locking (Desktop)
-  useEffect(() => {
-    if (isMobile) return;
-
-    const handleWheel = (e) => {
-      const trigger = triggerRef.current;
-      if (!trigger) return;
-
-      const scrollY = window.scrollY;
-      const start = trigger.start;
-      const end = trigger.end;
-
-      if (scrollY >= start - 5 && scrollY <= end + 5) {
-        const index = activeLayerRef.current;
-        const delta = e.deltaY;
-
-        if (delta > 0 && index < 12) {
-          e.preventDefault();
-          if (!isTransitioning.current) {
-            isTransitioning.current = true;
-            const nextIndex = index + 1;
-            const targetScroll = start + (nextIndex * (end - start) / 12);
-
-            if (window.lenis) {
-              window.lenis.scrollTo(targetScroll, {
-                duration: 0.8,
-                onComplete: () => {
-                  isTransitioning.current = false;
-                }
-              });
-            } else {
-              window.scrollTo({ top: targetScroll, behavior: "smooth" });
-              setTimeout(() => {
-                isTransitioning.current = false;
-              }, 800);
-            }
-          }
-        } else if (delta < 0 && index > 0) {
-          e.preventDefault();
-          if (!isTransitioning.current) {
-            isTransitioning.current = true;
-            const prevIndex = index - 1;
-            const targetScroll = start + (prevIndex * (end - start) / 12);
-
-            if (window.lenis) {
-              window.lenis.scrollTo(targetScroll, {
-                duration: 0.8,
-                onComplete: () => {
-                  isTransitioning.current = false;
-                }
-              });
-            } else {
-              window.scrollTo({ top: targetScroll, behavior: "smooth" });
-              setTimeout(() => {
-                isTransitioning.current = false;
-              }, 800);
-            }
-          }
-        }
-      }
-    };
-
-    const handleKeyDown = (e) => {
-      const trigger = triggerRef.current;
-      if (!trigger) return;
-
-      const scrollY = window.scrollY;
-      const start = trigger.start;
-      const end = trigger.end;
-
-      if (scrollY >= start - 5 && scrollY <= end + 5) {
-        const index = activeLayerRef.current;
-        const key = e.key;
-
-        if ((key === "ArrowDown" || key === "PageDown") && index < 12) {
-          e.preventDefault();
-          if (!isTransitioning.current) {
-            isTransitioning.current = true;
-            const nextIndex = index + 1;
-            const targetScroll = start + (nextIndex * (end - start) / 12);
-
-            if (window.lenis) {
-              window.lenis.scrollTo(targetScroll, {
-                duration: 0.8,
-                onComplete: () => {
-                  isTransitioning.current = false;
-                }
-              });
-            } else {
-              window.scrollTo({ top: targetScroll, behavior: "smooth" });
-              setTimeout(() => {
-                isTransitioning.current = false;
-              }, 800);
-            }
-          }
-        } else if ((key === "ArrowUp" || key === "PageUp") && index > 0) {
-          e.preventDefault();
-          if (!isTransitioning.current) {
-            isTransitioning.current = true;
-            const prevIndex = index - 1;
-            const targetScroll = start + (prevIndex * (end - start) / 12);
-
-            if (window.lenis) {
-              window.lenis.scrollTo(targetScroll, {
-                duration: 0.8,
-                onComplete: () => {
-                  isTransitioning.current = false;
-                }
-              });
-            } else {
-              window.scrollTo({ top: targetScroll, behavior: "smooth" });
-              setTimeout(() => {
-                isTransitioning.current = false;
-              }, 800);
-            }
-          }
-        }
-      }
-    };
-
-    window.addEventListener("wheel", handleWheel, { passive: false });
-    window.addEventListener("keydown", handleKeyDown, { passive: false });
-
-    return () => {
-      window.removeEventListener("wheel", handleWheel);
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isMobile]);
-
-  // Transitions constants
-  const layerTransition = { duration: 0.7, ease: [0.22, 1, 0.36, 1] };
-  const dissolveTransition = { duration: 0.9, ease: [0.22, 1, 0.36, 1] };
-
-  // Content render helper for 13 desktop layers
   const renderLayer = () => {
     switch (activeLayer) {
-      case 0: // LAYER 1: Show-Case.....
+      case 0: // Showcase Intro
         return (
           <motion.div
-            key="layer-0"
-            initial={{ scale: 0.9, opacity: 0, filter: "blur(10px)" }}
-            animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
-            exit={{ scale: 1.1, opacity: 0, filter: "blur(10px)" }}
-            transition={layerTransition}
-            className="text-center space-y-8"
+            key="showcase-layer"
+            initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
+            transition={transitionConfig}
+            className="w-full max-w-4xl text-center space-y-10 px-6"
           >
-            <h2 className="font-display text-5xl md:text-7xl font-black text-white tracking-tighter leading-none select-none">
-              Show-Case<span className="text-[#81B29A] animate-pulse">.....</span>
-            </h2>
-            <div className="flex flex-col items-center gap-4 text-white/60 font-sans text-sm md:text-base font-semibold tracking-wider uppercase">
-              <motion.span animate={{ y: [0, -5, 0] }} transition={{ duration: 3, repeat: Infinity, delay: 0 }} className="flex items-center gap-2"><TrendingUp size={16} className="text-[#81B29A]" /> SEO Analyst</motion.span>
-              <motion.span animate={{ y: [0, -5, 0] }} transition={{ duration: 3, repeat: Infinity, delay: 0.5 }} className="flex items-center gap-2"><Target size={16} className="text-[#E07A5F]" /> Performance Marketer</motion.span>
-              <motion.span animate={{ y: [0, -5, 0] }} transition={{ duration: 3, repeat: Infinity, delay: 1 }} className="flex items-center gap-2"><Cpu size={16} className="text-[#818CF8]" /> AI Native Developer</motion.span>
-            </div>
-          </motion.div>
-        );
+            <motion.div
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2, ...transitionConfig }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[rgba(61,64,91,0.25)] border border-[rgba(244,241,222,0.08)] text-xs font-semibold text-[rgba(244,241,222,0.75)] tracking-widest uppercase"
+            >
+              <Sparkles size={12} className="text-[#F2CC8F] animate-pulse" />
+              Expertise Storyboard
+            </motion.div>
 
-      case 1: // LAYER 2: SEO Large Center Card
-        return (
-          <motion.div
-            key="layer-1"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 1.2, opacity: 0 }}
-            transition={layerTransition}
-            className="w-full max-w-4xl h-[60vh] bg-white/5 border border-white/10 rounded-[3rem] flex items-center justify-center backdrop-blur-xl shadow-2xl overflow-hidden relative group"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-[#81B29A]/10 to-transparent opacity-50" />
-            <h3 className="font-display text-8xl md:text-9xl font-black text-white tracking-tighter drop-shadow-2xl z-10">
-              SEO
-            </h3>
-          </motion.div>
-        );
+            <motion.h2
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.3, ...transitionConfig }}
+              className="font-display text-6xl md:text-8xl font-black text-[#F4F1DE] tracking-tighter leading-none select-none"
+            >
+              SHOWCASE<span className="text-[#E07A5F] animate-pulse">.....</span>
+            </motion.h2>
 
-      case 2: // LAYER 3: SEO Expands into On-Page, Off-Page, Local
-        return (
-          <motion.div
-            key="layer-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={layerTransition}
-            className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6 px-4"
-          >
-            {["On-Page SEO", "Off-Page SEO", "Local SEO"].map((item, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 50, scale: 0.8 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ delay: idx * 0.15, ...layerTransition }}
-                className="h-64 bg-white/5 border border-[#81B29A]/30 rounded-[2.5rem] flex items-center justify-center shadow-2xl backdrop-blur-md"
-              >
-                <h4 className="font-display text-2xl font-black text-white">{item}</h4>
-              </motion.div>
-            ))}
-          </motion.div>
-        );
-
-      case 3: // LAYER 4: On-Page active, reveals items
-        return (
-          <motion.div
-            key="layer-3"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={layerTransition}
-            className="w-full max-w-3xl bg-white/5 border border-[#81B29A]/40 rounded-[2.5rem] p-12 backdrop-blur-xl shadow-2xl"
-          >
-            <h4 className="font-display text-4xl font-black text-white mb-8 border-b border-white/10 pb-4">On-Page SEO</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8">
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4, ...transitionConfig }}
+              className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12"
+            >
               {[
-                "Search Intent Optimization",
-                "Content Depth Optimization",
-                "Title Tag Optimization",
-                "Meta Description Optimization",
-                "Heading Structure Optimization",
-                "URL Structure Optimization",
-                "Internal Linking",
-                "External Linking",
-                "Image Alt Text Optimization",
-                "Schema Markup"
+                { name: "SEO Analyst", icon: <TrendingUp size={16} />, color: "text-[#3D405B] border-[rgba(61,64,91,0.45)] bg-[rgba(61,64,91,0.25)] shadow-[0_0_20px_rgba(61,64,91,0.45)]" },
+                { name: "Performance Marketer", icon: <Target size={16} />, color: "text-[#E07A5F] border-[rgba(224,122,95,0.45)] bg-[rgba(61,64,91,0.25)] shadow-[0_0_20px_rgba(224,122,95,0.45)]" },
+                { name: "AI Native Developer", icon: <Cpu size={16} />, color: "text-[#81B29A] border-[rgba(129,178,154,0.45)] bg-[rgba(61,64,91,0.25)] shadow-[0_0_20px_rgba(129,178,154,0.45)]" }
               ].map((item, idx) => (
                 <motion.div
                   key={idx}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.08, duration: 0.4 }}
-                  className="flex items-start gap-3"
+                  animate={{ y: [0, -6, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, delay: idx * 0.4, ease: "easeInOut" }}
+                  className={`flex items-center gap-3 px-6 py-4 rounded-2xl border text-sm font-bold tracking-wider uppercase backdrop-blur-md ${item.color}`}
                 >
-                  <CheckCircle2 size={18} className="text-[#81B29A] mt-0.5 shrink-0" />
-                  <span className="font-sans text-xs md:text-sm text-white/80 font-medium">{item}</span>
+                  {item.icon}
+                  {item.name}
                 </motion.div>
               ))}
-            </div>
-          </motion.div>
-        );
-
-      case 4: // LAYER 5: Off-Page expands
-        return (
-          <motion.div
-            key="layer-4"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={layerTransition}
-            className="w-full max-w-3xl bg-white/5 border border-[#81B29A]/40 rounded-[2.5rem] p-12 backdrop-blur-xl shadow-2xl text-center space-y-10"
-          >
-            <h4 className="font-display text-4xl font-black text-white">Off-Page SEO</h4>
-            
-            <div>
-              <div className="font-display text-7xl md:text-8xl font-black text-[#81B29A] drop-shadow-lg">
-                <CountUp end="1000" suffix="+" duration={2} />
-              </div>
-              <span className="font-sans text-sm tracking-widest text-white/60 uppercase font-bold">Backlinks Built</span>
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-4">
-              {["Blog Outreach", "Reddit Marketing", "Indexed Authority Links", "Link Building"].map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 + idx * 0.1 }}
-                  className="px-4 py-2 rounded-full border border-white/10 bg-white/5 font-sans text-xs text-white/80"
-                >
-                  ✓ {item}
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        );
-
-      case 5: // LAYER 6: Local SEO with Map Glow
-        return (
-          <motion.div
-            key="layer-5"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 1.5, filter: "blur(20px)" }} // Prepare for dissolve
-            transition={layerTransition}
-            className="w-full max-w-3xl bg-white/5 border border-[#81B29A]/40 rounded-[2.5rem] p-12 backdrop-blur-xl shadow-2xl relative overflow-hidden"
-          >
-            {/* Map Glow Background */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30">
-              <div className="w-96 h-96 rounded-full border-[1px] border-[#81B29A] animate-ping" style={{ animationDuration: '4s' }} />
-              <div className="absolute w-64 h-64 rounded-full border-[1px] border-[#81B29A] animate-[ping_3s_linear_infinite]" />
-              <div className="absolute w-32 h-32 rounded-full border-[1px] border-[#81B29A] animate-[ping_2s_linear_infinite]" />
-            </div>
-
-            <div className="relative z-10 space-y-8">
-              <div className="text-center">
-                <MapPin size={32} className="text-[#81B29A] mx-auto mb-4" />
-                <h4 className="font-display text-4xl font-black text-white">Local SEO</h4>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto">
-                {[
-                  "Google Business Profile Optimization",
-                  "NAP Consistency",
-                  "Local Keyword Targeting",
-                  "Customer Reviews",
-                  "Localized Content",
-                  "Local Citations",
-                  "Google Maps Optimization"
-                ].map((item, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: idx * 0.1 }}
-                    className="p-3 bg-black/40 rounded-xl border border-white/5 flex items-center gap-3 backdrop-blur-sm"
-                  >
-                    <CheckCircle2 size={14} className="text-[#81B29A] shrink-0" />
-                    <span className="font-sans text-xs text-white/90 font-medium">{item}</span>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        );
-
-      case 6: // LAYER 7: PERFORMANCE MARKETING HERO (Particle reformed)
-        return (
-          <motion.div
-            key="layer-6"
-            initial={{ scale: 0.5, opacity: 0, filter: "blur(20px)" }}
-            animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -50 }}
-            transition={dissolveTransition}
-            className="w-full max-w-4xl bg-[#E07A5F]/10 border border-[#E07A5F]/30 rounded-[3rem] p-16 backdrop-blur-2xl shadow-[0_0_80px_rgba(224,122,95,0.15)] text-center space-y-8"
-          >
-            <div className="w-24 h-24 rounded-full bg-[#E07A5F]/20 border border-[#E07A5F]/40 flex items-center justify-center mx-auto shadow-inner animate-pulse">
-              <Target size={40} className="text-[#E07A5F]" />
-            </div>
-            <h3 className="font-display text-5xl md:text-7xl font-black text-white tracking-tight">
-              PERFORMANCE MARKETING
-            </h3>
-            <div className="space-y-2">
-              <div className="font-display text-6xl font-black text-[#E07A5F]">
-                <CountUp end="200000" prefix="₹" suffix="+" duration={2} />
-              </div>
-              <p className="font-sans text-sm tracking-widest uppercase text-white/60 font-bold">Monthly Ad Spend Managed</p>
-            </div>
-          </motion.div>
-        );
-
-      case 7: // LAYER 8: Meta Ads expands
-        return (
-          <motion.div
-            key="layer-7"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={layerTransition}
-            className="w-full max-w-4xl text-center space-y-10"
-          >
-            <h4 className="font-display text-5xl font-black text-white border-b border-white/10 pb-6 inline-block">--head Meta Ads</h4>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              {[
-                { count: "20", label: "Healthcare Lead Campaigns" },
-                { count: "5", label: "Rental Workspace Campaigns" },
-                { count: "10", label: "Event Campaigns" },
-                { count: "5", label: "Traffic Campaigns" },
-                { count: "10", label: "Boost Campaigns" },
-                { count: "20", label: "WhatsApp Conversion Campaigns" }
-              ].map((item, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.1 }}
-                  className="bg-white/5 border border-[#E07A5F]/30 rounded-3xl p-6 shadow-xl"
-                >
-                  <div className="font-display text-4xl font-black text-white mb-2"><CountUp end={item.count} suffix="+" /></div>
-                  <div className="font-sans text-[10px] uppercase tracking-wider text-white/60">{item.label}</div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        );
-
-      case 8: // LAYER 9: Google Ads Morph
-        return (
-          <motion.div
-            key="layer-8"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={layerTransition}
-            className="w-full max-w-3xl bg-white/5 border border-[#E07A5F]/40 rounded-[2.5rem] p-12 backdrop-blur-xl shadow-2xl text-center space-y-8"
-          >
-            <h4 className="font-display text-5xl font-black text-white">--head Google Ads</h4>
-            <div className="flex flex-col sm:flex-row justify-center gap-6 pt-4">
-              <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.2 }} className="px-8 py-6 rounded-2xl bg-black/40 border border-white/10">
-                <h5 className="font-display text-2xl font-black text-white">Performance Max</h5>
-              </motion.div>
-              <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 }} className="px-8 py-6 rounded-2xl bg-black/40 border border-white/10">
-                <h5 className="font-display text-2xl font-black text-white">YouTube Ads</h5>
-              </motion.div>
-            </div>
-          </motion.div>
-        );
-
-      case 9: // LAYER 10: LinkedIn Ads Morph
-        return (
-          <motion.div
-            key="layer-9"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={layerTransition}
-            className="w-full max-w-2xl bg-[#0077B5]/10 border border-[#0077B5]/30 rounded-[2.5rem] p-12 backdrop-blur-xl shadow-2xl text-center space-y-8"
-          >
-            <h4 className="font-display text-5xl font-black text-white">--head LinkedIn Ads</h4>
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3 }} className="p-8 rounded-2xl bg-black/40 border border-[#0077B5]/40 inline-block">
-              <h5 className="font-sans text-lg uppercase tracking-widest font-bold text-white">Lead Generation Campaigns</h5>
-              <p className="font-sans text-xs text-white/50 mt-3 max-w-sm">Professional corporate visual style targeting B2B pipelines.</p>
             </motion.div>
           </motion.div>
         );
 
-      case 10: // LAYER 11: JioHotstar Ads
+      case 1: // SEO (Navy #3D405B Theme)
         return (
           <motion.div
-            key="layer-10"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 1.5, filter: "blur(20px)" }} // Prepare for dissolve
-            transition={layerTransition}
-            className="w-full max-w-2xl bg-white/5 border border-[#E07A5F]/30 rounded-[2.5rem] p-12 backdrop-blur-xl shadow-2xl text-center space-y-8 relative overflow-hidden"
+            key="seo-layer"
+            initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
+            transition={transitionConfig}
+            className="w-full max-w-6xl px-6 flex flex-col items-center justify-center gap-8"
           >
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
-              <div className="w-64 h-64 rounded-full border-2 border-[#E07A5F]/20 animate-ping" style={{ animationDuration: '3s' }} />
-              <div className="absolute w-96 h-96 rounded-full border border-[#E07A5F]/10 animate-[ping_4s_linear_infinite]" />
+            <div className="text-center space-y-2">
+              <span className="text-xs font-bold text-[rgba(244,241,222,0.75)] uppercase tracking-widest bg-[rgba(61,64,91,0.25)] border border-[rgba(244,241,222,0.08)] px-3 py-1 rounded-full">Search Engine Optimization</span>
+              <h3 className="font-display text-4xl md:text-6xl font-black text-[#F4F1DE] tracking-tight">SEO EXPERTISE</h3>
             </div>
 
-            <div className="relative z-10">
-              <h4 className="font-display text-5xl font-black text-white mb-8">--head JioHotstar Ads</h4>
-              <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3 }} className="inline-block px-10 py-5 rounded-full bg-black/40 border border-white/10 backdrop-blur-md">
-                <h5 className="font-sans text-sm uppercase tracking-widest font-bold text-white">Brand Awareness Campaigns</h5>
-              </motion.div>
+            <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* On-Page Card */}
+              <div className="bg-[rgba(61,64,91,0.25)] border border-[rgba(244,241,222,0.08)] rounded-[2rem] p-6 backdrop-blur-xl shadow-[0_10px_40px_rgba(61,64,91,0.45)] relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-[rgba(61,64,91,0.05)] rounded-full blur-2xl pointer-events-none" />
+                <h4 className="font-display text-xl font-bold text-[#F4F1DE] border-b border-[rgba(244,241,222,0.08)] pb-3 mb-4">On-Page SEO</h4>
+                <ul className="space-y-2.5">
+                  {[
+                    "Search Intent Optimization",
+                    "Content Depth Optimization",
+                    "Title & Meta Optimization",
+                    "Heading & URL Structure",
+                    "Internal & External Linking",
+                    "Image Alt Text & Schema"
+                  ].map((item, idx) => (
+                    <li key={idx} className="flex items-center gap-2 text-xs text-[rgba(244,241,222,0.75)] font-medium">
+                      <CheckCircle2 size={12} className="text-[#F2CC8F] shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Off-Page Card */}
+              <div className="bg-[rgba(61,64,91,0.25)] border border-[rgba(244,241,222,0.08)] rounded-[2rem] p-6 backdrop-blur-xl shadow-[0_10px_40px_rgba(61,64,91,0.45)] relative overflow-hidden group flex flex-col justify-between">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-[rgba(61,64,91,0.05)] rounded-full blur-2xl pointer-events-none" />
+                <div>
+                  <h4 className="font-display text-xl font-bold text-[#F4F1DE] border-b border-[rgba(244,241,222,0.08)] pb-3 mb-4">Off-Page SEO</h4>
+                  <ul className="space-y-2.5">
+                    {["Blog Outreach Campaigns", "Reddit & Quora Marketing", "Indexed Authority Links", "Safe & Natural Link Building"].map((item, idx) => (
+                      <li key={idx} className="flex items-center gap-2 text-xs text-[rgba(244,241,222,0.75)] font-medium">
+                        <CheckCircle2 size={12} className="text-[#F2CC8F] shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="mt-6 pt-4 border-t border-[rgba(244,241,222,0.08)] text-center">
+                  <div className="font-display text-4xl font-black text-[#F2CC8F] drop-shadow-md">
+                    <CountUp end="1000" suffix="+" duration={1.5} />
+                  </div>
+                  <span className="text-[10px] uppercase font-bold text-[rgba(244,241,222,0.5)] tracking-wider">Backlinks Safely Built</span>
+                </div>
+              </div>
+
+              {/* Local SEO Card */}
+              <div className="bg-[rgba(61,64,91,0.25)] border border-[rgba(244,241,222,0.08)] rounded-[2rem] p-6 backdrop-blur-xl shadow-[0_10px_40px_rgba(61,64,91,0.45)] relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-[rgba(61,64,91,0.05)] rounded-full blur-2xl pointer-events-none" />
+                <h4 className="font-display text-xl font-bold text-[#F4F1DE] border-b border-[rgba(244,241,222,0.08)] pb-3 mb-4">Local SEO</h4>
+                <ul className="space-y-2.5">
+                  {[
+                    "Google Business Profile Optimization",
+                    "NAP Consistency Checks",
+                    "Local Keyword Target Campaigns",
+                    "Customer Review Strategy",
+                    "Localized Content Creation",
+                    "Local Citations & Maps Ranking"
+                  ].map((item, idx) => (
+                    <li key={idx} className="flex items-center gap-2 text-xs text-[rgba(244,241,222,0.75)] font-medium">
+                      <CheckCircle2 size={12} className="text-[#F2CC8F] shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </motion.div>
         );
 
-      case 11: // LAYER 12: AI NATIVE DEVELOPER (Particle reformed)
+      case 2: // Performance Marketing (Coral #E07A5F Theme)
         return (
           <motion.div
-            key="layer-11"
-            initial={{ scale: 0.5, opacity: 0, filter: "blur(20px)" }}
-            animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -50 }}
-            transition={dissolveTransition}
-            className="w-full max-w-4xl bg-[#818CF8]/10 border border-[#818CF8]/30 rounded-[3rem] p-16 backdrop-blur-2xl shadow-[0_0_80px_rgba(129,140,248,0.15)] text-center space-y-8"
+            key="perf-layer"
+            initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
+            transition={transitionConfig}
+            className="w-full max-w-6xl px-6 flex flex-col items-center justify-center gap-8"
           >
-            <div className="w-24 h-24 rounded-full bg-[#818CF8]/20 border border-[#818CF8]/40 flex items-center justify-center mx-auto shadow-inner animate-pulse">
-              <Cpu size={40} className="text-[#818CF8]" />
-            </div>
-            <h3 className="font-display text-5xl md:text-7xl font-black text-white tracking-tight">
-              AI NATIVE DEVELOPER
-            </h3>
-            <p className="font-sans text-sm tracking-widest uppercase text-white/60 font-bold max-w-lg mx-auto">
-              Engineering modern React applications & automated LLM workflows
-            </p>
-          </motion.div>
-        );
-
-      case 12: // LAYER 13: Featured Project Al Fahath
-        return (
-          <motion.div
-            key="layer-12"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            transition={layerTransition}
-            className="w-full max-w-4xl bg-white/5 border border-white/10 rounded-[3rem] p-12 backdrop-blur-xl shadow-2xl flex flex-col md:flex-row gap-12 items-center"
-          >
-            <div className="flex-1 space-y-6 text-left">
-              <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded border border-[#818CF8]/40 text-[#818CF8] bg-[#818CF8]/10 inline-block">
-                Featured Project
-              </span>
-              <h3 className="font-display text-4xl md:text-5xl font-black text-white leading-none">
-                AL FAHATH <br/>BAGS & FOOTWEAR
-              </h3>
-              <p className="font-sans text-sm text-white/50 uppercase tracking-widest font-bold">E-Catalog Platform</p>
-              
-              <div className="pt-6">
-                <a
-                  href="https://github.com/Fahaths"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-white text-[#0B111E] rounded-full font-sans font-bold text-xs uppercase tracking-wider hover:bg-white/95 hover:scale-105 transition-all shadow-xl group"
-                >
-                  View Project <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                </a>
+            <div className="text-center space-y-2">
+              <span className="text-xs font-bold text-[#E07A5F] uppercase tracking-widest bg-[rgba(61,64,91,0.25)] border border-[rgba(224,122,95,0.45)] px-3 py-1 rounded-full">Paid Advertising & Funnels</span>
+              <h3 className="font-display text-4xl md:text-6xl font-black text-[#F4F1DE] tracking-tight">PERFORMANCE MARKETING</h3>
+              <div className="pt-2">
+                <div className="font-display text-5xl md:text-7xl font-black text-[#F2CC8F] drop-shadow-md">
+                  <CountUp end="200000" prefix="₹" suffix="+" duration={1.5} />
+                </div>
+                <span className="text-xs font-bold text-[rgba(244,241,222,0.5)] uppercase tracking-widest">Monthly Ad Spend Managed</span>
               </div>
             </div>
 
-            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {["Modern UI", "Responsive Design", "Product Showcase", "Retail Business Solution"].map((tag, idx) => (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: idx * 0.1 }}
-                  className="p-4 border border-white/5 bg-black/30 rounded-2xl flex flex-col gap-2 items-start"
-                >
-                  <Layout size={16} className="text-[#818CF8]" />
-                  <span className="font-sans font-bold text-[11px] uppercase tracking-wider text-white/80">{tag}</span>
-                </motion.div>
+            <div className="w-full grid grid-cols-1 md:grid-cols-4 gap-4">
+              {[
+                {
+                  title: "Meta Ads",
+                  icon: (
+                    <svg className="w-5 h-5 text-[#1877F2] fill-current shrink-0" viewBox="0 0 24 24">
+                      <path d="M15.42 7.72c-.89 0-1.74.45-2.27 1.2a3.78 3.78 0 0 0-2.28-1.2 3.32 3.32 0 0 0-3.32 3.32 3.32 3.32 0 0 0 3.32 3.32c.89 0 1.74-.45 2.28-1.2a3.78 3.78 0 0 0 2.27 1.2 3.32 3.32 0 0 0 3.32-3.32 3.32 3.32 0 0 0-3.32-3.32zm0 5.12c-.99 0-1.8-.81-1.8-1.8s.81-1.8 1.8-1.8 1.8.81 1.8 1.8-.81 1.8-1.8 1.8zm-4.56 0c-.99 0-1.8-.81-1.8-1.8s.81-1.8 1.8-1.8 1.8.81 1.8 1.8-.81 1.8-1.8 1.8z"/>
+                    </svg>
+                  ),
+                  desc: "20+ Healthcare Lead Campaigns\n5+ Workspace Rental\n10+ Local Events\n20+ WhatsApp Conversion",
+                  color: "border-[rgba(244,241,222,0.08)] bg-[rgba(61,64,91,0.25)] shadow-[0_8px_30px_rgba(224,122,95,0.45)]"
+                },
+                {
+                  title: "Google Ads",
+                  icon: (
+                    <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.85z" />
+                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.85c.87-2.6 3.3-4.53 6.16-4.53z" />
+                    </svg>
+                  ),
+                  desc: "Performance Max Campaigns\nYouTube Video Ads\nSearch & Shopping Funnels",
+                  color: "border-[rgba(244,241,222,0.08)] bg-[rgba(61,64,91,0.25)] shadow-[0_8px_30px_rgba(224,122,95,0.45)]"
+                },
+                {
+                  title: "LinkedIn Ads",
+                  icon: (
+                    <svg className="w-5 h-5 text-[#0A66C2] fill-current shrink-0" viewBox="0 0 24 24">
+                      <path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8.3 19H5.3V10h3v9zM6.8 8.7c-1 0-1.8-.8-1.8-1.8s.8-1.8 1.8-1.8 1.8.8 1.8 1.8-.8 1.8-1.8 1.8zm12.2 10.3h-3v-5.6c0-1.3-.1-3-1.8-3-1.8 0-2.1 1.4-2.1 2.9V19h-3V10h2.9v1.3h.1c.4-.7 1.4-1.5 2.8-1.5 3 0 3.5 2 3.5 4.6v5.6z"/>
+                    </svg>
+                  ),
+                  desc: "B2B Lead Generation\nAccount-Based Targeting\nCorporate Pipeline Building",
+                  color: "border-[rgba(244,241,222,0.08)] bg-[rgba(61,64,91,0.25)] shadow-[0_8px_30px_rgba(224,122,95,0.45)]"
+                },
+                {
+                  title: "JioHotstar Ads",
+                  icon: (
+                    <svg className="w-5 h-5 text-[#FFCC00] fill-current shrink-0" viewBox="0 0 24 24">
+                      <path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-11 11V8l6 3-6 3z"/>
+                    </svg>
+                  ),
+                  desc: "Broad Scale Awareness\nVideo Stream Placements\nCricket Tournament Sponsoring",
+                  color: "border-[rgba(244,241,222,0.08)] bg-[rgba(61,64,91,0.25)] shadow-[0_8px_30px_rgba(224,122,95,0.45)]"
+                }
+              ].map((item, idx) => (
+                <div key={idx} className={`p-5 rounded-2xl border backdrop-blur-xl ${item.color}`}>
+                  <div className="flex items-center gap-2.5 mb-3">
+                    {item.icon}
+                    <h4 className="font-display text-base font-bold text-[#F4F1DE] leading-none">{item.title}</h4>
+                  </div>
+                  <div className="space-y-2">
+                    {item.desc.split("\n").map((line, lIdx) => (
+                      <div key={lIdx} className="flex items-start gap-2 text-xs text-[rgba(244,241,222,0.75)] font-medium">
+                        <span className="text-[#E07A5F] mt-0.5">•</span>
+                        <span>{line}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               ))}
+            </div>
+          </motion.div>
+        );
+
+      case 3: // AI Native Developer (Sage #81B29A Theme)
+        return (
+          <motion.div
+            key="ai-layer"
+            initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, scale: 1.05, filter: "blur(10px)" }}
+            transition={transitionConfig}
+            className="w-full max-w-4xl px-6 flex flex-col items-center justify-center gap-6"
+          >
+            <div className="text-center space-y-1.5">
+              <span className="text-[10px] font-bold text-[#81B29A] uppercase tracking-widest bg-[rgba(61,64,91,0.25)] border border-[rgba(129,178,154,0.45)] px-3 py-0.5 rounded-full">Next-Gen Applications</span>
+              <h3 className="font-display text-3xl md:text-5xl font-black text-[#F4F1DE] tracking-tight">AI NATIVE DEVELOPER</h3>
+            </div>
+
+            <div className="w-full bg-[rgba(61,64,91,0.25)] border border-[rgba(244,241,222,0.08)] rounded-[2rem] p-6 md:p-8 backdrop-blur-xl shadow-[0_0_60px_rgba(129,178,154,0.45)] flex flex-col md:flex-row gap-8 items-center relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[rgba(129,178,154,0.05)] rounded-full blur-3xl pointer-events-none" />
+              
+              <div className="flex-1 space-y-4 text-left z-10">
+                <div className="flex items-center gap-2">
+                  <Cpu size={14} className="text-[#81B29A]" />
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-[#81B29A]">Featured Platform</span>
+                </div>
+                <h4 className="font-display text-2xl md:text-3xl font-black text-[#F4F1DE] leading-none">
+                  AL FAHATH <br/>BAGS & FOOTWEAR
+                </h4>
+                <p className="font-sans text-xs text-[rgba(244,241,222,0.5)] uppercase tracking-widest font-bold">E-Catalog Platform</p>
+                
+                {/* Tech Stack list */}
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {["React", "Next.js", "AI Workflows", "Automation"].map((tech, tIdx) => (
+                    <span key={tIdx} className="px-2.5 py-0.5 rounded-full border border-[rgba(244,241,222,0.08)] bg-[rgba(61,64,91,0.15)] text-[9px] text-[rgba(244,241,222,0.75)] font-semibold uppercase tracking-wider">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="pt-2">
+                  <a
+                    href="https://github.com/Fahaths"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-[#F4F1DE] text-[#161A23] rounded-full font-sans font-bold text-[10px] uppercase tracking-wider hover:bg-[#81B29A] hover:scale-105 transition-all shadow-xl"
+                  >
+                    View Project <ArrowRight size={12} />
+                  </a>
+                </div>
+              </div>
+
+              {/* Preview mockup card layout */}
+              <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-3 z-10">
+                {[
+                  { title: "Modern UI", desc: "Premium styling, glass cards" },
+                  { title: "Responsive Design", desc: "Optimized for mobile & desk" },
+                  { title: "Product Showcase", desc: "Interactive rich catalog" },
+                  { title: "Retail Solution", desc: "Ready for business expansion" }
+                ].map((tag, idx) => (
+                  <div
+                    key={idx}
+                    className="p-4 border border-[rgba(244,241,222,0.04)] bg-[#161A23]/60 rounded-2xl flex flex-col gap-1.5 items-start hover:border-[rgba(129,178,154,0.5)] transition-all cursor-default"
+                  >
+                    <Layout size={14} className="text-[#F2CC8F]" />
+                    <span className="font-sans font-bold text-[10px] uppercase tracking-wider text-[rgba(244,241,222,0.9)]">{tag.title}</span>
+                    <span className="text-[9px] text-[rgba(244,241,222,0.5)] font-medium">{tag.desc}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </motion.div>
         );
@@ -637,174 +383,71 @@ export default function SkillsUniverse() {
 
   return (
     <section
-      ref={containerRef}
-      className="relative w-full min-h-screen bg-[#0B111E] flex flex-col justify-center items-center overflow-hidden z-10 border-b border-white/5"
+      ref={sectionRef}
+      className="relative w-full bg-[#0F1117] text-[#F4F1DE] overflow-clip z-10 border-b border-[rgba(244,241,222,0.06)]"
+      style={{ height: "500vh" }} // 500vh container mapping progress
     >
-      {/* CSS custom keyframe animations */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes floatDust {
-          0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.15; }
-          50% { transform: translateY(-25px) translateX(12px); opacity: 0.45; }
-        }
-        .network-dust {
-          animation: floatDust 7s ease-in-out infinite;
-        }
-      `}} />
+      {/* Subtle background floating particles */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <svg className="w-full h-full opacity-60">
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes floatParticle {
+              0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.1; }
+              50% { transform: translateY(-30px) translateX(15px); opacity: 0.35; }
+            }
+            .floating-dot {
+              animation: floatParticle 8s ease-in-out infinite;
+            }
+          `}} />
+          {particles.map((p) => (
+            <circle
+              key={p.id}
+              cx={`${p.x}%`}
+              cy={`${p.y}%`}
+              r={p.size}
+              fill={p.color}
+              className="floating-dot"
+              style={{
+                animationDelay: `${p.delay}s`,
+                animationDuration: `${5 + (p.id % 5) * 2}s`
+              }}
+            />
+          ))}
+        </svg>
+      </div>
 
-      {/* 1. Subtle Colored Particle Background */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-        {particles.map((p) => (
-          <circle
-            key={p.id}
-            cx={`${p.x}%`}
-            cy={`${p.y}%`}
-            r={p.size}
-            fill={p.color}
-            className="network-dust"
-            style={{
-              animationDelay: `${p.delay}s`,
-              animationDuration: `${4.5 + (p.id % 4) * 1.5}s`,
-              filter: "blur(0.5px)"
-            }}
-          />
-        ))}
-      </svg>
+      {/* Sticky Content Container */}
+      <div className="sticky top-0 w-full h-screen flex items-center justify-center overflow-hidden">
+        <AnimatePresence mode="wait">
+          {renderLayer()}
+        </AnimatePresence>
 
-      {/* Numerical Index Indicators for Desktop */}
-      {!isMobile && (
-        <div className="absolute top-10 right-10 z-30 text-white/30 font-sans text-[10px] uppercase font-bold tracking-widest flex items-center gap-1">
-          Progress: {Math.round(((activeLayer + 1) / 13) * 100)}%
+        {/* Desktop Step dots indicators */}
+        <div className="absolute right-10 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-30">
+          {[0, 1, 2, 3].map((idx) => (
+            <div
+              key={idx}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                activeLayer === idx 
+                  ? "bg-[#F2CC8F] scale-150 shadow-[0_0_10px_rgba(242,204,143,0.8)]" 
+                  : "bg-[rgba(244,241,222,0.25)]"
+              }`}
+            />
+          ))}
         </div>
-      )}
 
-      {/* A. DESKTOP PINNED STORYBOARD */}
-      {!isMobile ? (
-        <div ref={pinContainerRef} className="w-full flex items-center justify-center h-screen z-10 relative">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeLayer}
-              className="w-full flex items-center justify-center absolute inset-0 px-8"
-            >
-              {renderLayer()}
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Dots Indicator Sidebar */}
-          <div className="absolute right-10 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-30">
-            {Array.from({ length: 13 }).map((_, idx) => (
-              <div
-                key={idx}
-                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                  activeLayer === idx ? "bg-white scale-150 shadow-[0_0_8px_white]" : "bg-white/20"
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-      ) : (
-        /* B. MOBILE NON-PINNED ACCESSIBLE SUMMARY SCROLL */
-        <div className="w-full max-w-xl px-6 py-24 space-y-14 z-10">
-          
+        {/* Scroll down mouse/arrow indicator at layer 0 */}
+        {activeLayer === 0 && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            className="text-center space-y-4 bg-white/5 border border-white/10 rounded-[2rem] p-8 backdrop-blur-md"
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex flex-col items-center gap-2 opacity-50"
           >
-            <h3 className="font-display text-4xl font-black text-white tracking-tighter">
-              Show-Case<span className="text-[#81B29A] animate-pulse">.....</span>
-            </h3>
-            <p className="font-sans text-xs text-white/60 leading-relaxed font-bold tracking-wider uppercase">
-              SEO Analyst • Performance Marketer • AI Native Developer
-            </p>
+            <span className="font-sans text-[8px] font-bold uppercase tracking-[0.25em] text-[rgba(244,241,222,0.5)]">Scroll Down</span>
+            <ArrowDown size={12} className="text-[#F2CC8F]" />
           </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            className="bg-white/5 border border-white/10 rounded-[2rem] p-8 backdrop-blur-md space-y-6"
-          >
-            <div className="flex justify-between items-start border-b border-white/5 pb-4">
-              <h4 className="font-display text-2xl font-black text-white">SEO</h4>
-              <TrendingUp className="text-[#81B29A]" size={24} />
-            </div>
-            <div className="space-y-4">
-              <div>
-                <span className="font-display text-4xl font-black text-white">1000+</span>
-                <span className="font-sans text-[10px] text-white/40 block uppercase tracking-wider">Backlinks Built</span>
-              </div>
-              <div className="space-y-3 font-sans text-xs text-white/70">
-                <p><strong>On-Page:</strong> Search intent matching, meta optimization, HTML structure.</p>
-                <p><strong>Off-Page:</strong> Reddit outreach, authority link building.</p>
-                <p><strong>Local SEO:</strong> Google Business Profile, maps ranking.</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            className="bg-white/5 border border-white/10 rounded-[2rem] p-8 backdrop-blur-md space-y-6"
-          >
-            <div className="flex justify-between items-start border-b border-white/5 pb-4">
-              <h4 className="font-display text-2xl font-black text-white">PERFORMANCE MARKETING</h4>
-              <Target className="text-[#E07A5F]" size={24} />
-            </div>
-            <div className="space-y-4">
-              <div>
-                <span className="font-display text-4xl font-black text-white">₹2,00,000+</span>
-                <span className="font-sans text-[10px] text-white/40 block uppercase tracking-wider">Monthly Ad Spend</span>
-              </div>
-              <div className="space-y-3 font-sans text-xs text-white/70">
-                <p><strong>Meta Ads:</strong> Healthcare leads, WhatsApp conversions.</p>
-                <p><strong>Google Ads:</strong> Search and Performance Max campaigns.</p>
-                <p><strong>LinkedIn & JioHotstar:</strong> B2B leads & awareness.</p>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            className="bg-white/5 border border-white/10 rounded-[2rem] p-8 backdrop-blur-md space-y-6"
-          >
-            <div className="flex justify-between items-start border-b border-white/5 pb-4">
-              <h4 className="font-display text-2xl font-black text-white">AI NATIVE DEVELOPER</h4>
-              <Cpu className="text-[#818CF8]" size={24} />
-            </div>
-            <p className="font-sans text-xs text-white/70 leading-relaxed">
-              Developing modern React applications & automated LLM workflows.
-            </p>
-            <div className="p-4 border border-white/5 bg-black/40 rounded-2xl space-y-2 mt-4">
-              <span className="text-[9px] font-bold uppercase tracking-wider text-[#818CF8]">Featured Project</span>
-              <h5 className="font-sans font-black text-sm text-white uppercase tracking-wider">Al Fahath Bags & Footwear</h5>
-              <a
-                href="https://github.com/Fahaths"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 font-sans font-bold text-[10px] text-white uppercase tracking-wider hover:underline pt-2"
-              >
-                View Project <ArrowRight size={12} />
-              </a>
-            </div>
-          </motion.div>
-        </div>
-      )}
-
-      {/* Floating scroll indicator for desktop (active only on initial layer) */}
-      {!isMobile && activeLayer === 0 && (
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 pointer-events-none flex flex-col items-center gap-2 opacity-50"
-        >
-          <span className="font-sans text-[8px] font-bold uppercase tracking-[0.25em] text-white">Scroll Down</span>
-          <ArrowDown size={12} className="text-white" />
-        </motion.div>
-      )}
+        )}
+      </div>
     </section>
   );
 }

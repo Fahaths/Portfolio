@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, Float, Sphere, Torus, MeshDistortMaterial, Stars } from "@react-three/drei";
+import { Float, Sphere, Torus, MeshDistortMaterial, Stars } from "@react-three/drei";
 import { useScroll } from "framer-motion";
 
 function Worlds({ scrollYProgress }) {
@@ -68,10 +68,13 @@ export default function JourneyWorlds3D() {
   return (
     <div className="fixed inset-0 pointer-events-none z-[0]">
       <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={1} />
-        <Environment preset="city" />
-        <Worlds scrollYProgress={scrollYProgress} />
+        <ambientLight intensity={0.6} />
+        <directionalLight position={[10, 10, 5]} intensity={1.5} />
+        <directionalLight position={[-10, -10, -5]} intensity={0.5} />
+        <pointLight position={[0, 5, 2]} intensity={0.8} />
+        <Suspense fallback={null}>
+          <Worlds scrollYProgress={scrollYProgress} />
+        </Suspense>
       </Canvas>
     </div>
   );

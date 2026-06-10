@@ -13,7 +13,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <main className="relative min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] selection:bg-[var(--color-accent)] selection:text-white overflow-hidden">
+    <main className="relative min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] selection:bg-[var(--color-accent)] selection:text-white overflow-x-clip">
       <Preloader onComplete={() => setIsLoading(false)} />
       <Navbar />
 
