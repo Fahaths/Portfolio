@@ -25,6 +25,7 @@ export default function SmoothScroll({ children }) {
     });
     
     lenisRef.current = lenis;
+    window.lenis = lenis;
 
     const updateLenis = (time) => {
       lenis.raf(time * 1000);
@@ -37,8 +38,8 @@ export default function SmoothScroll({ children }) {
 
     gsap.ticker.lagSmoothing(0);
 
-    // Animate only bold fonts down-to-up
-    const boldTexts = document.querySelectorAll(".font-bold, .font-black, .font-semibold");
+    // Animate only bold fonts down-to-up inside #identity section
+    const boldTexts = document.querySelectorAll("#identity .font-bold, #identity .font-black, #identity .font-semibold");
     
     boldTexts.forEach((text) => {
       gsap.fromTo(
@@ -63,6 +64,7 @@ export default function SmoothScroll({ children }) {
 
     return () => {
       lenis.destroy();
+      window.lenis = null;
       gsap.ticker.remove(updateLenis);
       ScrollTrigger.getAll().forEach(t => t.kill());
     };

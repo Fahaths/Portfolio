@@ -11,7 +11,7 @@ export default function WhatsAppContact() {
     setIsGenerating(true);
 
     const message = `Hi Faa 👋\n\nI came across your portfolio and would like to discuss a project.\n\nLet's connect.`;
-    const targetNumber = "1234567890"; // Replace with actual WhatsApp number
+    const targetNumber = "919840031124"; // S. Fahath's actual WhatsApp number
     const encodedMessage = encodeURIComponent(message);
     const waUrl = `https://wa.me/${targetNumber}?text=${encodedMessage}`;
 

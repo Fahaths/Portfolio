@@ -63,7 +63,7 @@ export default function HeroKinetic() {
           transition={{ duration: 1, delay: 3 }} // delay after preloader
         >
           <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-black text-[var(--color-text)] tracking-tighter leading-[1.1] mb-4">
-            <span className="block mb-2 text-opacity-80">I'm</span>
+            <span className="block mb-2 text-opacity-80">I&apos;m</span>
             <div className="h-[1.2em] relative text-[var(--color-accent)] overflow-hidden">
               <AnimatePresence mode="wait">
                 <motion.div
@@ -84,10 +84,22 @@ export default function HeroKinetic() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 4 }}
-            className="mt-12 flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6"
+            className="mt-12 flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 w-full sm:w-auto px-4 sm:px-0"
           >
-            <a data-cursor="OPEN" href="#contact" className="px-8 py-4 bg-[var(--color-text)] text-white rounded-full font-sans font-bold text-lg hover:scale-105 transition-transform w-full sm:w-auto">
-              Text With Me
+            <a 
+              data-cursor="OPEN" 
+              href="#contact" 
+              className="px-8 py-4 bg-[var(--color-text)] text-white rounded-full font-sans font-bold text-lg hover:scale-105 transition-transform w-full sm:w-auto text-center"
+            >
+              Let&apos;s Talk
+            </a>
+            <a 
+              data-cursor="OPEN" 
+              href="/Fahath%20S%20Digital%20Marketer.pdf" 
+              download="Fahath_S_Resume.pdf"
+              className="px-8 py-4 border border-[var(--color-text)]/20 text-[var(--color-text)] rounded-full font-sans font-bold text-lg hover:bg-[var(--color-text)]/5 hover:border-[var(--color-text)] transition-all w-full sm:w-auto text-center"
+            >
+              Download Resume
             </a>
           </motion.div>
         </motion.div>

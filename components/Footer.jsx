@@ -62,18 +62,30 @@ export default function Footer() {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="flex flex-col space-y-4 md:items-end font-sans font-bold text-lg"
         >
-          {["LinkedIn", "GitHub", "Instagram", "WhatsApp", "Email"].map((link) => (
-            <motion.a 
-              key={link}
-              href="#" 
-              whileHover={{ x: -10, color: "var(--color-accent)" }}
-              transition={{ duration: 0.2 }}
-              data-cursor="OPEN"
-              className="inline-block transition-colors"
-            >
-              {link}
-            </motion.a>
-          ))}
+          {["LinkedIn", "GitHub", "Instagram", "WhatsApp", "Email"].map((link) => {
+            const socialHrefs = {
+              LinkedIn: "https://www.linkedin.com/in/fahath-s-digital-marketer",
+              GitHub: "https://github.com/Fahaths",
+              Instagram: "#",
+              WhatsApp: "https://wa.me/919840031124",
+              Email: "mailto:fahaths.official@gmail.com"
+            };
+            const isExternal = socialHrefs[link] !== "#" && link !== "Email";
+            return (
+              <motion.a 
+                key={link}
+                href={socialHrefs[link]} 
+                target={isExternal ? "_blank" : undefined}
+                rel={isExternal ? "noopener noreferrer" : undefined}
+                whileHover={{ x: -10, color: "var(--color-accent)" }}
+                transition={{ duration: 0.2 }}
+                data-cursor="OPEN"
+                className="inline-block transition-colors"
+              >
+                {link}
+              </motion.a>
+            );
+          })}
         </motion.div>
       </div>
 

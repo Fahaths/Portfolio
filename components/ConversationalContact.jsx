@@ -65,7 +65,7 @@ export default function ConversationalContact() {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                <a href="mailto:hello@example.com" className="px-8 py-4 bg-black text-white rounded-full font-sans font-bold text-lg hover:scale-105 transition-transform text-center">
+                <a href="mailto:fahaths.official@gmail.com" className="px-8 py-4 bg-black text-white rounded-full font-sans font-bold text-lg hover:scale-105 transition-transform text-center">
                   Email Me
                 </a>
                 <button onClick={handleReset} className="px-8 py-4 bg-transparent text-gray-400 hover:text-black font-sans font-bold text-lg text-center transition-colors">
