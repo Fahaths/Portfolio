@@ -62,9 +62,9 @@ export default function HeroKinetic() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 3 }} // delay after preloader
         >
-          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-black text-[var(--color-text)] tracking-tighter leading-[1.1] mb-4">
+          <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black text-[var(--color-text)] tracking-tighter leading-[1.1] mb-4">
             <span className="block mb-2 text-opacity-80">I&apos;m Fahath.s,</span>
-            <div className="h-[1.2em] relative text-[var(--color-accent)] overflow-hidden">
+            <div className="h-[2.4em] md:h-[1.2em] relative text-[var(--color-accent)] overflow-hidden">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={index}
@@ -72,7 +72,7 @@ export default function HeroKinetic() {
                   animate={{ y: "0%", opacity: 1, rotateX: 0 }}
                   exit={{ y: "-100%", opacity: 0, rotateX: 90 }}
                   transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
-                  className="absolute inset-0 w-full text-center origin-bottom"
+                  className="absolute inset-x-0 top-1/2 -translate-y-1/2 w-full text-center origin-bottom"
                 >
                   {words[index] === "SEO" ? <ScrambleText text={words[index]} /> : words[index]}
                 </motion.div>
