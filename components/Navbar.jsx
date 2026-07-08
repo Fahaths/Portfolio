@@ -24,8 +24,8 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { name: "Knowledge", href: "#skills" },
-    { name: "Results", href: "#results" },
+    { name: "Who am I?", href: "#identity" },
+    { name: "Showcase", href: "#skills" },
     { name: "Contact", href: "#contact" }
   ];
 
