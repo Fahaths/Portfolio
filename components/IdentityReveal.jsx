@@ -36,7 +36,7 @@ export default function IdentityReveal() {
           {/* Header */}
           <motion.div variants={itemVariants} className="text-center">
             <h3 className="font-display text-5xl md:text-7xl font-black tracking-tighter">
-              <span className="bg-gradient-to-r from-[#E07A5F] via-[#81B29A] to-[#F2CC8F] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#81B29A] via-[#E07A5F] to-[#F2CC8F] bg-clip-text text-transparent">
                 Who am I?
               </span>
             </h3>
