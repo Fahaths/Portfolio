@@ -7,6 +7,29 @@ export default function Footer() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-10%" });
 
+  const handleScrollToLayer = (layerIndex) => {
+    const element = document.getElementById("skills");
+    if (!element) return;
+    
+    const rect = element.getBoundingClientRect();
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const elementTop = rect.top + scrollTop;
+    const viewportHeight = window.innerHeight;
+    const scrollableDistance = 4 * viewportHeight; // since height is 500vh (5 * viewportHeight - viewportHeight)
+    
+    let targetProgress = 0;
+    if (layerIndex === 1) targetProgress = 0.35; // SEO
+    else if (layerIndex === 2) targetProgress = 0.60; // Performance Marketing
+    else if (layerIndex === 3) targetProgress = 0.85; // AI Native Development
+
+    const targetScrollY = elementTop + targetProgress * scrollableDistance;
+
+    window.scrollTo({
+      top: targetScrollY,
+      behavior: "smooth"
+    });
+  };
+
   return (
     <footer ref={ref} className="bg-[#0B111E] text-[var(--color-bg)] pt-32 pb-12 px-6 lg:px-16 overflow-hidden z-10 relative border-t border-[var(--color-bg)]/10">
       
@@ -49,10 +72,27 @@ export default function Footer() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="flex flex-col space-y-4 md:items-center font-sans font-bold uppercase tracking-wider text-sm text-[var(--color-bg)]/80"
         >
-          <a href="#" className="hover:text-[var(--color-accent)] transition-colors">SEO</a>
-          <a href="#" className="hover:text-[var(--color-accent)] transition-colors">Performance Marketing</a>
-          <a href="#" className="hover:text-[var(--color-accent)] transition-colors">AI Native Development</a>
-          <a href="#" className="hover:text-[var(--color-accent)] transition-colors">Web Development</a>
+          <a 
+            href="#" 
+            onClick={(e) => { e.preventDefault(); handleScrollToLayer(1); }} 
+            className="hover:text-[var(--color-accent)] transition-colors cursor-pointer"
+          >
+            SEO
+          </a>
+          <a 
+            href="#" 
+            onClick={(e) => { e.preventDefault(); handleScrollToLayer(2); }} 
+            className="hover:text-[var(--color-accent)] transition-colors cursor-pointer"
+          >
+            Performance Marketing
+          </a>
+          <a 
+            href="#" 
+            onClick={(e) => { e.preventDefault(); handleScrollToLayer(3); }} 
+            className="hover:text-[var(--color-accent)] transition-colors cursor-pointer"
+          >
+            AI Native Development
+          </a>
         </motion.div>
 
         {/* Right Section */}
