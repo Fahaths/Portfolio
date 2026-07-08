@@ -96,7 +96,7 @@ export default function HeroKinetic() {
             <a 
               data-cursor="OPEN" 
               href="/Fahath_s_Digital_Marketer.pdf" 
-              download="Fahath_S_Resume.pdf"
+              download="Fahath_S_Digital_Marketer.pdf"
               className="px-8 py-4 border border-[var(--color-text)]/20 text-[var(--color-text)] rounded-full font-sans font-bold text-lg hover:bg-[var(--color-text)]/5 hover:border-[var(--color-text)] transition-all w-full sm:w-auto text-center"
             >
               Download Resume
