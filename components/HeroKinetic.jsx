@@ -63,7 +63,7 @@ export default function HeroKinetic() {
           transition={{ duration: 1, delay: 3 }} // delay after preloader
         >
           <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-black text-[var(--color-text)] tracking-tighter leading-[1.1] mb-4">
-            <span className="block mb-2 text-opacity-80">I&apos;m</span>
+            <span className="block mb-2 text-opacity-80">I&apos;m Fahath.s,</span>
             <div className="h-[1.2em] relative text-[var(--color-accent)] overflow-hidden">
               <AnimatePresence mode="wait">
                 <motion.div
