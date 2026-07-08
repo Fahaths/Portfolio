@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const words = [
   "SEO Analyst",
-  "Performance Marketing Specialist",
+  "Performance Marketing",
   "AI Native Developer"
 ];
 
